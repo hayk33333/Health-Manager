@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1014916142833",
+    "project_id": "health-manager-61852",
+    "storage_bucket": "health-manager-61852.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014916142833:android:0ecf78b810733ab6ccbb50",
+        "android_client_info": {
+          "package_name": "com.hayk.healthmanagerregistration"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoKH3XkRsygiEDenziEevQeyWnW91zOOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
