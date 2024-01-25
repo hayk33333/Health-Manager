@@ -1,6 +1,7 @@
 package com.hayk.healthmanagerregistration;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -21,16 +22,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-public class RegistrationActivity extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity  {
     TextView logIn;
     private Button eyeButton;
     private boolean isEyeButtonOpen = false;
@@ -47,15 +56,26 @@ public class RegistrationActivity extends AppCompatActivity {
     Drawable et_background;
     TextView message;
     private GoogleApiClient googleApiClient;
-    private static final int RC_SIGN_IN = 123;
+    NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
+    Intents intents = new Intents(this);
+
+
+
 
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+//        GoogleSignInClient client;
+//        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(getString(R.string.default_web_client_id))
+//                .requestEmail()
+//                .build();
+//        client = GoogleSignIn.getClient(this,options);
         setContentView(R.layout.activity_registration);
+        networkCheckThread.startThread();
+        networkCheckThread.start();
         logIn = findViewById(R.id.log_in);
         eyeButton = findViewById(R.id.eye_button);
         Drawable open_eye_background = getResources().getDrawable(R.drawable.open_eye_bg);
@@ -71,11 +91,12 @@ public class RegistrationActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("users");
+
+
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent loginActivity = new Intent(RegistrationActivity.this, LoginActivity.class);
-                startActivity(loginActivity);
+                intents.LoginActivity();
             }
         });
         //eye button
@@ -145,6 +166,13 @@ public class RegistrationActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
+//        googleButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent i = client.getSignInIntent();
+//                startActivityForResult(i,1234);
+//            }
+//        });
 
 
     }
@@ -182,6 +210,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             // Пользователь успешно зарегистрирован
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             message.setText("");
+                            addUserToDatabase(user, userName, userEmail);
                             sendVerificationEmail(user);
 
                         } else {
@@ -199,7 +228,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 password.setBackground(red_et_background);
 
                             } else {
-                                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                                System.err.println(errorMessage);
                             }
                         }
                     });
@@ -223,12 +252,11 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     // Добавление пользователя в базу данных
-    private void addUserToDatabase(FirebaseUser user, String userName) {
-        // Вы можете использовать уникальный идентификатор пользователя (user.getUid()) в качестве ключа
-        // и добавить другие необходимые данные пользователя в базу данных
-        //TODO:method is never used
+    private void addUserToDatabase(FirebaseUser user, String userName, String email) {
         String userId = user.getUid();
-        databaseReference.child(userId).child("username").setValue(userName);
+        DatabaseReference userReference = databaseReference.child(userId);
+        userReference.child("username").setValue(userName);
+        userReference.child("email").setValue(email);
     }
 
     private void showVerificationFragment(FirebaseUser user) {
@@ -267,7 +295,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-    protected void deleteUser(){
+    public void deleteUser(){
         FirebaseAuth.getInstance().getCurrentUser().delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -279,7 +307,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
-    private void blockActivity() {
+    public void blockActivity() {
         findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         username.setEnabled(false);
         email.setEnabled(false);
@@ -290,7 +318,7 @@ public class RegistrationActivity extends AppCompatActivity {
         googleButton.setEnabled(false);
     }
 
-    private void unblockActivity() {
+    public void unblockActivity() {
         findViewById(R.id.overlay).setVisibility(View.GONE);
         username.setEnabled(true);
         email.setEnabled(true);
@@ -300,6 +328,35 @@ public class RegistrationActivity extends AppCompatActivity {
         logIn.setEnabled(true);
         googleButton.setEnabled(true);
     }
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if(requestCode == 1234){
+//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+//            try {
+//                GoogleSignInAccount account = task.getResult(ApiException.class);
+//
+//                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
+//                FirebaseAuth.getInstance().signInWithCredential(credential)
+//                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<AuthResult> task) {
+//                                if(task.isSuccessful()){
+//                                    Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+//                                    startActivity(intent);
+//
+//                                }else {
+//                                }
+//
+//                            }
+//                        });
+//
+//            } catch (ApiException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//
+//    }
 
 
 }

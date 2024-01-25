@@ -34,5 +34,9 @@
     <string name="back_to_login"><![CDATA[< Back to login]]></string>
     <string name="user_not_found">User not found.</string>
     <string name="please_enter_your_email_address">Please enter your email address.</string>
+    <string name="please_verify_your_email_address_to_login">Please verify your email address to login.</string>
+    <string name="register_again">Register again</string>
+    <string name="default_web_client_id">1014916142833-k361aepgn98iuq9dsbaapa6fo439vilc.apps.googleusercontent.com</string>
+    <string name="no_internet_connection">No internet connection!</string>
 
 </resources>

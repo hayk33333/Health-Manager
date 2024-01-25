@@ -20,12 +20,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ForgotPasswordFragment extends Fragment {
+public class ForgotPasswordFragment extends Fragment{
     private Button submit_button;
     private TextView back, message;
     private EditText email;
     private FirebaseAuth firebaseAuth;
     Drawable red_et_background, et_background;
+
 
 
     @Override
@@ -143,4 +144,16 @@ public class ForgotPasswordFragment extends Fragment {
         return isUserExists.get();
     }
 
+    public void blockFragment() {
+        submit_button.setEnabled(false);
+        email.setEnabled(false);
+        back.setEnabled(false);
+    }
+
+    public void unblockFragment() {
+        submit_button.setEnabled(true);
+        email.setEnabled(true);
+        back.setEnabled(true);
+
+    }
 }

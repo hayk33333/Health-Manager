@@ -4,13 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,7 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity{
     TextView registerHere;
     private Button eyeButton;
     private boolean isEyeButtonOpen = false;
@@ -38,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     TextView message;
     TextView forgotPassword;
     Button googleButton;
+    NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
+    Intents intents = new Intents(this);
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -45,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        networkCheckThread.startThread();
+        networkCheckThread.start();
         registerHere = findViewById(R.id.register_here);
         eyeButton = findViewById(R.id.eye_button);
         googleButton = findViewById(R.id.google_login_button);
@@ -60,11 +70,11 @@ public class LoginActivity extends AppCompatActivity {
         et_background = getResources().getDrawable(R.drawable.edit_text_background);
         Drawable open_eye_background = getResources().getDrawable(R.drawable.open_eye_bg);
         Drawable close_eye_background = getResources().getDrawable(R.drawable.close_eye_bg);
+
         registerHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent registrationActivity = new Intent(LoginActivity.this, RegistrationActivity.class);
-                startActivity(registrationActivity);
+                intents.RegistrationActivity();
             }
         });
 
@@ -128,6 +138,10 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+
+
+
+
     private void loginUser() {
         String userEmail = email.getText().toString().trim();
         String userPassword = password.getText().toString().trim();
@@ -160,8 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                                 // Intent yourIntent = new Intent(CurrentActivity.this, TargetActivity.class);
                                 // startActivity(yourIntent);
                             } else {
-                                // Пользователь не верифицирован
-                                Toast.makeText(this, "Пожалуйста, подтвердите свою электронную почту.", Toast.LENGTH_SHORT).show();
+                                showVerificationFragment(user);
                             }
                         } else {
                             String errorMessage = task.getException().getMessage();
@@ -175,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                                 message.setText(R.string.incorrect_email_or_password);
                             } else {
                                 // Общая ошибка
-                                Toast.makeText(this, "Ошибка входа: " + errorMessage, Toast.LENGTH_SHORT).show();
+                                System.out.println(errorMessage);
                             }
                         }
                     });
@@ -200,19 +213,49 @@ public class LoginActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().remove(forgotPasswordFragment).commit();
         }
     }
-    private void blockActivity() {
+    private void showVerificationFragment(FirebaseUser user) {
+        blockActivity();
+        VerificationFragmentLogin verificationFragmentLogin = new VerificationFragmentLogin(user);
+        getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, verificationFragmentLogin)
+                .addToBackStack(null)
+                .commit();
+        Bundle bundle = new Bundle();
+        bundle.putString("userEmail", email.getText().toString());
+
+
+        verificationFragmentLogin.setArguments(bundle);
+    }
+    public void hideVerificationFragment() {
+        unblockActivity();
+        VerificationFragmentLogin verificationFragmentLogin = (VerificationFragmentLogin) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+
+        if (verificationFragmentLogin != null && !verificationFragmentLogin.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(verificationFragmentLogin).commit();
+        }
+    }
+
+    public void blockActivity() {
+        findViewById(R.id.overlay).setVisibility(View.VISIBLE);
         email.setEnabled(false);
         password.setEnabled(false);
         eyeButton.setEnabled(false);
         registerHere.setEnabled(false);
         googleButton.setEnabled(false);
+        loginButton.setEnabled(false);
+        forgotPassword.setEnabled(false);
     }
 
-    private void unblockActivity() {
+    public void unblockActivity() {
+        findViewById(R.id.overlay).setVisibility(View.GONE);
         email.setEnabled(true);
         password.setEnabled(true);
         eyeButton.setEnabled(true);
         registerHere.setEnabled(true);
         googleButton.setEnabled(true);
+        loginButton.setEnabled(true);
+        forgotPassword.setEnabled(true);
+
     }
 }

@@ -8,9 +8,8 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,38 +20,55 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class VerificationFragment extends Fragment {
-    TextView message, finish, secondMessage, sendVerifyMessage, back;
+
+public class VerificationFragmentLogin extends Fragment {
+    Button loginButton;
+    TextView registerAgain, sendAgain, back, secondMessage, message;
     private FirebaseUser user;
 
 
-    public VerificationFragment(FirebaseUser user) {
+    public VerificationFragmentLogin(FirebaseUser user) {
         this.user = user;
     }
-
-
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_verification, container, false);
+        return inflater.inflate(R.layout.fragment_verification_login, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        message = view.findViewById(R.id.verification_fragment_message);
-        finish = view.findViewById(R.id.finish);
-        back = view.findViewById(R.id.back);
-        secondMessage = view.findViewById(R.id.verification_fragment_second_message);
-        sendVerifyMessage = view.findViewById(R.id.send_again);
+        loginButton = view.findViewById(R.id.verification_fragment_login_button);
+        registerAgain = view.findViewById(R.id.register_again);
+        sendAgain = view.findViewById(R.id.send_again);
+        back = view.findViewById(R.id.back_login);
+        message = view.findViewById(R.id.login_verification_fragment_message);
+        secondMessage = view.findViewById(R.id.verification_fragment_login_second_message);
         Bundle bundle = getArguments();
         if (bundle != null) {
             String userEmail = bundle.getString("userEmail", "");
             String m = getString(R.string.we_have_sent_a_notification_to_your_email_address) + "\n" + userEmail;
             message.setText(m);
         }
-        finish.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginActivity loginActivity = (LoginActivity) getActivity();
+                if (loginActivity != null) {
+                    loginActivity.hideVerificationFragment();
+                }
+            }
+        });
+        sendAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendVerificationEmail();
+            }
+        });
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View view) {
@@ -73,32 +89,16 @@ public class VerificationFragment extends Fragment {
                 });
             }
         });
-        sendVerifyMessage.setOnClickListener(new View.OnClickListener() {
+        registerAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendVerificationEmail();
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RegistrationActivity registrationActivity = (RegistrationActivity) requireActivity();
-                registrationActivity.hideVerificationFragment(user);
+                deleteUser();
+                Intent registrationActivity = new Intent(getContext(), RegistrationActivity.class);
+                startActivity(registrationActivity);
             }
         });
 
-
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        RegistrationActivity registrationActivity = (RegistrationActivity) requireActivity();
-        registrationActivity.deleteUser();
-
-
-    }
-
     private void sendVerificationEmail() {
         secondMessage.setTextColor(Color.BLACK);
         user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -125,6 +125,14 @@ public class VerificationFragment extends Fragment {
 
 
     }
+    protected void deleteUser(){
+        FirebaseAuth.getInstance().getCurrentUser().delete()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
 
+                    } else {
 
+                    }
+                });
+    }
 }
