@@ -2,8 +2,9 @@ package com.hayk.healthmanagerregistration;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
+
+import NoNetwork.NetworkCheckThread;
 
 public class MainActivity extends AppCompatActivity {
     NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);

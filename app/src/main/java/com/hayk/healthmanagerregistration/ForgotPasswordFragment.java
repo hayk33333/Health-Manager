@@ -9,24 +9,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ForgotPasswordFragment extends Fragment{
+public class ForgotPasswordFragment extends Fragment {
     private Button submit_button;
     private TextView back, message;
     private EditText email;
     private FirebaseAuth firebaseAuth;
     Drawable red_et_background, et_background;
-
+    ProgressBar progressBar;
+    FrameLayout overlay;
 
 
     @Override
@@ -40,17 +49,20 @@ public class ForgotPasswordFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
+        progressBar = view.findViewById(R.id.progress_circular);
         red_et_background = getResources().getDrawable(R.drawable.red_et_background);
         et_background = getResources().getDrawable(R.drawable.edit_text_background);
         submit_button = view.findViewById(R.id.forgot_password_button);
         email = view.findViewById(R.id.forgot_password_email);
         back = view.findViewById(R.id.forgot_password_back);
         message = view.findViewById(R.id.forgot_password_message);
+        overlay = view.findViewById(R.id.overlay);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LoginActivity loginActivity = (LoginActivity) getActivity();
                 if (loginActivity != null) {
+                    showProgressBar();
                     loginActivity.hideForgotPasswordFragment();
                 }
             }
@@ -75,85 +87,67 @@ public class ForgotPasswordFragment extends Fragment{
                 String userEmail = email.getText().toString().trim();
                 email.setBackground(et_background);
                 message.setText("");
+                System.out.println(userEmail);
                 if (userEmail.isEmpty()) {
                     email.setBackground(red_et_background);
                     message.setText(R.string.please_enter_your_email_address);
                 } else {
-                    if (isUserWithEmailExists(userEmail)){
-                        sendPasswordEmail();
-                    }else {
-                        email.setBackground(red_et_background);
-                        message.setText(R.string.user_not_found);
-                    }
-
+                    sendPasswordEmail();
                 }
             }
         });
     }
 
     private void sendPasswordEmail() {
+        showProgressBar();
         String userEmail = email.getText().toString().trim();
         firebaseAuth.sendPasswordResetEmail(userEmail)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        hideProgressBar();
+                        LoginActivity loginActivity = (LoginActivity) getActivity();
+                        if (loginActivity != null) {
+                            showProgressBar();
+                            loginActivity.hideForgotPasswordFragment();
+                        }
+
                     } else {
                         // Возникла ошибка при отправке email\
                         String errorMessage = task.getException().getMessage();
-                        if (errorMessage.contains("email address is badly formatted")){
+                        if (errorMessage.contains("email address is badly formatted")) {
                             message.setText(R.string.invalid_email_format_please_check_the_entered_address);
                             email.setBackground(red_et_background);
                         }
 
+                        hideProgressBar();
                         System.err.println("Ошибка при отправке email для сброса пароля: " + errorMessage);
                     }
                 });
+
+
     }
-    public static boolean isUserWithEmailExists(String email) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        AtomicBoolean isUserExists = new AtomicBoolean(false);
-
-        if (user != null) {
-            // Пользователь уже вошел в систему
-            return true;
-        } else {
-            // Пользователь не вошел в систему, проверяем наличие пользователя с указанным email в базе данных Firebase
-            mAuth.fetchSignInMethodsForEmail(email)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Методы входа для указанного email
-                            if (task.getResult().getSignInMethods().size() > 0) {
-                                // Пользователь с указанным email существует
-                                // Вы можете добавить здесь дополнительную логику, если необходимо
-                                // например, вывести сообщение или выполнить дополнительные действия
-                                // в случае, если пользователь существует
-                                isUserExists.set(true);
-                            } else {
-                                // Пользователь с указанным email не существует
-                                // Вы также можете добавить дополнительную логику здесь
-                                isUserExists.set(false);
-                            }
-                        } else {
-                            // Ошибка при выполнении запроса
-                            // Здесь вы можете обработать ошибку или вывести сообщение об ошибке
-                            isUserExists.set(false);
-                        }
-                    });
-        }
-
-        return isUserExists.get();
-    }
-
-    public void blockFragment() {
+    private void blockFragment(){
+        overlay.setVisibility(View.VISIBLE);
         submit_button.setEnabled(false);
-        email.setEnabled(false);
         back.setEnabled(false);
-    }
+        email.setEnabled(false);
 
-    public void unblockFragment() {
+
+    }
+    private void unBlockFragment(){
+        overlay.setVisibility(View.GONE);
         submit_button.setEnabled(true);
-        email.setEnabled(true);
         back.setEnabled(true);
+        email.setEnabled(true);
 
     }
+    public void showProgressBar(){
+        blockFragment();
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    public void hideProgressBar(){
+        unBlockFragment();
+        progressBar.setVisibility(View.GONE);
+    }
+
 }

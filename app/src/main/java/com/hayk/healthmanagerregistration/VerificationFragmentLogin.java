@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,8 @@ public class VerificationFragmentLogin extends Fragment {
     Button loginButton;
     TextView registerAgain, sendAgain, back, secondMessage, message;
     private FirebaseUser user;
+    FrameLayout overlay;
+    ProgressBar progressBar;
 
 
     public VerificationFragmentLogin(FirebaseUser user) {
@@ -47,6 +51,8 @@ public class VerificationFragmentLogin extends Fragment {
         back = view.findViewById(R.id.back_login);
         message = view.findViewById(R.id.login_verification_fragment_message);
         secondMessage = view.findViewById(R.id.verification_fragment_login_second_message);
+        progressBar = view.findViewById(R.id.progress_circular);
+        overlay = view.findViewById(R.id.overlay);
         Bundle bundle = getArguments();
         if (bundle != null) {
             String userEmail = bundle.getString("userEmail", "");
@@ -69,9 +75,11 @@ public class VerificationFragmentLogin extends Fragment {
             }
         });
         loginButton.setOnClickListener(new View.OnClickListener() {
+
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View view) {
+                showProgressBar();
                 user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -83,6 +91,7 @@ public class VerificationFragmentLogin extends Fragment {
                             startActivity(intent);
                         } else {
                             // Показать сообщение или выполнить другие действия, если подтверждение не успешно
+                            hideProgressBar();
                             secondMessage.setTextColor(Color.RED);
                         }
                     }
@@ -92,6 +101,7 @@ public class VerificationFragmentLogin extends Fragment {
         registerAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showProgressBar();
                 deleteUser();
                 Intent registrationActivity = new Intent(getContext(), RegistrationActivity.class);
                 startActivity(registrationActivity);
@@ -134,5 +144,30 @@ public class VerificationFragmentLogin extends Fragment {
 
                     }
                 });
+    }
+    private void blockFragment(){
+        overlay.setVisibility(View.VISIBLE);
+        loginButton.setEnabled(false);
+        back.setEnabled(false);
+        registerAgain.setEnabled(false);
+        sendAgain.setEnabled(false);
+
+
+    }
+    private void unBlockFragment(){
+        overlay.setVisibility(View.GONE);
+        loginButton.setEnabled(true);
+        back.setEnabled(true);
+        registerAgain.setEnabled(true);
+        sendAgain.setEnabled(true);
+
+    }
+    public void showProgressBar(){
+        blockFragment();
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    public void hideProgressBar(){
+        unBlockFragment();
+        progressBar.setVisibility(View.GONE);
     }
 }

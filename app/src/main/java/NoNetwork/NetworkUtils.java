@@ -1,4 +1,4 @@
-package com.hayk.healthmanagerregistration;
+package NoNetwork;
 
 import android.os.AsyncTask;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class NetworkUtils {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                HttpURLConnection urlc = (HttpURLConnection) (new URL("https://www.google.com").openConnection());
+                HttpURLConnection urlc = (HttpURLConnection) (new URL("https://www.example.com").openConnection());
                 urlc.setRequestProperty("User-Agent", "Test");
                 urlc.setRequestProperty("Connection", "close");
                 urlc.setConnectTimeout(1500);

@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class VerificationFragment extends Fragment {
     TextView message, finish, secondMessage, sendVerifyMessage, back;
     private FirebaseUser user;
+    FrameLayout overlay;
+    ProgressBar progressBar;
 
 
     public VerificationFragment(FirebaseUser user) {
@@ -46,6 +50,8 @@ public class VerificationFragment extends Fragment {
         back = view.findViewById(R.id.back);
         secondMessage = view.findViewById(R.id.verification_fragment_second_message);
         sendVerifyMessage = view.findViewById(R.id.send_again);
+        overlay = view.findViewById(R.id.overlay);
+        progressBar = view.findViewById(R.id.progress_circular);
         Bundle bundle = getArguments();
         if (bundle != null) {
             String userEmail = bundle.getString("userEmail", "");
@@ -56,6 +62,8 @@ public class VerificationFragment extends Fragment {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View view) {
+                showProgressBar();
+                secondMessage.setTextColor(Color.RED);
                 user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -67,6 +75,7 @@ public class VerificationFragment extends Fragment {
                             startActivity(intent);
                         } else {
                             // Показать сообщение или выполнить другие действия, если подтверждение не успешно
+                            hideProgressBar();
                             secondMessage.setTextColor(Color.RED);
                         }
                     }
@@ -124,6 +133,29 @@ public class VerificationFragment extends Fragment {
         });
 
 
+    }
+    private void blockFragment(){
+        overlay.setVisibility(View.VISIBLE);
+        sendVerifyMessage.setEnabled(false);
+        back.setEnabled(false);
+        finish.setEnabled(false);
+
+
+    }
+    private void unBlockFragment(){
+        overlay.setVisibility(View.GONE);
+        sendVerifyMessage.setEnabled(true);
+        back.setEnabled(true);
+        finish.setEnabled(true);
+
+    }
+    public void showProgressBar(){
+        blockFragment();
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    public void hideProgressBar(){
+        unBlockFragment();
+        progressBar.setVisibility(View.GONE);
     }
 
 

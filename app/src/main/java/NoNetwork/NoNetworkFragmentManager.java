@@ -1,9 +1,5 @@
-package com.hayk.healthmanagerregistration;
+package NoNetwork;
 
-import android.app.Activity;
-import android.content.Context;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -15,13 +11,6 @@ public class NoNetworkFragmentManager extends AppCompatActivity {
 
 
     public void showNoNetworkFragment(final FragmentActivity activity) {
-        if (currentFragment instanceof ForgotPasswordFragment) {
-            // Ваш фрагмент открыт в данный момент
-            ForgotPasswordFragment yourFragment = (ForgotPasswordFragment) currentFragment;
-            yourFragment.blockFragment();
-        } else {
-            // Фрагмент с другим классом открыт в данный момент
-        }
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {

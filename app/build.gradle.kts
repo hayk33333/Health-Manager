@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.hayk.healthmanagerregistration"
-        minSdk = 28
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -43,4 +43,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:24.10.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("com.google.firebase:firebase-auth")
 }

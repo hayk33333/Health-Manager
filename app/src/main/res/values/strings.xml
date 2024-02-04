@@ -3,7 +3,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="sign_up">Sign up</string>
+    <string name="sign_in">Sign up</string>
     <string name="or_login_with">Or login with</string>
     <string name="or_sign_in_with">Or sign in with</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -36,7 +36,9 @@
     <string name="please_enter_your_email_address">Please enter your email address.</string>
     <string name="please_verify_your_email_address_to_login">Please verify your email address to login.</string>
     <string name="register_again">Register again</string>
-    <string name="default_web_client_id">1014916142833-k361aepgn98iuq9dsbaapa6fo439vilc.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">1014916142833-k361aepgn98iuq9dsbaapa6fo439vilc.apps.googleusercontent.com</string>
     <string name="no_internet_connection">No internet connection!</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="the_passwords_don_t_match">The passwords don\'t match.</string>
 
 </resources>

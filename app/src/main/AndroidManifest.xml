@@ -19,7 +19,7 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".NoNetworkFragmentManager"
+            android:name="NoNetwork.NoNetworkFragmentManager"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -34,5 +34,6 @@
     </application>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" />
 
 </manifest>

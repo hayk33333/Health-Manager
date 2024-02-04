@@ -4,29 +4,36 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import NoNetwork.NetworkCheckThread;
 
 public class LoginActivity extends AppCompatActivity{
     TextView registerHere;
@@ -42,10 +49,15 @@ public class LoginActivity extends AppCompatActivity{
     Drawable et_background;
     TextView message;
     TextView forgotPassword;
-    Button googleButton;
     NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
     Intents intents = new Intents(this);
+    ProgressBar progressBar;
+    private static final String TAG = "GoogleActivity";
+    private static final int RC_SIGN_IN = 9001;
 
+
+    private GoogleSignInClient mGoogleSignInClient;
+    Button googleSignInButton;
 
 
     @SuppressLint("MissingInflatedId")
@@ -53,11 +65,25 @@ public class LoginActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // Sign-out successful
+                        // Redirect the user to the sign-in screen or perform any other necessary actions
+                    }
+                });
         networkCheckThread.startThread();
         networkCheckThread.start();
         registerHere = findViewById(R.id.register_here);
         eyeButton = findViewById(R.id.eye_button);
-        googleButton = findViewById(R.id.google_login_button);
         email = findViewById(R.id.login_email);
         loginButton = findViewById(R.id.login_button);
         password = findViewById(R.id.login_password);
@@ -70,10 +96,21 @@ public class LoginActivity extends AppCompatActivity{
         et_background = getResources().getDrawable(R.drawable.edit_text_background);
         Drawable open_eye_background = getResources().getDrawable(R.drawable.open_eye_bg);
         Drawable close_eye_background = getResources().getDrawable(R.drawable.close_eye_bg);
+        progressBar = findViewById(R.id.progress_circular);
+        googleSignInButton = findViewById(R.id.google_login_button);
+
+        googleSignInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showProgressBar();
+                signIn();
+            }
+        });
 
         registerHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showProgressBar();
                 intents.RegistrationActivity();
             }
         });
@@ -97,6 +134,7 @@ public class LoginActivity extends AppCompatActivity{
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showProgressBar();
                 showForgotPasswordFragment();
 
             }
@@ -161,6 +199,7 @@ public class LoginActivity extends AppCompatActivity{
             }
         } else {
             // Вход пользователя в Firebase
+            showProgressBar();
             firebaseAuth.signInWithEmailAndPassword(userEmail, userPassword)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
@@ -170,6 +209,7 @@ public class LoginActivity extends AppCompatActivity{
                             if (user != null && user.isEmailVerified()) {
                                 // Пользователь верифицирован, выполните действия после входа
                                 // Например, переход на другую активность
+                                hideProgressBar();
                                 Toast.makeText(this, "Вход успешен!", Toast.LENGTH_SHORT).show();
                                 // Intent yourIntent = new Intent(CurrentActivity.this, TargetActivity.class);
                                 // startActivity(yourIntent);
@@ -177,6 +217,7 @@ public class LoginActivity extends AppCompatActivity{
                                 showVerificationFragment(user);
                             }
                         } else {
+                            hideProgressBar();
                             String errorMessage = task.getException().getMessage();
                             //System.out.println(errorMessage);
                             if (errorMessage.contains("email address is badly formatted")) {
@@ -196,6 +237,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private void showForgotPasswordFragment() {
+        hideProgressBar();
         blockActivity();
         ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
         getSupportFragmentManager().beginTransaction()
@@ -214,6 +256,7 @@ public class LoginActivity extends AppCompatActivity{
         }
     }
     private void showVerificationFragment(FirebaseUser user) {
+        hideProgressBar();
         blockActivity();
         VerificationFragmentLogin verificationFragmentLogin = new VerificationFragmentLogin(user);
         getSupportFragmentManager().beginTransaction()
@@ -242,7 +285,7 @@ public class LoginActivity extends AppCompatActivity{
         password.setEnabled(false);
         eyeButton.setEnabled(false);
         registerHere.setEnabled(false);
-        googleButton.setEnabled(false);
+        googleSignInButton.setEnabled(false);
         loginButton.setEnabled(false);
         forgotPassword.setEnabled(false);
     }
@@ -253,9 +296,65 @@ public class LoginActivity extends AppCompatActivity{
         password.setEnabled(true);
         eyeButton.setEnabled(true);
         registerHere.setEnabled(true);
-        googleButton.setEnabled(true);
+        googleSignInButton.setEnabled(true);
         loginButton.setEnabled(true);
         forgotPassword.setEnabled(true);
+
+    }
+    public void showProgressBar(){
+        blockActivity();
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    public void hideProgressBar(){
+        unblockActivity();
+        progressBar.setVisibility(View.GONE);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        hideProgressBar();
+
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                Log.w(TAG, "Google sign in failed with status code: " + e.getStatusCode(), e);
+                System.err.println(e);
+            }
+        }
+    }
+    private void firebaseAuthWithGoogle(String idToken) {
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+
+
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        }
+                    }
+                });
+    }
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
 
     }
 }

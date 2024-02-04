@@ -1,15 +1,6 @@
-package com.hayk.healthmanagerregistration;
+package NoNetwork;
 
-import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-
-import com.google.firebase.auth.FirebaseUser;
 
 public class NetworkCheckThread extends Thread {
 
@@ -28,7 +19,7 @@ public class NetworkCheckThread extends Thread {
         while (isRunning) {
             try {
                 // Выполняем проверку каждые 5 секунд (можете изменить по своему усмотрению)
-                Thread.sleep(2000);
+                Thread.sleep(3000);
                 NetworkUtils.checkInternetConnectivity(new NetworkUtils.NetworkCheckListener() {
                     @Override
                     public void onNetworkCheckCompleted(boolean isInternetAvailable) {

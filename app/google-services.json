@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1014916142833",
+    "firebase_url": "https://health-manager-61852-default-rtdb.firebaseio.com",
     "project_id": "health-manager-61852",
     "storage_bucket": "health-manager-61852.appspot.com"
   },
@@ -12,7 +13,12 @@
           "package_name": "com.hayk.healthmanagerregistration"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1014916142833-k361aepgn98iuq9dsbaapa6fo439vilc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAoKH3XkRsygiEDenziEevQeyWnW91zOOA"
@@ -20,7 +26,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1014916142833-k361aepgn98iuq9dsbaapa6fo439vilc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

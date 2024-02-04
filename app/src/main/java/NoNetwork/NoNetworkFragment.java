@@ -1,4 +1,4 @@
-package com.hayk.healthmanagerregistration;
+package NoNetwork;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.hayk.healthmanagerregistration.R;
 
 
 public class NoNetworkFragment extends Fragment {
