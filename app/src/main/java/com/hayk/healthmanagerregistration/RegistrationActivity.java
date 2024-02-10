@@ -5,16 +5,22 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ThemedSpinnerAdapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -32,6 +38,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,14 +64,13 @@ public class RegistrationActivity extends AppCompatActivity  {
     private EditText repeatPassword;
 
     private FirebaseAuth firebaseAuth;
-    private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
+    FirebaseDatabase database;
     Drawable red_et_background;
     Drawable et_background;
     TextView message;
     NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
     Intents intents = new Intents(this);
-    FirebaseDatabase database;
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
 
@@ -98,6 +104,7 @@ public class RegistrationActivity extends AppCompatActivity  {
                     }
                 });
 
+
         networkCheckThread.startThread();
         networkCheckThread.start();
         logIn = findViewById(R.id.log_in);
@@ -114,9 +121,13 @@ public class RegistrationActivity extends AppCompatActivity  {
         repeatPassword = findViewById(R.id.repeat_registration_password);
         message = findViewById(R.id.registration_message);
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        database = FirebaseDatabase.getInstance();
         progressBar = findViewById(R.id.progress_circular);
+        database = FirebaseDatabase.getInstance();
+
+
+
+
+
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,9 +191,11 @@ public class RegistrationActivity extends AppCompatActivity  {
             public void afterTextChanged(Editable editable) {
             }
         });
+
         email.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
@@ -194,6 +207,7 @@ public class RegistrationActivity extends AppCompatActivity  {
             public void afterTextChanged(Editable editable) {
             }
         });
+
         password.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -208,6 +222,7 @@ public class RegistrationActivity extends AppCompatActivity  {
             public void afterTextChanged(Editable editable) {
             }
         });
+
         repeatPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -224,6 +239,7 @@ public class RegistrationActivity extends AppCompatActivity  {
 
             }
         });
+
     }
 
 
@@ -266,17 +282,21 @@ public class RegistrationActivity extends AppCompatActivity  {
             firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword)
                     .addOnCompleteListener(RegistrationActivity.this, task -> {
                         if (task.isSuccessful()) {
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
                             // Пользователь успешно зарегистрирован
                             if (userPassword.equals(userRepeatPassword)){
-                                FirebaseUser user = firebaseAuth.getCurrentUser();
+
                                 message.setText("");
-                                //addUserToDatabase(user, userName, userEmail);
+                                String phoneNumber = user.getPhoneNumber();
+
+
+                                addUserToRealtimeDatabase(user, userName, userEmail);
                                 sendVerificationEmail(user);
                             }else {
                                 repeatPassword.setBackground(red_et_background);
                                 message.setText(R.string.the_passwords_don_t_match);
                                 hideProgressBar();
-                                deleteUser();
+                                deleteUser(user);
                             }
 
 
@@ -323,11 +343,40 @@ public class RegistrationActivity extends AppCompatActivity  {
     }
 
     // Добавление пользователя в базу данных
-    private void addUserToDatabase(FirebaseUser user, String userName, String email) {
+    private void addUserToRealtimeDatabase(FirebaseUser user, String userName, String email) {
         String userId = user.getUid();
-        DatabaseReference userReference = databaseReference.child(userId);
-        userReference.child("username").setValue(userName);
-        userReference.child("email").setValue(email);
+
+        DatabaseReference usersRef = database.getReference("users");
+        DatabaseReference userIdRef = usersRef.child(userId);
+
+        userIdRef.child("email").setValue(email);
+        userIdRef.child("userName").setValue(userName);
+        user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (user.isEmailVerified()){
+                    userIdRef.child("isEmailVerified").setValue(true);
+                }else {
+                    userIdRef.child("isEmailVerified").setValue(false);
+                }
+            }
+        });
+
+    }
+    private void deleteUserFromRealtimeDatabase(FirebaseUser user) {
+        String userId = user.getUid();
+
+        DatabaseReference usersRef = database.getReference("users");
+        DatabaseReference userIdRef = usersRef.child(userId);
+
+        userIdRef.removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    // Пользователь успешно удален из базы данных
+                })
+                .addOnFailureListener(e -> {
+                    // Обработка ошибки удаления пользователя из базы данных
+                    System.out.println("Failed to delete user from database: " + e.getMessage());
+                });
     }
 
     private void showVerificationFragment(FirebaseUser user) {
@@ -341,6 +390,7 @@ public class RegistrationActivity extends AppCompatActivity  {
 
         Bundle bundle = new Bundle();
         bundle.putString("userEmail", email.getText().toString());
+        bundle.putString("userId", user.getUid());
 
 
         verificationFragment.setArguments(bundle);
@@ -358,7 +408,7 @@ public class RegistrationActivity extends AppCompatActivity  {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (!user.isEmailVerified()) {
-                        deleteUser();
+                        deleteUser(user);
                     }
                 }
             });
@@ -367,11 +417,11 @@ public class RegistrationActivity extends AppCompatActivity  {
         }
     }
 
-    public void deleteUser(){
+    public void deleteUser(FirebaseUser user){
+        deleteUserFromRealtimeDatabase(user);
         FirebaseAuth.getInstance().getCurrentUser().delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-
                     } else {
 
                     }
@@ -422,10 +472,10 @@ public class RegistrationActivity extends AppCompatActivity  {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
-
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
+
+
             } catch (ApiException e) {
                 Log.w(TAG, "Google sign in failed with status code: " + e.getStatusCode(), e);
                 System.err.println(e);
@@ -444,7 +494,10 @@ public class RegistrationActivity extends AppCompatActivity  {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
+                            String userName = user.getDisplayName();
+                            String email = user.getEmail();
 
+                            addUserToRealtimeDatabase(user, userName, email);
                         } else {
                             // If sign in fails, display a message to the user.
 
@@ -459,6 +512,7 @@ public class RegistrationActivity extends AppCompatActivity  {
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
     }
+
 
 
 }

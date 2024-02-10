@@ -22,12 +22,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class VerificationFragment extends Fragment {
     TextView message, finish, secondMessage, sendVerifyMessage, back;
     private FirebaseUser user;
     FrameLayout overlay;
     ProgressBar progressBar;
+    FirebaseDatabase database;
 
 
     public VerificationFragment(FirebaseUser user) {
@@ -52,6 +55,7 @@ public class VerificationFragment extends Fragment {
         sendVerifyMessage = view.findViewById(R.id.send_again);
         overlay = view.findViewById(R.id.overlay);
         progressBar = view.findViewById(R.id.progress_circular);
+        database = FirebaseDatabase.getInstance();
         Bundle bundle = getArguments();
         if (bundle != null) {
             String userEmail = bundle.getString("userEmail", "");
@@ -70,6 +74,13 @@ public class VerificationFragment extends Fragment {
                         boolean isEmailVerified = user.isEmailVerified();
                         if (isEmailVerified) {
                             // Открыть новую активность
+                            Bundle bundle = getArguments();
+                            if (bundle != null) {
+                                String userId = bundle.getString("userId");
+                                DatabaseReference usersRef = database.getReference("users");
+                                DatabaseReference userIdRef = usersRef.child(userId);
+                                userIdRef.child("isEmailVerified").setValue(true);
+                            }
                             secondMessage.setTextColor(Color.BLACK);
                             Intent intent = new Intent(getContext(), LoginActivity.class);
                             startActivity(intent);
@@ -103,7 +114,7 @@ public class VerificationFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         RegistrationActivity registrationActivity = (RegistrationActivity) requireActivity();
-        registrationActivity.deleteUser();
+        registrationActivity.deleteUser(user);
 
 
     }
@@ -134,7 +145,8 @@ public class VerificationFragment extends Fragment {
 
 
     }
-    private void blockFragment(){
+
+    private void blockFragment() {
         overlay.setVisibility(View.VISIBLE);
         sendVerifyMessage.setEnabled(false);
         back.setEnabled(false);
@@ -142,18 +154,21 @@ public class VerificationFragment extends Fragment {
 
 
     }
-    private void unBlockFragment(){
+
+    private void unBlockFragment() {
         overlay.setVisibility(View.GONE);
         sendVerifyMessage.setEnabled(true);
         back.setEnabled(true);
         finish.setEnabled(true);
 
     }
-    public void showProgressBar(){
+
+    public void showProgressBar() {
         blockFragment();
         progressBar.setVisibility(View.VISIBLE);
     }
-    public void hideProgressBar(){
+
+    public void hideProgressBar() {
         unBlockFragment();
         progressBar.setVisibility(View.GONE);
     }

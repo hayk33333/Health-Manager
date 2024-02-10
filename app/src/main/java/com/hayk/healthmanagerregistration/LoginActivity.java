@@ -58,6 +58,7 @@ public class LoginActivity extends AppCompatActivity{
 
     private GoogleSignInClient mGoogleSignInClient;
     Button googleSignInButton;
+    FirebaseDatabase database;
 
 
     @SuppressLint("MissingInflatedId")
@@ -65,6 +66,8 @@ public class LoginActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -80,6 +83,7 @@ public class LoginActivity extends AppCompatActivity{
                         // Redirect the user to the sign-in screen or perform any other necessary actions
                     }
                 });
+
         networkCheckThread.startThread();
         networkCheckThread.start();
         registerHere = findViewById(R.id.register_here);
@@ -98,6 +102,8 @@ public class LoginActivity extends AppCompatActivity{
         Drawable close_eye_background = getResources().getDrawable(R.drawable.close_eye_bg);
         progressBar = findViewById(R.id.progress_circular);
         googleSignInButton = findViewById(R.id.google_login_button);
+        database = FirebaseDatabase.getInstance();
+
 
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,6 +216,17 @@ public class LoginActivity extends AppCompatActivity{
                                 // Пользователь верифицирован, выполните действия после входа
                                 // Например, переход на другую активность
                                 hideProgressBar();
+                                user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (user.isEmailVerified()){
+                                            String userId =user.getUid();
+                                            DatabaseReference usersRef = database.getReference("users");
+                                            DatabaseReference userIdRef = usersRef.child(userId);
+                                            userIdRef.child("isEmailVerified").setValue(true);
+                                        }
+                                    }
+                                });
                                 Toast.makeText(this, "Вход успешен!", Toast.LENGTH_SHORT).show();
                                 // Intent yourIntent = new Intent(CurrentActivity.this, TargetActivity.class);
                                 // startActivity(yourIntent);
@@ -342,6 +359,9 @@ public class LoginActivity extends AppCompatActivity{
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
+                            String userName = user.getDisplayName();
+                            String password = user.getEmail();
+                            addUserToRealtimeDatabase(user,userName,password);
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -355,6 +375,26 @@ public class LoginActivity extends AppCompatActivity{
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+
+    }
+    private void addUserToRealtimeDatabase(FirebaseUser user, String userName, String email) {
+        String userId = user.getUid();
+
+        DatabaseReference usersRef = database.getReference("users");
+        DatabaseReference userIdRef = usersRef.child(userId);
+
+        userIdRef.child("email").setValue(email);
+        userIdRef.child("userName").setValue(userName);
+        user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (user.isEmailVerified()){
+                    userIdRef.child("isEmailVerified").setValue(true);
+                }else {
+                    userIdRef.child("isEmailVerified").setValue(false);
+                }
+            }
+        });
 
     }
 }

@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class VerificationFragmentLogin extends Fragment {
@@ -29,6 +31,8 @@ public class VerificationFragmentLogin extends Fragment {
     private FirebaseUser user;
     FrameLayout overlay;
     ProgressBar progressBar;
+    Intents intents = new Intents(getActivity());
+    FirebaseDatabase database;
 
 
     public VerificationFragmentLogin(FirebaseUser user) {
@@ -53,6 +57,7 @@ public class VerificationFragmentLogin extends Fragment {
         secondMessage = view.findViewById(R.id.verification_fragment_login_second_message);
         progressBar = view.findViewById(R.id.progress_circular);
         overlay = view.findViewById(R.id.overlay);
+        database = FirebaseDatabase.getInstance();
         Bundle bundle = getArguments();
         if (bundle != null) {
             String userEmail = bundle.getString("userEmail", "");
@@ -86,6 +91,12 @@ public class VerificationFragmentLogin extends Fragment {
                         boolean isEmailVerified = user.isEmailVerified();
                         if (isEmailVerified) {
                             // Открыть новую активность
+                            if (user.isEmailVerified()){
+                                String userId =user.getUid();
+                                DatabaseReference usersRef = database.getReference("users");
+                                DatabaseReference userIdRef = usersRef.child(userId);
+                                userIdRef.child("isEmailVerified").setValue(true);
+                            }
                             secondMessage.setTextColor(Color.BLACK);
                             Intent intent = new Intent(getContext(), LoginActivity.class);
                             startActivity(intent);
@@ -102,9 +113,9 @@ public class VerificationFragmentLogin extends Fragment {
             @Override
             public void onClick(View view) {
                 showProgressBar();
-                deleteUser();
-                Intent registrationActivity = new Intent(getContext(), RegistrationActivity.class);
-                startActivity(registrationActivity);
+                RegistrationActivity registrationActivity = (RegistrationActivity) requireActivity();
+                registrationActivity.deleteUser(user);
+                intents.RegistrationActivity();
             }
         });
 
@@ -135,16 +146,7 @@ public class VerificationFragmentLogin extends Fragment {
 
 
     }
-    protected void deleteUser(){
-        FirebaseAuth.getInstance().getCurrentUser().delete()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
 
-                    } else {
-
-                    }
-                });
-    }
     private void blockFragment(){
         overlay.setVisibility(View.VISIBLE);
         loginButton.setEnabled(false);

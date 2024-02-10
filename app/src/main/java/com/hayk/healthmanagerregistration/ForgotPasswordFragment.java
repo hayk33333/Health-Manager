@@ -24,6 +24,12 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,6 +42,7 @@ public class ForgotPasswordFragment extends Fragment {
     Drawable red_et_background, et_background;
     ProgressBar progressBar;
     FrameLayout overlay;
+    FirebaseDatabase database;
 
 
     @Override
@@ -57,6 +64,7 @@ public class ForgotPasswordFragment extends Fragment {
         back = view.findViewById(R.id.forgot_password_back);
         message = view.findViewById(R.id.forgot_password_message);
         overlay = view.findViewById(R.id.overlay);
+        database = FirebaseDatabase.getInstance();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,11 +100,49 @@ public class ForgotPasswordFragment extends Fragment {
                     email.setBackground(red_et_background);
                     message.setText(R.string.please_enter_your_email_address);
                 } else {
-                    sendPasswordEmail();
+                    showProgressBar();
+                    isUserWithEmailExists(userEmail, new OnUserExistsListener() {
+                        @Override
+                        public void onUserExists(boolean exists) {
+                            if (exists) {
+                                sendPasswordEmail();
+                            } else {
+                                email.setBackground(red_et_background);
+                                message.setText(R.string.user_not_found);
+                                hideProgressBar();
+                            }
+                        }
+                    });
                 }
             }
         });
+
     }
+    private void isUserWithEmailExists(String email, OnUserExistsListener listener) {
+        DatabaseReference usersRef = database.getReference("users");
+
+        // Создаем запрос к базе данных для поиска пользователя с определенным email
+        Query query = usersRef.orderByChild("email").equalTo(email);
+
+        // Добавляем слушатель для получения результатов запроса
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Проверяем, есть ли пользователь с таким email в базе данных
+                boolean exists = dataSnapshot.exists();
+                // Передаем результат обратному вызову
+                listener.onUserExists(exists);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Обработка ошибки запроса
+                System.out.println("Error searching user by email");
+            }
+        });
+    }
+
+
 
     private void sendPasswordEmail() {
         showProgressBar();
