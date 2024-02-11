@@ -40,5 +40,6 @@
     <string name="no_internet_connection">No internet connection!</string>
     <string name="confirm_password">Confirm password</string>
     <string name="the_passwords_don_t_match">The passwords don\'t match.</string>
+    <string name="developed_by">Developed by Hayk Zazyan</string>
 
 </resources>
