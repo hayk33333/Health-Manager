@@ -31,6 +31,7 @@ public class VerificationFragment extends Fragment {
     FrameLayout overlay;
     ProgressBar progressBar;
     FirebaseDatabase database;
+    Intents intents = new Intents(getActivity());
 
 
     public VerificationFragment(FirebaseUser user) {
@@ -41,7 +42,6 @@ public class VerificationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_verification, container, false);
     }
 
@@ -73,7 +73,6 @@ public class VerificationFragment extends Fragment {
                     public void onComplete(@NonNull Task<Void> task) {
                         boolean isEmailVerified = user.isEmailVerified();
                         if (isEmailVerified) {
-                            // Открыть новую активность
                             Bundle bundle = getArguments();
                             if (bundle != null) {
                                 String userId = bundle.getString("userId");
@@ -82,10 +81,8 @@ public class VerificationFragment extends Fragment {
                                 userIdRef.child("isEmailVerified").setValue(true);
                             }
                             secondMessage.setTextColor(Color.BLACK);
-                            Intent intent = new Intent(getContext(), LoginActivity.class);
-                            startActivity(intent);
+                            intents.MainActivity();
                         } else {
-                            // Показать сообщение или выполнить другие действия, если подтверждение не успешно
                             hideProgressBar();
                             secondMessage.setTextColor(Color.RED);
                         }
@@ -128,7 +125,6 @@ public class VerificationFragment extends Fragment {
                     user.sendEmailVerification()
                             .addOnCompleteListener(taskM -> {
                                 if (taskM.isSuccessful()) {
-                                    // Электронное письмо с подтверждением успешно отправлено
 
                                 } else {
                                     new Handler().postDelayed(new Runnable() {

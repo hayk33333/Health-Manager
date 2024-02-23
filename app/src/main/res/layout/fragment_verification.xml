@@ -9,7 +9,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Ваш остальной макет остается без изменений -->
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="350dp"
@@ -152,7 +151,6 @@
         android:background="#80000000"
         android:visibility="gone">
 
-        <!-- Здесь вы можете разместить любые другие элементы, которые должны отображаться поверх активности -->
     </FrameLayout>
 </FrameLayout>
 

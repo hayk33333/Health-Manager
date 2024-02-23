@@ -18,7 +18,6 @@ public class NetworkCheckThread extends Thread {
     public void run() {
         while (isRunning) {
             try {
-                // Выполняем проверку каждые 5 секунд (можете изменить по своему усмотрению)
                 Thread.sleep(3000);
                 NetworkUtils.checkInternetConnectivity(new NetworkUtils.NetworkCheckListener() {
                     @Override
@@ -39,7 +38,6 @@ public class NetworkCheckThread extends Thread {
                                 });
                             }
                         } else {
-                            // Ваш код, который будет выполнен, если нет интернета
                             if (!isFragmentShow) {
                                 activity.runOnUiThread(new Runnable() {
                                     @Override

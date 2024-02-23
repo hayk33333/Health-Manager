@@ -41,5 +41,15 @@
     <string name="confirm_password">Confirm password</string>
     <string name="the_passwords_don_t_match">The passwords don\'t match.</string>
     <string name="developed_by">Developed by Hayk Zazyan</string>
+    <string name="add_a_med">Add a Med</string>
+    <string name="medication_name">Medication Name</string>
+    <string name="what_med_would_you_like_to_add">What med would you like to add?</string>
+    <string name="pill">Pill</string>
+    <string name="injection">Injection</string>
+    <string name="solution">Solution</string>
+    <string name="drops">drops</string>
+    <string name="powder">powder</string>
+    <string name="other">Other</string>
+    <string name="what_form_is_the_med">What form is the med?</string>
 
 </resources>

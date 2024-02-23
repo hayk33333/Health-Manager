@@ -1,8 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.HealthManagerRegistration" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/my_color</item>
+        <item name="android:windowBackground">@color/window_color</item>
+        <item name="android:navigationBarColor">@color/gray</item>
+
+
+    </style>
+    <style name="Theme.BottomNavigation" parent="Theme.MaterialComponents.Light.NoActionBar">
+
+
     </style>
     <style name="Theme.HealthManagerRegistration" parent="Base.Theme.HealthManagerRegistration" />
 

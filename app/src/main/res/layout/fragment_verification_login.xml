@@ -156,6 +156,5 @@
         android:background="#80000000"
         android:visibility="gone">
 
-        <!-- Здесь вы можете разместить любые другие элементы, которые должны отображаться поверх активности -->
     </FrameLayout>
 </FrameLayout>

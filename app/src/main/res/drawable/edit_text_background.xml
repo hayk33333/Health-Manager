@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Фон при фокусировке (выделение краев)
-    <item android:state_focused="true">
-        <shape android:shape="rectangle">
-            <corners android:radius="8dp"/>
-            <solid android:color="#BDBDBD"/>
-        </shape>
-    </item>
-    -->
 
-    <!-- Обычный фон (когда фокус снят) -->
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="10dp"/>

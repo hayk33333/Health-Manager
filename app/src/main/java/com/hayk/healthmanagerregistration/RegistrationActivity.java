@@ -1,26 +1,19 @@
 package com.hayk.healthmanagerregistration;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ThemedSpinnerAdapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
+
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -28,17 +21,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,8 +37,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import NoNetwork.NetworkCheckThread;
 
@@ -64,8 +55,6 @@ public class RegistrationActivity extends AppCompatActivity  {
     private EditText repeatPassword;
 
     private FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
-    FirebaseDatabase database;
     Drawable red_et_background;
     Drawable et_background;
     TextView message;
@@ -77,6 +66,8 @@ public class RegistrationActivity extends AppCompatActivity  {
 
     private GoogleSignInClient mGoogleSignInClient;
     ProgressBar progressBar;
+    private FirebaseFirestore db;
+
 
 
 
@@ -93,18 +84,6 @@ public class RegistrationActivity extends AppCompatActivity  {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-// Initialize mGoogleSignInClient as described in the Google Sign-In documentation
-
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // Sign-out successful
-                        // Redirect the user to the sign-in screen or perform any other necessary actions
-                    }
-                });
-
-
         networkCheckThread.startThread();
         networkCheckThread.start();
         logIn = findViewById(R.id.log_in);
@@ -122,11 +101,7 @@ public class RegistrationActivity extends AppCompatActivity  {
         message = findViewById(R.id.registration_message);
         firebaseAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progress_circular);
-        database = FirebaseDatabase.getInstance();
-
-
-
-
+        db = FirebaseFirestore.getInstance();
 
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,14 +122,12 @@ public class RegistrationActivity extends AppCompatActivity  {
                 intents.LoginActivity();
             }
         });
-        //eye button
         eyeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isEyeButtonOpen) {
                     password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     repeatPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
                     eyeButton.setBackground(close_eye_background);
                     isEyeButtonOpen = false;
                 } else {
@@ -169,14 +142,12 @@ public class RegistrationActivity extends AppCompatActivity  {
             }
 
         });
-        //registration
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 registerUser();
             }
         });
-        //EditText text change
         username.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -277,20 +248,14 @@ public class RegistrationActivity extends AppCompatActivity  {
 
         }
         else {
-            // Регистрация пользователя в Firebase
             showProgressBar();
             firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword)
                     .addOnCompleteListener(RegistrationActivity.this, task -> {
                         if (task.isSuccessful()) {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            // Пользователь успешно зарегистрирован
                             if (userPassword.equals(userRepeatPassword)){
-
                                 message.setText("");
-                                String phoneNumber = user.getPhoneNumber();
-
-
-                                addUserToRealtimeDatabase(user, userName, userEmail);
+                                addUserToDB(user, userName, userEmail);
                                 sendVerificationEmail(user);
                             }else {
                                 repeatPassword.setBackground(red_et_background);
@@ -303,20 +268,15 @@ public class RegistrationActivity extends AppCompatActivity  {
                         } else {
                             String errorMessage = task.getException().getMessage();
                             if (errorMessage.contains("email address is badly formatted")) {
-                                // Ошибка: Неправильный формат электронной почты
                                 message.setText(R.string.invalid_email_format_please_check_the_entered_address);
                                 email.setBackground(red_et_background);
                             }if (errorMessage.contains("The email address is already in use by another account")) {
                                 message.setText(R.string.the_email_address_is_already_in_use_by_another_account);
                                 email.setBackground(red_et_background);
                             }if (errorMessage.contains("Password should be at least 6 characters")) {
-                                // Ошибка: Пароль слишком короткий
                                 message.setText(R.string.password_should_be_at_least_6_characters);
                                 password.setBackground(red_et_background);
-
-
                             }
-
                             else {
                                 System.err.println(errorMessage);
                             }
@@ -332,50 +292,54 @@ public class RegistrationActivity extends AppCompatActivity  {
         user.sendEmailVerification()
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Электронное письмо с подтверждением успешно отправлено
                         showVerificationFragment(user);
 
                     } else {
-                        // Обработка ошибок отправки электронного письма
                         message.setText(R.string.failed_to_send_confirmation_email);
                     }
                 });
     }
 
-    // Добавление пользователя в базу данных
-    private void addUserToRealtimeDatabase(FirebaseUser user, String userName, String email) {
-        String userId = user.getUid();
-
-        DatabaseReference usersRef = database.getReference("users");
-        DatabaseReference userIdRef = usersRef.child(userId);
-
-        userIdRef.child("email").setValue(email);
-        userIdRef.child("userName").setValue(userName);
-        user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (user.isEmailVerified()){
-                    userIdRef.child("isEmailVerified").setValue(true);
-                }else {
-                    userIdRef.child("isEmailVerified").setValue(false);
-                }
-            }
-        });
-
-    }
-    private void deleteUserFromRealtimeDatabase(FirebaseUser user) {
-        String userId = user.getUid();
-
-        DatabaseReference usersRef = database.getReference("users");
-        DatabaseReference userIdRef = usersRef.child(userId);
-
-        userIdRef.removeValue()
-                .addOnSuccessListener(aVoid -> {
-                    // Пользователь успешно удален из базы данных
+    private void addUserToDB(FirebaseUser user, String userName, String email) {
+        User userParams = new User(userName, email,user.isEmailVerified());
+        db.collection("users").document(user.getUid())
+                .set(userParams)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Пользователь успешно добавлен с ID: " + user.getUid());
+                    }
                 })
-                .addOnFailureListener(e -> {
-                    // Обработка ошибки удаления пользователя из базы данных
-                    System.out.println("Failed to delete user from database: " + e.getMessage());
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Ошибка при добавлении пользователя: " + e.getMessage());
+                    }
+                });
+    }
+    private void deleteUserFromDB(FirebaseUser user) {
+        String userID = user.getUid();
+        Toast.makeText(this, userID, Toast.LENGTH_SHORT).show();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        DocumentReference userRef = db.collection("users").document(userID);
+
+        userRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(RegistrationActivity.this, "ayooo", Toast.LENGTH_SHORT).show();
+
+                        System.out.println("Пользователь успешно удален из Firestore");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(RegistrationActivity.this, "ha ba vonc kara im mot mi anfamic stacvi", Toast.LENGTH_SHORT).show();
+
+                        System.out.println("Ошибка при удалении пользователя из Firestore");
+                    }
                 });
     }
 
@@ -397,7 +361,6 @@ public class RegistrationActivity extends AppCompatActivity  {
     }
 
     public void hideVerificationFragment(FirebaseUser user) {
-        // Удаляем фрагмент из контейнера
         VerificationFragment verificationFragment = (VerificationFragment) getSupportFragmentManager()
                 .findFragmentById(android.R.id.content);
 
@@ -418,7 +381,7 @@ public class RegistrationActivity extends AppCompatActivity  {
     }
 
     public void deleteUser(FirebaseUser user){
-        deleteUserFromRealtimeDatabase(user);
+        deleteUserFromDB(user);
         FirebaseAuth.getInstance().getCurrentUser().delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -467,17 +430,14 @@ public class RegistrationActivity extends AppCompatActivity  {
         hideProgressBar();
 
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account.getIdToken());
 
 
             } catch (ApiException e) {
-                Log.w(TAG, "Google sign in failed with status code: " + e.getStatusCode(), e);
                 System.err.println(e);
             }
         }
@@ -491,18 +451,14 @@ public class RegistrationActivity extends AppCompatActivity  {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             String userName = user.getDisplayName();
                             String email = user.getEmail();
 
-                            addUserToRealtimeDatabase(user, userName, email);
+                            addUserToDB(user, userName, email);
+                            intents.MainActivity();
                         } else {
-                            // If sign in fails, display a message to the user.
-
-
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            System.out.println("signInWithCredential:failure" + task.getException());
                         }
                     }
                 });
@@ -510,11 +466,7 @@ public class RegistrationActivity extends AppCompatActivity  {
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
-
     }
-
-
-
 }
 
 

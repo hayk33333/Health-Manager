@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
-        <!-- Основной макет вашей активности -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -52,7 +51,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/name"
                     android:textColor="@color/black"
@@ -94,7 +93,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/email"
                     android:textColor="@color/black"
@@ -136,7 +135,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/password"
                     android:textColor="@color/black"
@@ -186,7 +185,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/confirm_password"
                     android:textColor="@color/black"
@@ -327,13 +326,11 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-    <!-- Полупрозрачный фон -->
     <FrameLayout
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#80000000"
         android:visibility="gone">
-        <!-- Здесь вы можете разместить любые другие элементы, которые должны отображаться поверх активности -->
     </FrameLayout>
 </FrameLayout>

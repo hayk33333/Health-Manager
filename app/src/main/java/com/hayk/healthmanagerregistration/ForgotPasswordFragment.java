@@ -12,18 +12,14 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.EmailAuthProvider;
+
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.SignInMethodQueryResult;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,8 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 public class ForgotPasswordFragment extends Fragment {
     private Button submit_button;
@@ -48,7 +43,7 @@ public class ForgotPasswordFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_forgot_password, container, false);
     }
 
@@ -121,22 +116,17 @@ public class ForgotPasswordFragment extends Fragment {
     private void isUserWithEmailExists(String email, OnUserExistsListener listener) {
         DatabaseReference usersRef = database.getReference("users");
 
-        // Создаем запрос к базе данных для поиска пользователя с определенным email
         Query query = usersRef.orderByChild("email").equalTo(email);
 
-        // Добавляем слушатель для получения результатов запроса
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Проверяем, есть ли пользователь с таким email в базе данных
                 boolean exists = dataSnapshot.exists();
-                // Передаем результат обратному вызову
                 listener.onUserExists(exists);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Обработка ошибки запроса
                 System.out.println("Error searching user by email");
             }
         });
@@ -158,7 +148,6 @@ public class ForgotPasswordFragment extends Fragment {
                         }
 
                     } else {
-                        // Возникла ошибка при отправке email\
                         String errorMessage = task.getException().getMessage();
                         if (errorMessage.contains("email address is badly formatted")) {
                             message.setText(R.string.invalid_email_format_please_check_the_entered_address);

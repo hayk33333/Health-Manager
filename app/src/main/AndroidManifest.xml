@@ -17,14 +17,11 @@
         android:theme="@style/Theme.HealthManagerRegistration"
         tools:targetApi="31">
         <activity
-            android:name=".SplashActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".AddMedicationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
         <activity
             android:name=".RegistrationActivity"
             android:exported="false" />
@@ -35,10 +32,22 @@
             android:name="NoNetwork.NoNetworkFragmentManager"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

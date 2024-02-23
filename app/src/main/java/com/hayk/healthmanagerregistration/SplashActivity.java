@@ -23,13 +23,14 @@ public class SplashActivity extends AppCompatActivity {
         logo_text = findViewById(R.id.logo_text);
         text = findViewById(R.id.text);
 
-        // Загружаем анимацию из ресурсов
         Animation slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-
-        // Применяем анимацию к логотипу
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         image.startAnimation(slideUpAnimation);
 
-        // Запускаем активность LoginActivity после завершения анимации
         slideUpAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {

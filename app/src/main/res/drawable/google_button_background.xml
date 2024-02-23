@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Состояние при нажатии -->
     <item android:state_pressed="true">
         <layer-list>
             <item>
@@ -20,7 +19,6 @@
         </layer-list>
     </item>
 
-    <!-- Состояние по умолчанию -->
     <item>
         <layer-list>
             <item>

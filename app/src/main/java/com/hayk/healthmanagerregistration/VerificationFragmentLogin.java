@@ -18,11 +18,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class VerificationFragmentLogin extends Fragment {
@@ -33,16 +40,17 @@ public class VerificationFragmentLogin extends Fragment {
     ProgressBar progressBar;
     Intents intents = new Intents(getActivity());
     FirebaseDatabase database;
+    FirebaseFirestore db;
 
 
     public VerificationFragmentLogin(FirebaseUser user) {
         this.user = user;
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_verification_login, container, false);
     }
 
@@ -58,6 +66,7 @@ public class VerificationFragmentLogin extends Fragment {
         progressBar = view.findViewById(R.id.progress_circular);
         overlay = view.findViewById(R.id.overlay);
         database = FirebaseDatabase.getInstance();
+        db = FirebaseFirestore.getInstance();
         Bundle bundle = getArguments();
         if (bundle != null) {
             String userEmail = bundle.getString("userEmail", "");
@@ -90,18 +99,15 @@ public class VerificationFragmentLogin extends Fragment {
                     public void onComplete(@NonNull Task<Void> task) {
                         boolean isEmailVerified = user.isEmailVerified();
                         if (isEmailVerified) {
-                            // Открыть новую активность
-                            if (user.isEmailVerified()){
-                                String userId =user.getUid();
-                                DatabaseReference usersRef = database.getReference("users");
-                                DatabaseReference userIdRef = usersRef.child(userId);
-                                userIdRef.child("isEmailVerified").setValue(true);
-                            }
+                            user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    updateUserEmailVerification(user, user.isEmailVerified());
+                                }
+                            });
                             secondMessage.setTextColor(Color.BLACK);
-                            Intent intent = new Intent(getContext(), LoginActivity.class);
-                            startActivity(intent);
+                            intents.MainActivity();
                         } else {
-                            // Показать сообщение или выполнить другие действия, если подтверждение не успешно
                             hideProgressBar();
                             secondMessage.setTextColor(Color.RED);
                         }
@@ -120,6 +126,7 @@ public class VerificationFragmentLogin extends Fragment {
         });
 
     }
+
     private void sendVerificationEmail() {
         secondMessage.setTextColor(Color.BLACK);
         user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -129,7 +136,6 @@ public class VerificationFragmentLogin extends Fragment {
                     user.sendEmailVerification()
                             .addOnCompleteListener(taskM -> {
                                 if (taskM.isSuccessful()) {
-                                    // Электронное письмо с подтверждением успешно отправлено
 
                                 } else {
                                     new Handler().postDelayed(new Runnable() {
@@ -147,7 +153,28 @@ public class VerificationFragmentLogin extends Fragment {
 
     }
 
-    private void blockFragment(){
+    private void updateUserEmailVerification(FirebaseUser user, boolean newEmailVerifiedStatus) {
+        DocumentReference userRef = db.collection("users").document(user.getUid());
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("emailVerified", newEmailVerifiedStatus);
+
+        userRef.update(updates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Статус верификации почты успешно обновлен");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Ошибка при обновлении статуса верификации почты: " + e.getMessage());
+                    }
+                });
+    }
+
+    private void blockFragment() {
         overlay.setVisibility(View.VISIBLE);
         loginButton.setEnabled(false);
         back.setEnabled(false);
@@ -156,7 +183,8 @@ public class VerificationFragmentLogin extends Fragment {
 
 
     }
-    private void unBlockFragment(){
+
+    private void unBlockFragment() {
         overlay.setVisibility(View.GONE);
         loginButton.setEnabled(true);
         back.setEnabled(true);
@@ -164,11 +192,13 @@ public class VerificationFragmentLogin extends Fragment {
         sendAgain.setEnabled(true);
 
     }
-    public void showProgressBar(){
+
+    public void showProgressBar() {
         blockFragment();
         progressBar.setVisibility(View.VISIBLE);
     }
-    public void hideProgressBar(){
+
+    public void hideProgressBar() {
         unBlockFragment();
         progressBar.setVisibility(View.GONE);
     }
