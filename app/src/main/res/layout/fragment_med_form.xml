@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
     android:elevation="20dp"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
+
     <ImageView
         android:id="@+id/back"
         android:layout_width="40dp"
@@ -30,110 +30,131 @@
         app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints">
+
         <LinearLayout
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <Button
-            android:id="@+id/pill"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/list_button_bg"
-            android:text="@string/pill"
-            android:paddingStart="20dp"
-            android:textColor="@color/dark_gray"
-            android:gravity="left|center_vertical"
-            tools:ignore="RtlHardcoded,RtlSymmetry" />
+            <Button
+                android:id="@+id/pill"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/list_button_bg"
+                android:gravity="left|center_vertical"
+                android:paddingStart="20dp"
+                android:text="@string/pill"
+                android:textAllCaps="false"
+                android:textColor="@color/dark_gray"
+                tools:ignore="RtlHardcoded,RtlSymmetry" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:background="@color/et_background" />
+
             <Button
                 android:id="@+id/injection"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/list_button_bg"
-                android:text="@string/injection"
-                android:paddingStart="20dp"
-                android:textColor="@color/dark_gray"
                 android:gravity="left|center_vertical"
+                android:paddingStart="20dp"
+                android:text="@string/injection"
+                android:textAllCaps="false"
+                android:textColor="@color/dark_gray"
                 tools:ignore="RtlHardcoded,RtlSymmetry" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:background="@color/et_background" />
+
             <Button
                 android:id="@+id/solution"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/list_button_bg"
-                android:text="@string/solution"
-                android:paddingStart="20dp"
-                android:textColor="@color/dark_gray"
                 android:gravity="left|center_vertical"
+                android:paddingStart="20dp"
+                android:textAllCaps="false"
+
+                android:text="@string/solution"
+                android:textColor="@color/dark_gray"
                 tools:ignore="RtlHardcoded,RtlSymmetry" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:background="@color/et_background" />
+
             <Button
                 android:id="@+id/drops"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/list_button_bg"
-                android:text="@string/drops"
-                android:paddingStart="20dp"
-                android:textColor="@color/dark_gray"
                 android:gravity="left|center_vertical"
+                android:paddingStart="20dp"
+                android:textAllCaps="false"
+
+                android:text="@string/drops"
+                android:textColor="@color/dark_gray"
                 tools:ignore="RtlHardcoded,RtlSymmetry" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:background="@color/et_background" />
+
             <Button
                 android:id="@+id/powder"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/list_button_bg"
-                android:text="@string/powder"
-                android:paddingStart="20dp"
-                android:textColor="@color/dark_gray"
                 android:gravity="left|center_vertical"
+                android:paddingStart="20dp"
+                android:textAllCaps="false"
+
+                android:text="@string/powder"
+                android:textColor="@color/dark_gray"
                 tools:ignore="RtlHardcoded,RtlSymmetry" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:background="@color/et_background" />
+
             <Button
                 android:id="@+id/other"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/list_button_bg"
-                android:text="@string/other"
-                android:paddingStart="20dp"
-                android:textColor="@color/dark_gray"
                 android:gravity="left|center_vertical"
+                android:paddingStart="20dp"
+                android:textAllCaps="false"
+
+                android:text="@string/other"
+                android:textColor="@color/dark_gray"
                 tools:ignore="RtlHardcoded,RtlSymmetry" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:background="@color/et_background" />
         </LinearLayout>
-
 
 
     </LinearLayout>

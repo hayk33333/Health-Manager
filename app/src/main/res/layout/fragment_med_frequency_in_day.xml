@@ -37,11 +37,11 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/every_day"
+                android:id="@+id/once_day"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/list_button_bg"
-                android:text="@string/every_day"
+                android:text="@string/once_a_day"
                 android:paddingStart="20dp"
                 android:textAllCaps="false"
 
@@ -55,11 +55,11 @@
                 android:layout_gravity="center_vertical"
                 android:background="@color/et_background" />
             <Button
-                android:id="@+id/every_other_day"
+                android:id="@+id/twice_day"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/list_button_bg"
-                android:text="@string/every_other_day"
+                android:text="@string/twice_a_day"
                 android:paddingStart="20dp"
                 android:textAllCaps="false"
 
@@ -73,11 +73,11 @@
                 android:layout_gravity="center_vertical"
                 android:background="@color/et_background" />
             <Button
-                android:id="@+id/every_x_days"
+                android:id="@+id/more_times"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/list_button_bg"
-                android:text="@string/every_x_days"
+                android:text="@string/more_than_2_times_a_day"
                 android:paddingStart="20dp"
                 android:textAllCaps="false"
 
@@ -91,11 +91,11 @@
                 android:layout_gravity="center_vertical"
                 android:background="@color/et_background" />
             <Button
-                android:id="@+id/specific_days"
+                android:id="@+id/every_x_hours"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/list_button_bg"
-                android:text="@string/specific_days_of_the_week"
+                android:text="@string/every_x_hours"
                 android:paddingStart="20dp"
                 android:textAllCaps="false"
 
@@ -108,42 +108,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:background="@color/et_background" />
-            <Button
-                android:id="@+id/every_x_weeks"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="@string/every_x_weeks"
-                android:paddingStart="20dp"
-                android:textAllCaps="false"
 
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:background="@color/et_background" />
-            <Button
-                android:id="@+id/every_x_months"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="@string/every_x_months"
-                android:paddingStart="20dp"
-                android:textAllCaps="false"
-
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:background="@color/et_background" />
         </LinearLayout>
 
 

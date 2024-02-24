@@ -12,5 +12,12 @@
         android:textColor="@color/black"
         android:text="home" />
 
+    <NumberPicker
+        android:id="@+id/number_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:theme="@style/NumberPickerStyle" />
+
 
 </FrameLayout>

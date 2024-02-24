@@ -17,6 +17,8 @@ import android.widget.Toast;
 public class MedFormFragment extends Fragment {
     ImageView back;
     Button pill, injection, solution, drops, powder, other;
+    AddMedicationActivity addMedicationActivity;
+
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -27,6 +29,50 @@ public class MedFormFragment extends Fragment {
         drops = view.findViewById(R.id.drops);
         powder = view.findViewById(R.id.powder);
         other = view.findViewById(R.id.other);
+        addMedicationActivity = (AddMedicationActivity) requireActivity();
+
+        pill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addMedicationActivity.showMedFrequencyFragment();
+            }
+        });
+        injection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addMedicationActivity.showMedFrequencyFragment();
+
+            }
+        });
+        solution.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addMedicationActivity.showMedFrequencyFragment();
+
+            }
+        });
+        drops.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addMedicationActivity.showMedFrequencyFragment();
+
+            }
+        });
+        powder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addMedicationActivity.showMedFrequencyFragment();
+
+            }
+        });
+        other.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addMedicationActivity.showMedFrequencyFragment();
+
+            }
+        });
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

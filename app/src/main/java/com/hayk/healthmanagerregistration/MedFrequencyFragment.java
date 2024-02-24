@@ -8,9 +8,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 
 
 public class MedFrequencyFragment extends Fragment {
+    ImageView back;
+    Button everyDay, everyOtherDay, everyXDays, specificDays, everyXWeeks, everyXMonths;
+
+
 
 
 
@@ -18,6 +24,34 @@ public class MedFrequencyFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        back = view.findViewById(R.id.back);
+        everyDay = view .findViewById(R.id.every_day);
+        everyOtherDay = view.findViewById(R.id.every_other_day);
+        everyXDays = view.findViewById(R.id.every_x_days);
+        specificDays = view.findViewById(R.id.specific_days);
+        everyXWeeks = view.findViewById(R.id.every_x_weeks);
+        everyXMonths = view.findViewById(R.id.every_x_months);
+        everyDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                addMedicationActivity.showMedFrequencyInDayFragment();
+            }
+        });
+        specificDays.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                addMedicationActivity.showDaysOfWeekFragment();
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                addMedicationActivity.hideMedFrequencyFragment();
+            }
+        });
     }
 
     @Override

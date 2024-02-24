@@ -47,9 +47,27 @@
     <string name="pill">Pill</string>
     <string name="injection">Injection</string>
     <string name="solution">Solution</string>
-    <string name="drops">drops</string>
-    <string name="powder">powder</string>
+    <string name="drops">Drops</string>
+    <string name="powder">Powder</string>
     <string name="other">Other</string>
     <string name="what_form_is_the_med">What form is the med?</string>
+    <string name="every_day">Every day</string>
+    <string name="every_other_day">Every other day</string>
+    <string name="every_x_days">Every X days</string>
+    <string name="specific_days_of_the_week">Specific days of the week</string>
+    <string name="every_x_weeks">Every X weeks</string>
+    <string name="every_x_months">Every X months</string>
+    <string name="how_often_do_you_take_it">How often do you take it?</string>
+    <string name="once_a_day">Once a day</string>
+    <string name="twice_a_day">Twice a day</string>
+    <string name="more_than_2_times_a_day">More than 2 times a day</string>
+    <string name="every_x_hours">Every X hours</string>
+    <string name="monday">Monday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursdays">Thursdays</string>
+    <string name="friday">Friday</string>
+    <string name="sunday">Sunday</string>
+    <string name="saturday">Saturday</string>
+    <string name="on_which_days_s_do_you_need_to_take_the_med">On which days(s) do you need to take the med</string>
 
 </resources>

@@ -11,6 +11,10 @@
 
     </style>
     <style name="Theme.HealthManagerRegistration" parent="Base.Theme.HealthManagerRegistration" />
+    <style name="NumberPickerStyle">
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="colorAccent">#FF003B</item>
+    </style>
 
 
 </resources>
