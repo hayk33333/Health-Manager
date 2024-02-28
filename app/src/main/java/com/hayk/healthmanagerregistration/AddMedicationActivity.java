@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +34,7 @@ public class AddMedicationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medication);
+        Toast.makeText(this, "on", Toast.LENGTH_SHORT).show();
         message = findViewById(R.id.med_activity_message);
         icon = findViewById(R.id.icon);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -108,6 +110,24 @@ public class AddMedicationActivity extends AppCompatActivity {
                 .add(android.R.id.content, daysOfWeekFragment)
                 .commit();
     }
+    public void showMedTimeFragment() {
+        progressBar.setProgress(60);
+        icon.setImageResource(R.drawable.alarm_clock_icon);
+        message.setText(R.string.when_do_you_need_to_take_dose);
+        MedTimeFragment medTimeFragment = new MedTimeFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, medTimeFragment)
+                .commit();
+    }
+    public void showHowTimesDayFragment() {
+        progressBar.setProgress(60);
+        icon.setImageResource(R.drawable.alarm_clock_icon);
+        message.setText(R.string.how_many_times_day);
+        MedHowTimesDayFragment medHowTimesDayFragment = new MedHowTimesDayFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, medHowTimesDayFragment)
+                .commit();
+    }
 
     public void hideMedFormFragment() {
         progressBar.setProgress(10);
@@ -154,6 +174,28 @@ public class AddMedicationActivity extends AppCompatActivity {
 
         if (daysOfWeekFragment != null && !daysOfWeekFragment.isDetached()) {
             getSupportFragmentManager().beginTransaction().remove(daysOfWeekFragment).commit();
+        }
+    }
+    public void hideMedTimeFragment() {
+        progressBar.setProgress(40);
+        icon.setImageResource(R.drawable.calendar_icon_blue);
+        message.setText(R.string.how_often_do_you_take_it);
+        MedTimeFragment medTimeFragment = (MedTimeFragment) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+
+        if (medTimeFragment != null && !medTimeFragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(medTimeFragment).commit();
+        }
+    }
+    public void hideHowTimesDayFragment() {
+        progressBar.setProgress(40);
+        icon.setImageResource(R.drawable.calendar_icon_blue);
+        message.setText(R.string.how_often_do_you_take_it);
+        MedHowTimesDayFragment medHowTimesDayFragment = (MedHowTimesDayFragment) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+
+        if (medHowTimesDayFragment != null && !medHowTimesDayFragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(medHowTimesDayFragment).commit();
         }
     }
 

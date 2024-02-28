@@ -30,6 +30,10 @@
         app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="MissingConstraints">
         <LinearLayout
             android:id="@+id/list"
             android:layout_width="match_parent"
@@ -145,6 +149,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="@color/et_background" />
         </LinearLayout>
+        </ScrollView>
 
 
 

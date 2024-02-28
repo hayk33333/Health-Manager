@@ -63,6 +63,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onAnimationEnd(Animation animation) {
 
                 intents.MainActivity();
+                finish();
             }
 
             @Override

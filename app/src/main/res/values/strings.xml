@@ -69,5 +69,9 @@
     <string name="sunday">Sunday</string>
     <string name="saturday">Saturday</string>
     <string name="on_which_days_s_do_you_need_to_take_the_med">On which days(s) do you need to take the med</string>
+    <string name="when_do_you_need_to_take_dose">When do you need to take dose?</string>
+    <string name="next">Next</string>
+    <string name="times_a_day">Times a day</string>
+    <string name="how_many_times_day">How many times day</string>
 
 </resources>
