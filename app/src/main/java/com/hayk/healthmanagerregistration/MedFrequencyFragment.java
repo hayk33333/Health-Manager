@@ -31,6 +31,34 @@ public class MedFrequencyFragment extends Fragment {
         specificDays = view.findViewById(R.id.specific_days);
         everyXWeeks = view.findViewById(R.id.every_x_weeks);
         everyXMonths = view.findViewById(R.id.every_x_months);
+        everyXDays.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                addMedicationActivity.showMedEveryXDaysFragment();
+            }
+        });
+        everyXMonths.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                addMedicationActivity.showMedEveryXMonthsFragment();
+            }
+        });
+        everyXWeeks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                addMedicationActivity.showMedEveryXWeeksFragment();
+            }
+        });
+        everyOtherDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                addMedicationActivity.showMedEveryOtherDayFragment();
+            }
+        });
         everyDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

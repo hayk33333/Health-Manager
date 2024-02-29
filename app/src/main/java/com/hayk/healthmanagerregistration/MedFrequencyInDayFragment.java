@@ -14,7 +14,7 @@ import android.widget.ImageView;
 
 public class MedFrequencyInDayFragment extends Fragment {
     ImageView back;
-    Button onceDay, moreTimes;
+    Button onceDay, moreTimes, twiceDay, everyXHours;
 
 
 
@@ -25,6 +25,22 @@ public class MedFrequencyInDayFragment extends Fragment {
         onceDay = view.findViewById(R.id.once_day);
         moreTimes = view.findViewById(R.id.more_times);
         back = view.findViewById(R.id.back);
+        twiceDay = view.findViewById(R.id.twice_day);
+        everyXHours = view.findViewById(R.id.every_x_hours);
+        everyXHours.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                addMedicationActivity.showEveryXHoursFragment();
+            }
+        });
+        twiceDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                addMedicationActivity.showMedFirstDoseTimeFragment();
+            }
+        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

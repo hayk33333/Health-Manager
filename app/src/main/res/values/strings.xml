@@ -73,5 +73,14 @@
     <string name="next">Next</string>
     <string name="times_a_day">Times a day</string>
     <string name="how_many_times_day">How many times day</string>
+    <string name="when_do_you_need_to_take_the_first_dose">When do you need to take the first dose?</string>
+    <string name="when_do_you_need_to_take_the_second_dose">When do you need to take the second dose?</string>
+    <string name="set_hours_interval">Set hours interval</string>
+    <string name="when_do_you_need_to_take_the_next_dose">When do you need to take the next dose?</string>
+    <string name="days">Days</string>
+    <string name="week_s">week(s)</string>
+    <string name="every">Every</string>
+    <string name="month_s">Month(s)</string>
+    <string name="set_days_interval">Set days interval</string>
 
 </resources>
