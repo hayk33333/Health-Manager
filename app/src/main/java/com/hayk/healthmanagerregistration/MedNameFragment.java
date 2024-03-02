@@ -19,6 +19,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class MedNameFragment extends Fragment {
     Button next;
@@ -27,7 +35,8 @@ public class MedNameFragment extends Fragment {
     Drawable et_background;
     TextView message;
     ImageView back;
-
+    private FirebaseFirestore db;
+    String documentId;
 
 
     @Override
@@ -37,6 +46,8 @@ public class MedNameFragment extends Fragment {
         medNameEt = view.findViewById(R.id.med_name_et);
         message = view.findViewById(R.id.message);
         back = view.findViewById(R.id.back);
+        db = FirebaseFirestore.getInstance();
+        documentId = getArguments().getString("documentId");
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,15 +85,40 @@ public class MedNameFragment extends Fragment {
                     message.setText("Please enter the med name");
                     medNameEt.setBackground(red_et_background);
 
-                }else {
+                } else {
+                    addMedNameToDB(medName);
 
-                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
-                addMedicationActivity.showMedFormFragment();
+                    AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
+                    addMedicationActivity.showMedFormFragment();
                 }
             }
         });
 
     }
+
+    private void addMedNameToDB(String medName) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        Map<String, Object> medData = new HashMap<>();
+        medData.put("medName", medName);
+
+        medsCollection
+                .document(documentId)
+                .set(medData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Значение '" + medName + "' успешно добавлено в коллекцию 'meds'!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Ошибка при добавлении значения '" + medName + "' в коллекцию 'meds': " + e.getMessage());
+                    }
+                });
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

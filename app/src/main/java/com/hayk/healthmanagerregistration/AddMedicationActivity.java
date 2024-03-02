@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -27,6 +28,8 @@ public class AddMedicationActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
     ProgressBar progressBar;
+    String documentId;
+
 
 
 
@@ -34,41 +37,48 @@ public class AddMedicationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medication);
-        Toast.makeText(this, "on", Toast.LENGTH_SHORT).show();
         message = findViewById(R.id.med_activity_message);
         icon = findViewById(R.id.icon);
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         progressBar = findViewById(R.id.progressBar);
-        showMedNameFragment();
         db = FirebaseFirestore.getInstance();
-//        CollectionReference usersCollection = db.collection("users");
-//
-//        String userId = user.getUid();
-//
-//        Map<String, Object> medsFolder = new HashMap<>();
-//        usersCollection.document(userId).collection("meds").document("medsFolder").set(medsFolder)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        System.out.println("Папка 'meds' успешно создана для пользователя с ID:");
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        System.out.println("Ошибка при создании папки 'meds' для пользователя с ID: ");
-//                    }
-//                });
+        createMedsCollection();
+        showMedNameFragment();
+
+
     }
+    public void createMedsCollection() {
+        CollectionReference medsCollection = db.collection("meds");
+
+        DocumentReference newDocumentRef = medsCollection.document();
+        documentId = newDocumentRef.getId();
+
+        newDocumentRef.set(new HashMap<>())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Коллекция 'meds' успешно создана! Документ ID: " + documentId);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Ошибка при создании коллекции 'meds': " + e.getMessage());
+                    }
+                });
+    }
+
 
 
     public void showMedNameFragment() {
         progressBar.setProgress(10);
         icon.setImageResource(R.drawable.med_interrogative);
         message.setText(R.string.what_med_would_you_like_to_add);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedNameFragment medNameFragment = new MedNameFragment();
-        icon.setImageResource(R.drawable.med_interrogative);
+        medNameFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medNameFragment)
                 .commit();
@@ -78,7 +88,10 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(20);
         icon.setImageResource(R.drawable.med_form);
         message.setText(R.string.what_form_is_the_med);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedFormFragment medFormFragment = new MedFormFragment();
+        medFormFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medFormFragment)
                 .commit();
