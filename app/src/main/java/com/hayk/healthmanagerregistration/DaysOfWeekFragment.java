@@ -13,14 +13,32 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class DaysOfWeekFragment extends Fragment {
     ImageView back;
-    Button monday, tuesday, wednesday, thursday, friday, saturday, sunday;
-    boolean[] clickable = {false, false, false, false, false, false, false};
+    Button monday, tuesday, wednesday, thursday, friday, saturday, sunday, next;
+    Button[] buttons;
+
+    boolean[] clickable;
+    String documentId;
+    String[] daysOfWeek;
+    FirebaseFirestore db;
+    AddMedicationActivity addMedicationActivity;
+
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        db = FirebaseFirestore.getInstance();
         back = view.findViewById(R.id.back);
         monday = view.findViewById(R.id.monday);
         tuesday = view.findViewById(R.id.tuesday);
@@ -29,7 +47,13 @@ public class DaysOfWeekFragment extends Fragment {
         friday = view.findViewById(R.id.friday);
         saturday = view.findViewById(R.id.saturday);
         sunday = view.findViewById(R.id.sunday);
-        Button[] buttons = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
+        next = view.findViewById(R.id.next);
+        addMedicationActivity = (AddMedicationActivity) requireActivity();
+
+        documentId = getArguments().getString("documentId");
+        clickable = new boolean[]{false, false, false, false, false, false, false};
+        buttons = new Button[]{monday, tuesday, wednesday, thursday, friday, saturday, sunday};
+        daysOfWeek = new String[]{"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
         for (int i = 0; i < buttons.length; i++) {
             int j = i;
             buttons[i].setOnClickListener(new View.OnClickListener() {
@@ -46,27 +70,56 @@ public class DaysOfWeekFragment extends Fragment {
                 }
             });
         }
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<String> days = new ArrayList<>();
+                for (int i = 0; i < daysOfWeek.length; i++) {
+                    if (clickable[i]) {
+                        days.add(daysOfWeek[i]);
+                    }
+                }
+                if (days.isEmpty()) {
+                    Toast.makeText(getActivity(), "Please choose the days of the week", Toast.LENGTH_SHORT).show();
+                } else {
+                    addDaysOfWeekToDB(days);
+                    addMedicationActivity.showMedTimeFragment();
+
+
+                }
+            }
+        });
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
                 addMedicationActivity.hideDaysOfWeekFragment();
             }
         });
     }
-//        monday.setOnClickListener(new View.OnClickListener() {
-//            @SuppressLint("ResourceAsColor")
-//            @Override
-//            public void onClick(View view) {
-//                if (!clickable[0]) {
-//                    monday.setBackground(R.color.my_color);
-//                    clickable[0] = true;
-//                }else {
-//                    monday.setBackground(R.color.white);
-//                    clickable[0] = false;
-//                }
-//            }
-//        });
+
+    private void addDaysOfWeekToDB(List<String> daysOfWeek) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        Map<String, Object> medData = new HashMap<>();
+        medData.put("daysOfWeek", daysOfWeek);
+
+        medsCollection
+                .document(documentId)
+                .update(medData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Массив успешно добавлен в коллекцию 'meds'!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Ошибка при добавлении массива в коллекцию 'meds': " + e.getMessage());
+                    }
+                });
+    }
 
 
     @Override

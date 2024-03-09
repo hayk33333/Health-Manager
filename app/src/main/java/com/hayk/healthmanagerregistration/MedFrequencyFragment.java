@@ -11,15 +11,26 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class MedFrequencyFragment extends Fragment {
     ImageView back;
     Button everyDay, everyOtherDay, everyXDays, specificDays, everyXWeeks, everyXMonths;
-
-
-
-
-
+    String documentId;
+    private FirebaseFirestore db;
+    Button[] buttons;
+    String[] medFrequency;
+    String[] functionNames;
+    AddMedicationActivity addMedicationActivity;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -31,48 +42,25 @@ public class MedFrequencyFragment extends Fragment {
         specificDays = view.findViewById(R.id.specific_days);
         everyXWeeks = view.findViewById(R.id.every_x_weeks);
         everyXMonths = view.findViewById(R.id.every_x_months);
-        everyXDays.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
-                addMedicationActivity.showMedEveryXDaysFragment();
-            }
-        });
-        everyXMonths.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
-                addMedicationActivity.showMedEveryXMonthsFragment();
-            }
-        });
-        everyXWeeks.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
-                addMedicationActivity.showMedEveryXWeeksFragment();
-            }
-        });
-        everyOtherDay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
-                addMedicationActivity.showMedEveryOtherDayFragment();
-            }
-        });
-        everyDay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
-                addMedicationActivity.showMedFrequencyInDayFragment();
-            }
-        });
-        specificDays.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
-                addMedicationActivity.showDaysOfWeekFragment();
-            }
-        });
+        addMedicationActivity = (AddMedicationActivity) requireActivity();
+        buttons = new Button[]{everyDay, everyOtherDay, everyXDays, specificDays, everyXWeeks, everyXMonths};
+        medFrequency = new String[]{ "everyDay", "everyOtherDay", "everyXDays", "specificDays", "everyXWeeks", "everyXMonths"};
+        functionNames = new String[]{"showMedFrequencyInDayFragment","showMedChooseDayFragment","showMedEveryXDaysFragment",
+                                     "showDaysOfWeekFragment", "showMedEveryXWeeksFragment", "showMedEveryXMonthsFragment"};
+        documentId = getArguments().getString("documentId");
+        db = FirebaseFirestore.getInstance();
+        for (int i = 0; i < buttons.length; i++) {
+            int j = i;
+            buttons[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addMedFrequencyToDB(medFrequency[j]);
+                    callFunctionByName(addMedicationActivity, functionNames[j]);
+                }
+            });
+        }
+
+       
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,6 +68,37 @@ public class MedFrequencyFragment extends Fragment {
                 addMedicationActivity.hideMedFrequencyFragment();
             }
         });
+    }
+    private void addMedFrequencyToDB(String medFrequency) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        Map<String, Object> medData = new HashMap<>();
+        medData.put("medFrequency", medFrequency);
+
+        medsCollection
+                .document(documentId)
+                .update(medData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Значение '" + medFrequency + "' успешно добавлено в коллекцию 'meds'!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Ошибка при добавлении значения '" + medFrequency + "' в коллекцию 'meds': " + e.getMessage());
+                    }
+                });
+    }
+    public static void callFunctionByName(AddMedicationActivity activity, String functionName) {
+        try {
+            Method method = AddMedicationActivity.class.getMethod(functionName);
+
+            method.invoke(activity);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -3,12 +3,10 @@ package com.hayk.healthmanagerregistration;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,7 +17,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class AddMedicationActivity extends AppCompatActivity {
     TextView message;
@@ -100,16 +97,23 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(30);
         icon.setImageResource(R.drawable.calendar_icon_blue);
         message.setText(R.string.how_often_do_you_take_it);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedFrequencyFragment medFrequencyFragment = new MedFrequencyFragment();
+        medFrequencyFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medFrequencyFragment)
                 .commit();
+
     }
     public void showMedFrequencyInDayFragment() {
         progressBar.setProgress(40);
         icon.setImageResource(R.drawable.calendar_icon_blue);
         message.setText(R.string.how_often_do_you_take_it);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedFrequencyInDayFragment medFrequencyInDayFragment = new MedFrequencyInDayFragment();
+        medFrequencyInDayFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medFrequencyInDayFragment)
                 .commit();
@@ -118,7 +122,10 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(40);
         icon.setImageResource(R.drawable.calendar_icon_blue);
         message.setText(R.string.on_which_days_s_do_you_need_to_take_the_med);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         DaysOfWeekFragment daysOfWeekFragment = new DaysOfWeekFragment();
+        daysOfWeekFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, daysOfWeekFragment)
                 .commit();
@@ -127,7 +134,10 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(60);
         icon.setImageResource(R.drawable.alarm_clock_icon);
         message.setText(R.string.when_do_you_need_to_take_dose);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedTimeFragment medTimeFragment = new MedTimeFragment();
+        medTimeFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medTimeFragment)
                 .commit();
@@ -136,7 +146,10 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(60);
         icon.setImageResource(R.drawable.alarm_clock_icon);
         message.setText(R.string.how_many_times_day);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedHowTimesDayFragment medHowTimesDayFragment = new MedHowTimesDayFragment();
+        medHowTimesDayFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medHowTimesDayFragment)
                 .commit();
@@ -145,7 +158,10 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(50);
         icon.setImageResource(R.drawable.alarm_clock_icon);
         message.setText(R.string.when_do_you_need_to_take_the_first_dose);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedFirstDoseTimeFragment medFirstDoseTimeFragment = new MedFirstDoseTimeFragment();
+        medFirstDoseTimeFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medFirstDoseTimeFragment)
                 .commit();
@@ -154,7 +170,10 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(60);
         icon.setImageResource(R.drawable.alarm_clock_icon);
         message.setText(R.string.when_do_you_need_to_take_the_second_dose);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedSecondDoseTimeFragment medSecondDoseTimeFragment = new MedSecondDoseTimeFragment();
+        medSecondDoseTimeFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medSecondDoseTimeFragment)
                 .commit();
@@ -163,16 +182,22 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(50);
         icon.setImageResource(R.drawable.alarm_clock_icon);
         message.setText(R.string.set_hours_interval);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         EveryXHoursFragment everyXHoursFragment = new EveryXHoursFragment();
+        everyXHoursFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, everyXHoursFragment)
                 .commit();
     }
-    public void showMedEveryOtherDayFragment() {
+    public void showMedChooseDayFragment() {
         progressBar.setProgress(40);
         icon.setImageResource(R.drawable.calendar_icon_blue);
         message.setText(R.string.when_do_you_need_to_take_the_next_dose);
-        MedEveryOtherDayFragment medEveryOtherDayFragment = new MedEveryOtherDayFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
+        MedChooseFirstDayFragment medEveryOtherDayFragment = new MedChooseFirstDayFragment();
+        medEveryOtherDayFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medEveryOtherDayFragment)
                 .commit();
@@ -181,7 +206,10 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(50);
         icon.setImageResource(R.drawable.calendar_icon_blue);
         message.setText(R.string.set_days_interval);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedEveryXDaysFragment medEveryXDaysFragment = new MedEveryXDaysFragment();
+        medEveryXDaysFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medEveryXDaysFragment)
                 .commit();
@@ -189,8 +217,11 @@ public class AddMedicationActivity extends AppCompatActivity {
     public void showMedEveryXWeeksFragment() {
         progressBar.setProgress(50);
         icon.setImageResource(R.drawable.calendar_icon_blue);
-        message.setText("Set weeks interval");
+        message.setText(R.string.set_weeks_interval);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedEveryXWeeks medEveryXWeeksFragment = new MedEveryXWeeks();
+        medEveryXWeeksFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medEveryXWeeksFragment)
                 .commit();
@@ -198,10 +229,25 @@ public class AddMedicationActivity extends AppCompatActivity {
     public void showMedEveryXMonthsFragment() {
         progressBar.setProgress(50);
         icon.setImageResource(R.drawable.calendar_icon_blue);
-        message.setText("Set weeks interval");
+        message.setText(R.string.set_months_interval);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
         MedEveryXMonths medEveryXMonths = new MedEveryXMonths();
+        medEveryXMonths.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, medEveryXMonths)
+                .commit();
+    }
+    public void showMedReviewRemindersFragment() {
+        progressBar.setProgress(50);
+        icon.setImageResource(R.drawable.alarm_clock_icon);
+        message.setText(R.string.review_your_planned_reminders);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
+        MedReviewRemindersFragment medReviewRemindersFragment = new MedReviewRemindersFragment();
+        medReviewRemindersFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, medReviewRemindersFragment)
                 .commit();
     }
 
@@ -313,7 +359,7 @@ public class AddMedicationActivity extends AppCompatActivity {
         progressBar.setProgress(30);
         icon.setImageResource(R.drawable.calendar_icon_blue);
         message.setText(R.string.how_often_do_you_take_it);
-        MedEveryOtherDayFragment medEveryOtherDayFragment = (MedEveryOtherDayFragment) getSupportFragmentManager()
+        MedChooseFirstDayFragment medEveryOtherDayFragment = (MedChooseFirstDayFragment) getSupportFragmentManager()
                 .findFragmentById(android.R.id.content);
 
         if (medEveryOtherDayFragment != null && !medEveryOtherDayFragment.isDetached()) {
@@ -351,6 +397,25 @@ public class AddMedicationActivity extends AppCompatActivity {
 
         if (medEveryXMonths != null && !medEveryXMonths.isDetached()) {
             getSupportFragmentManager().beginTransaction().remove(medEveryXMonths).commit();
+        }
+    }
+    public void hideMedReviewRemindersFragment() {
+        progressBar.setProgress(50);
+        icon.setImageResource(R.drawable.alarm_clock_icon);
+        message.setText(R.string.when_do_you_need_to_take_the_first_dose);
+        MedReviewRemindersFragment medReviewRemindersFragment = (MedReviewRemindersFragment) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+
+        if (medReviewRemindersFragment != null && !medReviewRemindersFragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(medReviewRemindersFragment).commit();
+        }
+    }
+    public void hideTimePickerFragment() {
+        TimerPickerFragment timerPickerFragment = (TimerPickerFragment) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+
+        if (timerPickerFragment != null && !timerPickerFragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(timerPickerFragment).commit();
         }
     }
 

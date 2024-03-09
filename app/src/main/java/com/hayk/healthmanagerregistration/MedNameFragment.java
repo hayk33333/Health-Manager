@@ -78,6 +78,7 @@ public class MedNameFragment extends Fragment {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
+
                 message.setText("");
                 medNameEt.setBackground(et_background);
                 String medName = medNameEt.getText().toString();
@@ -96,6 +97,7 @@ public class MedNameFragment extends Fragment {
 
     }
 
+
     private void addMedNameToDB(String medName) {
         CollectionReference medsCollection = db.collection("meds");
 
@@ -104,7 +106,7 @@ public class MedNameFragment extends Fragment {
 
         medsCollection
                 .document(documentId)
-                .set(medData)
+                .update(medData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

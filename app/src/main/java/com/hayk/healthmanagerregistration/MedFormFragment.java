@@ -19,8 +19,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class MedFormFragment extends Fragment {
     ImageView back;
@@ -28,6 +31,9 @@ public class MedFormFragment extends Fragment {
     AddMedicationActivity addMedicationActivity;
     private FirebaseFirestore db;
     String documentId;
+    Button[] buttons;
+    String[] medForms;
+
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -42,55 +48,20 @@ public class MedFormFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         documentId = getArguments().getString("documentId");
         addMedicationActivity = (AddMedicationActivity) requireActivity();
+        buttons = new Button[]{pill, injection, solution, drops, powder, other};
+        medForms = new String[]{"pill", "injection", "solution", "drops", "powder", "other"};
 
-        pill.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addMedFormToDB("pill");
-                addMedicationActivity.showMedFrequencyFragment();
-            }
-        });
-        injection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addMedFormToDB("injection");
-                addMedicationActivity.showMedFrequencyFragment();
+        for (int i = 0; i < buttons.length; i++) {
+            int j = i;
+            buttons[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addMedFormToDB(medForms[j]);
+                    addMedicationActivity.showMedFrequencyFragment();
+                }
+            });
+        }
 
-            }
-        });
-        solution.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addMedFormToDB("solution");
-
-                addMedicationActivity.showMedFrequencyFragment();
-
-            }
-        });
-        drops.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addMedFormToDB("drops");
-                addMedicationActivity.showMedFrequencyFragment();
-
-            }
-        });
-        powder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addMedFormToDB("powder");
-                addMedicationActivity.showMedFrequencyFragment();
-
-            }
-        });
-        other.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addMedFormToDB("other");
-                addMedicationActivity.showMedFrequencyFragment();
-
-            }
-        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +82,7 @@ public class MedFormFragment extends Fragment {
 
         medsCollection
                 .document(documentId)
-                .set(medForm)
+                .update(medData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -125,6 +96,8 @@ public class MedFormFragment extends Fragment {
                     }
                 });
     }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

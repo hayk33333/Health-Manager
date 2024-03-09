@@ -6,9 +6,8 @@
         <item name="android:navigationBarColor">@color/gray</item>
 
 
-
-
     </style>
+
     <style name="Theme.BottomNavigation" parent="Theme.MaterialComponents.Light.NoActionBar">
 
 

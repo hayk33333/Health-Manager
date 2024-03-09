@@ -14,14 +14,57 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class MedTimeFragment extends Fragment {
     ImageView back;
+    Button next;
+    String documentId;
+    FirebaseFirestore db;
+    NumberPicker hour;
+    NumberPicker minute;
 
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         back = view.findViewById(R.id.back);
+        next = view.findViewById(R.id.next);
+        documentId = getArguments().getString("documentId");
+        db = FirebaseFirestore.getInstance();
+
+        hour = view.findViewById(R.id.hour);
+        hour.setMinValue(0);
+        hour.setMaxValue(23);
+        minute = view.findViewById(R.id.minute);
+        minute.setMinValue(0);
+        minute.setMaxValue(11);
+        String[] displayedValues = new String[12];
+        for (int i = 0; i <= 11; i++) {
+            if (i == 0) {
+                displayedValues[i] = "00";
+            } else {
+                displayedValues[i] = String.valueOf(i * 5);
+            }
+        }
+        hour.setValue(8);
+        minute.setDisplayedValues(displayedValues);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int hourValue = hour.getValue();
+                int minuteValue = minute.getValue();
+
+                addMedTimeToDB(String.valueOf(hourValue) + ":" + String.valueOf(minuteValue * 5));
+            }
+        });
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -29,19 +72,32 @@ public class MedTimeFragment extends Fragment {
                 addMedicationActivity.hideMedTimeFragment();
             }
         });
-        NumberPicker hour = view.findViewById(R.id.hour);
-        hour.setMinValue(0);
-        hour.setMaxValue(23);
-        NumberPicker minute = view.findViewById(R.id.minute);
-        minute.setMinValue(0);
-        minute.setMaxValue(11);
-        String[] displayedValues = new String[12];
-        for (int i = 0; i <= 11; i++) {
-            displayedValues[i] = String.valueOf(i * 5);
-        }
-        minute.setDisplayedValues(displayedValues);
 
     }
+
+    private void addMedTimeToDB(String medTime) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        Map<String, Object> medData = new HashMap<>();
+        medData.put("medTime", medTime);
+
+        medsCollection
+                .document(documentId)
+                .update(medData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Значение '" + medTime + "' успешно добавлено в коллекцию 'meds'!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Ошибка при добавлении значения '" + medTime + "' в коллекцию 'meds': " + e.getMessage());
+                    }
+                });
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

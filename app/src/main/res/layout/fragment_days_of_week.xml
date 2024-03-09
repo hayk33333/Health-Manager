@@ -20,161 +20,194 @@
 
     <LinearLayout
 
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
+
         android:background="@drawable/background_rounded_corners"
         android:padding="25dp"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints">
+
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="MissingConstraints">
-        <LinearLayout
-            android:id="@+id/list"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginBottom="50dp"
+            tools:ignore="MissingConstraints">
 
-            <Button
-                android:id="@+id/monday"
+            <LinearLayout
+                android:id="@+id/list"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="@string/monday"
-                android:paddingStart="20dp"
-                android:textAllCaps="false"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:background="@color/et_background" />
-            <Button
-                android:id="@+id/tuesday"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="Tuesday"
-                android:paddingStart="20dp"
-                android:textAllCaps="false"
+                <Button
+                    android:id="@+id/monday"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/list_button_bg"
+                    android:gravity="left|center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="@string/monday"
 
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:background="@color/et_background" />
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-            <Button
-                android:id="@+id/wednesday"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="@string/wednesday"
-                android:paddingStart="20dp"
-                android:textAllCaps="false"
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
 
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:background="@color/et_background" />
+                <Button
+                    android:id="@+id/tuesday"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/list_button_bg"
+                    android:gravity="left|center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="Tuesday"
 
-            <Button
-                android:id="@+id/thursday"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="@string/thursdays"
-                android:paddingStart="20dp"
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:background="@color/et_background" />
-            <Button
-                android:id="@+id/friday"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="@string/friday"
-                android:paddingStart="20dp"
-                android:textAllCaps="false"
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:background="@color/et_background" />
-            <Button
-                android:id="@+id/saturday"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="@string/saturday"
-                android:paddingStart="20dp"
-                android:textAllCaps="false"
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
 
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:background="@color/et_background" />
-            <Button
-                android:id="@+id/sunday"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="@string/sunday"
-                android:paddingStart="20dp"
-                android:textAllCaps="false"
+                <Button
+                    android:id="@+id/wednesday"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/list_button_bg"
+                    android:gravity="left|center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="@string/wednesday"
 
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
-            <View
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:background="@color/et_background" />
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-        </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
+
+                <Button
+                    android:id="@+id/thursday"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/list_button_bg"
+                    android:gravity="left|center_vertical"
+                    android:paddingStart="20dp"
+                    android:textAllCaps="false"
+                    android:text="@string/thursdays"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
+
+                <Button
+                    android:id="@+id/friday"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/list_button_bg"
+                    android:gravity="left|center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="@string/friday"
+
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
+
+                <Button
+                    android:id="@+id/saturday"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/list_button_bg"
+                    android:gravity="left|center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="@string/saturday"
+
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
+
+                <Button
+                    android:id="@+id/sunday"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/list_button_bg"
+                    android:gravity="left|center_vertical"
+                    android:paddingStart="20dp"
+                    android:text="@string/sunday"
+
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp" />
 
 
+            </LinearLayout>
 
 
-    </ScrollView>
+        </ScrollView>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/button_background"
+        android:text="@string/next"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

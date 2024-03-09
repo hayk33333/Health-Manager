@@ -14,8 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 
-public class MainActivity extends AppCompatActivity
-        implements BottomNavigationView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnItemSelectedListener {
 
     BottomNavigationView bottomNavigationView;
     HomeFragment homeFragment;
