@@ -1,12 +1,17 @@
 package com.hayk.healthmanagerregistration;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,7 +27,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MedReviewRemindersFragment extends Fragment implements CustomAdapter.ItemClickListener {
     ImageView back;
@@ -32,17 +40,30 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
     String firstTime;
     AddMedicationActivity addMedicationActivity;
     ProgressBar progressBar;
-    List<String> times = new ArrayList<>();
+    ArrayList<String> times = new ArrayList<>();
+    RecyclerView recyclerView;
+    LinearLayout timePicker;
+    TextView ok;
+    NumberPicker hour, minute;
+    FirebaseFirestore db;
+    Button next;
 
 
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        recyclerView = rootView.findViewById(R.id.recycler_view);
         back = view.findViewById(R.id.back);
+        db = FirebaseFirestore.getInstance();
+        ok = view.findViewById(R.id.ok);
+        timePicker = view.findViewById(R.id.time_picker);
+        hour = view.findViewById(R.id.hour_time_picker);
+        minute = view.findViewById(R.id.minute_time_picker);
         addMedicationActivity = (AddMedicationActivity) requireActivity();
         progressBar = view.findViewById(R.id.progress_circular);
         documentId = getArguments().getString("documentId");
+        next = view.findViewById(R.id.next);
         progressBar.setVisibility(View.VISIBLE);
         getFirstTimeFromDb();
         back.setOnClickListener(new View.OnClickListener() {
@@ -51,8 +72,12 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
                 addMedicationActivity.hideMedReviewRemindersFragment();
             }
         });
-
-
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addTimesToDB();
+            }
+        });
     }
 
 
@@ -89,7 +114,6 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
     }
 
     private void setRecycleView(int howTimesInDay) {
-        RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         String[] parts = firstTime.split(":");
         int firstHour;
@@ -111,9 +135,9 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
             minute = firstTimeMinute - hour * 60;
             int a = minute % 10;
             if (a != 5 && a != 0) {
-                if (a > 5){
+                if (a > 5) {
                     minute += 10 - a;
-                }else {
+                } else {
                     minute -= a;
                 }
             }
@@ -121,7 +145,7 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
             String hourS = String.valueOf(hour);
             if (minuteS.equals("0")) {
                 minuteS = "00";
-            }else if (minuteS.equals("60") ){
+            } else if (minuteS.equals("60")) {
                 hour++;
                 hourS = String.valueOf(hour);
                 minuteS = "00";
@@ -131,12 +155,34 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
             times.add(result);
             System.out.println(result);
         }
-
         CustomAdapter adapter = new CustomAdapter(getActivity(), times);
         adapter.setClickListener(MedReviewRemindersFragment.this);
         recyclerView.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
     }
+    private void addTimesToDB(){
+        CollectionReference medsCollection = db.collection("meds");
+
+        Map<String, Object> medData = new HashMap<>();
+        medData.put("times", times);
+
+        medsCollection
+                .document(documentId)
+                .update(medData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Массив успешно добавлен в коллекцию 'meds'!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Ошибка при добавлении массива в коллекцию 'meds': " + e.getMessage());
+                    }
+                });
+    }
+
 
     private void getFirstTimeFromDb() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -167,22 +213,48 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
 
     @Override
     public void onTimeButtonClick(View view, int position) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("position", position);
-        TimerPickerFragment timerPickerFragment = new TimerPickerFragment();
-        timerPickerFragment.setArguments(bundle);
-        getFragmentManager().beginTransaction()
-                .add(android.R.id.content, timerPickerFragment)
-                .commit();
-    }
-    public void updateTime(String newTime, int position) {
-        // Обновляем время в списке на новое
-        times.set(position, newTime); // Предполагается, что times - это ваш список строк, используемый для хранения времени
-        CustomAdapter customAdapter = new CustomAdapter(getActivity(), times);
+        timePicker.setVisibility(View.VISIBLE);
+        ok.setVisibility(View.VISIBLE);
+        hour.setMinValue(0);
+        hour.setMaxValue(23);
+        minute.setMinValue(0);
+        minute.setMaxValue(11);
+        String[] displayedValues = new String[12];
+        for (int i = 0; i <= 11; i++) {
+            if (i == 0) {
+                displayedValues[i] = "00";
+            } else {
+                displayedValues[i] = String.valueOf(i * 5);
+            }
+        }
+        hour.setValue(8);
+        minute.setDisplayedValues(displayedValues);
+        recyclerView.setEnabled(false);
 
-        // Теперь обновляем данные в адаптере
-        customAdapter.updateData(times);
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int hourValue = hour.getValue();
+                int minuteValue = minute.getValue() * 5;
+                String hourString = String.valueOf(hourValue);
+                String minuteString = (minuteValue < 10) ? "0" + String.valueOf(minuteValue) : String.valueOf(minuteValue);
+                String time = hourString + ":" + minuteString;
+                times.set(position, time);
+                CustomAdapter adapter = new CustomAdapter(getActivity(), times);
+                adapter.setClickListener(MedReviewRemindersFragment.this);
+                recyclerView.setAdapter(adapter);
+                timePicker.setVisibility(View.GONE);
+                ok.setVisibility(View.GONE);
+                recyclerView.setEnabled(true);
+
+            }
+        });
+
     }
+
+
+
 
     @Override
     public void onPillsButtonClick(View view, int position) {

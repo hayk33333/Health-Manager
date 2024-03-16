@@ -30,14 +30,23 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         View view = mInflater.inflate(R.layout.list_item_layout, parent, false);
         return new ViewHolder(view);
     }
+    public void updateTime(int position, String newTime) {
+        mData.set(position, newTime);
+        notifyItemChanged(position);
+    }
+
+
 
     // Заменяем содержимое элемента списка данными из списка
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String item = mData.get(position);
         holder.timeButton.setText(item);
+        String cString = String.valueOf(position + 1) + ".";
+        holder.count.setText(cString);
 
-        }
+
+    }
 
     // Возвращает общее количество элементов списка
     @Override
@@ -49,12 +58,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Button timeButton;
         Button pillsButton;
+        TextView count;
 
         ViewHolder(View itemView) {
             super(itemView);
             timeButton = itemView.findViewById(R.id.time_button);
             pillsButton = itemView.findViewById(R.id.pills_button);
-
+            count = itemView.findViewById(R.id.count);
             timeButton.setOnClickListener(this);
             pillsButton.setOnClickListener(this);
 
@@ -80,10 +90,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
-    public void updateData(List<String> newData) {
-        this.mData = newData;
-        notifyDataSetChanged(); // Этот метод уведомляет адаптер о том, что данные изменились, и список нужно обновить
-    }
+
 
 
     // Интерфейс для обработки нажатий элементов списка

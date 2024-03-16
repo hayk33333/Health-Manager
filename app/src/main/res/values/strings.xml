@@ -127,5 +127,16 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="ok">Ok</string>
+    <string name="what_also_would_you_like_to_add">What also would you like to add</string>
+    <string name="before_eating">Before eating</string>
+    <string name="after_eating">After eating</string>
+    <string name="from_eating">From eating</string>
+    <string name="when_should_we_remind_you_to_refill_your_prescription">When should we remind you to refill your prescription?</string>
+    <string name="how_many_pill_s_do_you_have_left">How many Pill(s) do you have left?</string>
+    <string name="should_this_be_taken_with_food">Should this be taken with food?</string>
+    <string name="add_instruction">Add instruction</string>
+    <string name="specify_the_time_of_use_of_the_med_with_food">Specify the time of use of the med with food</string>
+    <string name="set_medications_count">Set medications count</string>
+    <string name="save">Save</string>
 
 </resources>

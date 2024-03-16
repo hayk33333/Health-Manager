@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -250,6 +251,42 @@ public class AddMedicationActivity extends AppCompatActivity {
                 .add(android.R.id.content, medReviewRemindersFragment)
                 .commit();
     }
+    public void showMedAdditionalInformationFragment() {
+        progressBar.setProgress(80);
+        icon.setImageResource(R.drawable.also_add_info);
+        message.setText(R.string.what_also_would_you_like_to_add);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
+        MedAdditionalInformationFragment medAdditionalInformationFragment = new MedAdditionalInformationFragment();
+        medAdditionalInformationFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, medAdditionalInformationFragment)
+                .commit();
+    }
+    public void showAddMedCountFragment() {
+        progressBar.setProgress(90);
+        icon.setImageResource(R.drawable.med_interrogative);
+        message.setText(R.string.how_many_pill_s_do_you_have_left);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
+        AddMedCountFragment addMedCountFragment = new AddMedCountFragment();
+        addMedCountFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, addMedCountFragment)
+                .commit();
+    }
+    public void showAddMedWithFoodFragment() {
+        progressBar.setProgress(90);
+        icon.setImageResource(R.drawable.food_icon);
+        message.setText(R.string.should_this_be_taken_with_food);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
+        AddMedWithFoodFragment addMedWithFoodFragment = new AddMedWithFoodFragment();
+        addMedWithFoodFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, addMedWithFoodFragment)
+                .commit();
+    }
 
 
 
@@ -416,6 +453,39 @@ public class AddMedicationActivity extends AppCompatActivity {
 
         if (timerPickerFragment != null && !timerPickerFragment.isDetached()) {
             getSupportFragmentManager().beginTransaction().remove(timerPickerFragment).commit();
+        }
+    }
+    public void hideMedAdditionalInformationFragment() {
+        progressBar.setProgress(50);
+        icon.setImageResource(R.drawable.alarm_clock_icon);
+        message.setText(R.string.when_do_you_need_to_take_the_first_dose);
+        MedAdditionalInformationFragment medAdditionalInformationFragment = (MedAdditionalInformationFragment) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+
+        if (medAdditionalInformationFragment != null && !medAdditionalInformationFragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(medAdditionalInformationFragment).commit();
+        }
+    }
+    public void hideAddMedCountFragment() {
+        progressBar.setProgress(80);
+        icon.setImageResource(R.drawable.also_add_info);
+        message.setText(R.string.what_also_would_you_like_to_add);
+        AddMedCountFragment addMedCountFragment = (AddMedCountFragment) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+
+        if (addMedCountFragment != null && !addMedCountFragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(addMedCountFragment).commit();
+        }
+    }
+    public void hideAddMedWithFoodFragment() {
+        progressBar.setProgress(80);
+        icon.setImageResource(R.drawable.also_add_info);
+        message.setText(R.string.what_also_would_you_like_to_add);
+        AddMedWithFoodFragment addMedWithFoodFragment = (AddMedWithFoodFragment) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+
+        if (addMedWithFoodFragment != null && !addMedWithFoodFragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(addMedWithFoodFragment).commit();
         }
     }
 

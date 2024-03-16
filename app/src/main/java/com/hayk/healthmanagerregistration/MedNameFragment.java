@@ -78,7 +78,6 @@ public class MedNameFragment extends Fragment {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
-
                 message.setText("");
                 medNameEt.setBackground(et_background);
                 String medName = medNameEt.getText().toString();

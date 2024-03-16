@@ -5,12 +5,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class TimerPickerFragment extends Fragment {
     NumberPicker hour, minute;
@@ -44,17 +47,18 @@ public class TimerPickerFragment extends Fragment {
             public void onClick(View view) {
                 int hourValue = hour.getValue();
                 int minuteValue = minute.getValue() * 5;
+                ArrayList<String> times = getArguments().getStringArrayList("times");
                 int position = getArguments().getInt("position");
                 String time = String.valueOf(hourValue) + ":" + String.valueOf(minuteValue);
                 Bundle bundle = new Bundle();
                 bundle.putString("time", time);
                 bundle.putInt("position", position);
+                bundle.putStringArrayList("times", times);
                 MedReviewRemindersFragment medReviewRemindersFragment = new MedReviewRemindersFragment();
                 medReviewRemindersFragment.setArguments(bundle);
 
                 AddMedicationActivity addMedicationActivity = (AddMedicationActivity) requireActivity();
                 addMedicationActivity.hideTimePickerFragment();
-                medReviewRemindersFragment.updateTime(time,position);
 
             }
         });

@@ -29,6 +29,7 @@ public class MedTimeFragment extends Fragment {
     FirebaseFirestore db;
     NumberPicker hour;
     NumberPicker minute;
+    AddMedicationActivity addMedicationActivity;
 
 
     @Override
@@ -38,7 +39,7 @@ public class MedTimeFragment extends Fragment {
         next = view.findViewById(R.id.next);
         documentId = getArguments().getString("documentId");
         db = FirebaseFirestore.getInstance();
-
+        addMedicationActivity = (AddMedicationActivity) requireActivity();
         hour = view.findViewById(R.id.hour);
         hour.setMinValue(0);
         hour.setMaxValue(23);
@@ -62,6 +63,7 @@ public class MedTimeFragment extends Fragment {
                 int minuteValue = minute.getValue();
 
                 addMedTimeToDB(String.valueOf(hourValue) + ":" + String.valueOf(minuteValue * 5));
+                addMedicationActivity.showMedAdditionalInformationFragment();
             }
         });
 
@@ -74,7 +76,6 @@ public class MedTimeFragment extends Fragment {
         });
 
     }
-
     private void addMedTimeToDB(String medTime) {
         CollectionReference medsCollection = db.collection("meds");
 

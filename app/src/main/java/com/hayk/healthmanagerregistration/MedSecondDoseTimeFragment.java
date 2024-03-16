@@ -88,15 +88,20 @@ public class MedSecondDoseTimeFragment extends Fragment {
         hour.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int oldVal, int newVal) {
-                if (newVal == firstHour) {
-                    minute.setMinValue(1);
-                    minute.setMaxValue(size);
-                    minute.setDisplayedValues(displayedValues);
-                } else {
-                    minute.setMinValue(0);
-                    minute.setMaxValue(11);
-                    minute.setDisplayedValues(displayedValues1);
+                try {
+                    if (newVal == firstHour) {
+                        minute.setMinValue(0);
+                        minute.setMaxValue(size-1);
+                        minute.setDisplayedValues(displayedValues);
+                    } else {
+                        minute.setMinValue(0);
+                        minute.setMaxValue(11);
+                        minute.setDisplayedValues(displayedValues1);
 
+                    }
+
+                } catch (Exception e){
+                    System.out.println(e.getMessage());
                 }
             }
         });
