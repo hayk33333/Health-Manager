@@ -277,7 +277,7 @@ public class AddMedicationActivity extends AppCompatActivity {
     }
     public void showAddMedWithFoodFragment() {
         progressBar.setProgress(90);
-        icon.setImageResource(R.drawable.food_icon);
+        icon.setImageResource(R.drawable.med_with_food_icon);
         message.setText(R.string.should_this_be_taken_with_food);
         Bundle bundle = new Bundle();
         bundle.putString("documentId", documentId);
@@ -285,6 +285,18 @@ public class AddMedicationActivity extends AppCompatActivity {
         addMedWithFoodFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, addMedWithFoodFragment)
+                .commit();
+    }
+    public void showAddMedInstructionFragment() {
+        progressBar.setProgress(90);
+        icon.setImageResource(R.drawable.instruction_icon);
+        message.setText(R.string.add_med_instruction);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
+        MedAddInstructionFragment medAddInstructionFragment = new MedAddInstructionFragment();
+        medAddInstructionFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, medAddInstructionFragment)
                 .commit();
     }
 
@@ -486,6 +498,17 @@ public class AddMedicationActivity extends AppCompatActivity {
 
         if (addMedWithFoodFragment != null && !addMedWithFoodFragment.isDetached()) {
             getSupportFragmentManager().beginTransaction().remove(addMedWithFoodFragment).commit();
+        }
+    }
+    public void hideAddMedInstructionFragment() {
+        progressBar.setProgress(80);
+        icon.setImageResource(R.drawable.also_add_info);
+        message.setText(R.string.what_also_would_you_like_to_add);
+        MedAddInstructionFragment medAddInstructionFragment = (MedAddInstructionFragment) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
+
+        if (medAddInstructionFragment != null && !medAddInstructionFragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(medAddInstructionFragment).commit();
         }
     }
 

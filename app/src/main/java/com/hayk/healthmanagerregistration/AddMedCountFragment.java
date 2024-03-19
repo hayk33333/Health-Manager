@@ -1,5 +1,6 @@
 package com.hayk.healthmanagerregistration;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -29,6 +30,7 @@ public class AddMedCountFragment extends Fragment {
     FirebaseFirestore db;
     String documentId;
     Button next;
+    Drawable red_et_background,et_background;
 
 
 
@@ -43,13 +45,28 @@ public class AddMedCountFragment extends Fragment {
         pillsCount = view.findViewById(R.id.pills_count);
         pillsRemindCount = view.findViewById(R.id.pills_remind_count);
         documentId = getArguments().getString("documentId");
+        red_et_background = getResources().getDrawable(R.drawable.red_et_background);
+        et_background = getResources().getDrawable(R.drawable.edit_text_background);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int count = Integer.parseInt(pillsCount.getText().toString());
-                int remindCount = Integer.parseInt(pillsRemindCount.getText().toString());
-                addMedCountToDB(count,remindCount);
-                addMedicationActivity.hideAddMedCountFragment();
+                pillsCount.setBackground(et_background);
+                pillsRemindCount.setBackground(et_background);
+                String countStr = pillsCount.getText().toString();
+                String remindCountStr = pillsRemindCount.getText().toString();
+                if (countStr.isEmpty()){
+                    pillsCount.setBackground(red_et_background);
+                }
+                if (remindCountStr.isEmpty()){
+                    pillsRemindCount.setBackground(red_et_background);
+                }
+                if (!countStr.isEmpty() && !remindCountStr.isEmpty()){
+                    int count = Integer.parseInt(pillsCount.getText().toString());
+                    int remindCount = Integer.parseInt(pillsRemindCount.getText().toString());
+                    addMedCountToDB(count, remindCount);
+                    addMedicationActivity.hideAddMedCountFragment();
+
+                }
             }
         });
 

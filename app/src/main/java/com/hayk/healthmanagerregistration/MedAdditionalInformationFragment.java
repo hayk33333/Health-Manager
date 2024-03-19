@@ -58,6 +58,7 @@ public class MedAdditionalInformationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 saveMedToDb();
+                getActivity().finish();
             }
         });
         addCount.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +70,7 @@ public class MedAdditionalInformationFragment extends Fragment {
         addInstruction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                addMedicationActivity.showAddMedInstructionFragment();
 
             }
         });

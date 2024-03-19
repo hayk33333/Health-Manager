@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -84,6 +83,7 @@ public class RegistrationActivity extends AppCompatActivity  {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.signOut();
         networkCheckThread.startThread();
         networkCheckThread.start();
         logIn = findViewById(R.id.log_in);
@@ -319,7 +319,6 @@ public class RegistrationActivity extends AppCompatActivity  {
     }
     private void deleteUserFromDB(FirebaseUser user) {
         String userID = user.getUid();
-        Toast.makeText(this, userID, Toast.LENGTH_SHORT).show();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         DocumentReference userRef = db.collection("users").document(userID);
@@ -328,7 +327,6 @@ public class RegistrationActivity extends AppCompatActivity  {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(RegistrationActivity.this, "ayooo", Toast.LENGTH_SHORT).show();
 
                         System.out.println("Пользователь успешно удален из Firestore");
                     }
@@ -336,7 +334,6 @@ public class RegistrationActivity extends AppCompatActivity  {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RegistrationActivity.this, "ha ba vonc kara im mot mi anfamic stacvi", Toast.LENGTH_SHORT).show();
 
                         System.out.println("Ошибка при удалении пользователя из Firestore");
                     }

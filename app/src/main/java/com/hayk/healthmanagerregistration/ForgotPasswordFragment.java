@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,21 +13,26 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 public class ForgotPasswordFragment extends Fragment {
@@ -37,7 +43,6 @@ public class ForgotPasswordFragment extends Fragment {
     Drawable red_et_background, et_background;
     ProgressBar progressBar;
     FrameLayout overlay;
-    FirebaseDatabase database;
 
 
     @Override
@@ -59,7 +64,6 @@ public class ForgotPasswordFragment extends Fragment {
         back = view.findViewById(R.id.forgot_password_back);
         message = view.findViewById(R.id.forgot_password_message);
         overlay = view.findViewById(R.id.overlay);
-        database = FirebaseDatabase.getInstance();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,7 +94,6 @@ public class ForgotPasswordFragment extends Fragment {
                 String userEmail = email.getText().toString().trim();
                 email.setBackground(et_background);
                 message.setText("");
-                System.out.println(userEmail);
                 if (userEmail.isEmpty()) {
                     email.setBackground(red_et_background);
                     message.setText(R.string.please_enter_your_email_address);
@@ -108,30 +111,32 @@ public class ForgotPasswordFragment extends Fragment {
                             }
                         }
                     });
+
                 }
             }
         });
 
     }
     private void isUserWithEmailExists(String email, OnUserExistsListener listener) {
-        DatabaseReference usersRef = database.getReference("users");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference usersRef = db.collection("users");
 
-        Query query = usersRef.orderByChild("email").equalTo(email);
+        Query query = usersRef.whereEqualTo("email", email);
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean exists = dataSnapshot.exists();
-                listener.onUserExists(exists);
-            }
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    boolean exists = !task.getResult().isEmpty();
+                    listener.onUserExists(exists);
+                } else {
+                    hideProgressBar();
+                    System.out.println(task.getException().getMessage().toString());
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("Error searching user by email");
+                }
             }
         });
     }
-
 
 
     private void sendPasswordEmail() {
@@ -155,7 +160,7 @@ public class ForgotPasswordFragment extends Fragment {
                         }
 
                         hideProgressBar();
-                        System.err.println("Ошибка при отправке email для сброса пароля: " + errorMessage);
+                        System.out.println("Ошибка при отправке email для сброса пароля: " + errorMessage);
                     }
                 });
 

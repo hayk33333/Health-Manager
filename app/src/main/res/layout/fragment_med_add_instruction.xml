@@ -7,6 +7,18 @@
     android:elevation="20dp"
     android:orientation="vertical">
 
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:elevation="200dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
     <ImageView
         android:id="@+id/back"
         android:layout_width="40dp"
@@ -20,148 +32,85 @@
 
     <LinearLayout
 
+        android:id="@+id/linearLayout6"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/background_rounded_corners"
         android:padding="25dp"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints">
+
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="MissingConstraints">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/list"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="@drawable/background_rounded_corners"
+                android:orientation="vertical"
+                android:padding="25dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="MissingConstraints">
+
 
                 <Button
-                    android:id="@+id/pill"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/list_button_bg"
-                    android:gravity="left|center_vertical"
-                    android:paddingStart="20dp"
-                    android:text="@string/pill"
-                    android:textAllCaps="false"
-                    android:textColor="@color/dark_gray"
-                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+                    android:id="@+id/add_img"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/add_img_icon" />
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@color/et_background" />
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/image_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+
+                <EditText
+                    android:id="@+id/add_instruction"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="50dp"
+                    android:background="@drawable/edit_text_background"
+                    android:gravity="start"
+                    android:hint="@string/add_med_instruction"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="20dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/hint_color" />
 
                 <Button
-                    android:id="@+id/injection"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/list_button_bg"
-                    android:gravity="left|center_vertical"
-                    android:paddingStart="20dp"
-                    android:text="@string/injection"
+                    android:id="@+id/next"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="80dp"
+                    android:layout_marginBottom="50dp"
+                    android:background="@drawable/button_background"
+                    android:text="@string/next"
                     android:textAllCaps="false"
-                    android:textColor="@color/dark_gray"
-                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@color/et_background" />
-
-                <Button
-                    android:id="@+id/solution"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/list_button_bg"
-                    android:gravity="left|center_vertical"
-                    android:paddingStart="20dp"
-                    android:textAllCaps="false"
-
-                    android:text="@string/solution"
-                    android:textColor="@color/dark_gray"
-                    tools:ignore="RtlHardcoded,RtlSymmetry" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@color/et_background" />
-
-                <Button
-                    android:id="@+id/drops"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/list_button_bg"
-                    android:gravity="left|center_vertical"
-                    android:paddingStart="20dp"
-                    android:textAllCaps="false"
-
-                    android:text="@string/drops"
-                    android:textColor="@color/dark_gray"
-                    tools:ignore="RtlHardcoded,RtlSymmetry" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@color/et_background" />
-
-                <Button
-                    android:id="@+id/powder"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/list_button_bg"
-                    android:gravity="left|center_vertical"
-                    android:paddingStart="20dp"
-                    android:textAllCaps="false"
-
-                    android:text="@string/powder"
-                    android:textColor="@color/dark_gray"
-                    tools:ignore="RtlHardcoded,RtlSymmetry" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@color/et_background" />
-
-                <Button
-                    android:id="@+id/other"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/list_button_bg"
-                    android:gravity="left|center_vertical"
-                    android:paddingStart="20dp"
-                    android:textAllCaps="false"
-
-                    android:text="@string/other"
-                    android:textColor="@color/dark_gray"
-                    tools:ignore="RtlHardcoded,RtlSymmetry" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:background="@color/et_background" />
             </LinearLayout>
-
-
         </ScrollView>
     </LinearLayout>
 

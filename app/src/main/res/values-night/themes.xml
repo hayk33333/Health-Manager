@@ -2,7 +2,7 @@
 
     <style name="Base.Theme.HealthManagerRegistration" parent="Theme.AppCompat.NoActionBar">
         <item name="android:statusBarColor">@color/my_color</item>
-        <item name="android:windowBackground">@color/window_color</item>
+<!--        <item name="android:windowBackground">@color/window_color</item>-->
         <item name="android:navigationBarColor">@color/gray</item>
 
 

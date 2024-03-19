@@ -138,5 +138,9 @@
     <string name="specify_the_time_of_use_of_the_med_with_food">Specify the time of use of the med with food</string>
     <string name="set_medications_count">Set medications count</string>
     <string name="save">Save</string>
+    <string name="select_image_source">Select Image Source</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="add_med_instruction">Add med instruction</string>
 
 </resources>

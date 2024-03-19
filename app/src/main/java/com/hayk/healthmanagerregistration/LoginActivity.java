@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.signOut();
         networkCheckThread.startThread();
         networkCheckThread.start();
         registerHere = findViewById(R.id.register_here);

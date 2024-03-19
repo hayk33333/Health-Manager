@@ -1,6 +1,7 @@
 package com.hayk.healthmanagerregistration;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
@@ -33,8 +34,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser == null){
-            intents.LoginActivity();
+        if (currentUser == null || !currentUser.isEmailVerified()){
+            firebaseAuth.signOut();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+
         }
 
         homeFragment = new HomeFragment();
