@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,6 +17,26 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+
+import AddMedFragments.AddMedCountFragment;
+import AddMedFragments.AddMedWithFoodFragment;
+import AddMedFragments.DaysOfWeekFragment;
+import AddMedFragments.EveryXHoursFragment;
+import AddMedFragments.MedAddInstructionFragment;
+import AddMedFragments.MedAdditionalInformationFragment;
+import AddMedFragments.MedChooseFirstDayFragment;
+import AddMedFragments.MedEveryXDaysFragment;
+import AddMedFragments.MedEveryXMonths;
+import AddMedFragments.MedEveryXWeeks;
+import AddMedFragments.MedFirstDoseTimeFragment;
+import AddMedFragments.MedFormFragment;
+import AddMedFragments.MedFrequencyFragment;
+import AddMedFragments.MedFrequencyInDayFragment;
+import AddMedFragments.MedHowTimesDayFragment;
+import AddMedFragments.MedNameFragment;
+import AddMedFragments.MedReviewRemindersFragment;
+import AddMedFragments.MedSecondDoseTimeFragment;
+import AddMedFragments.MedTimeFragment;
 
 public class AddMedicationActivity extends AppCompatActivity {
     TextView message;
@@ -192,7 +211,7 @@ public class AddMedicationActivity extends AppCompatActivity {
                 .commit();
     }
     public void showMedChooseDayFragment() {
-        progressBar.setProgress(40);
+        progressBar.setProgress(50);
         icon.setImageResource(R.drawable.calendar_icon_blue);
         message.setText(R.string.when_do_you_need_to_take_the_next_dose);
         Bundle bundle = new Bundle();
@@ -252,7 +271,7 @@ public class AddMedicationActivity extends AppCompatActivity {
                 .commit();
     }
     public void showMedAdditionalInformationFragment() {
-        progressBar.setProgress(80);
+        progressBar.setProgress(90);
         icon.setImageResource(R.drawable.also_add_info);
         message.setText(R.string.what_also_would_you_like_to_add);
         Bundle bundle = new Bundle();
@@ -266,7 +285,7 @@ public class AddMedicationActivity extends AppCompatActivity {
     public void showAddMedCountFragment() {
         progressBar.setProgress(90);
         icon.setImageResource(R.drawable.med_interrogative);
-        message.setText(R.string.how_many_pill_s_do_you_have_left);
+        message.setText(R.string.how_much_many_do_you_have_left);
         Bundle bundle = new Bundle();
         bundle.putString("documentId", documentId);
         AddMedCountFragment addMedCountFragment = new AddMedCountFragment();
@@ -479,7 +498,7 @@ public class AddMedicationActivity extends AppCompatActivity {
         }
     }
     public void hideAddMedCountFragment() {
-        progressBar.setProgress(80);
+        progressBar.setProgress(90);
         icon.setImageResource(R.drawable.also_add_info);
         message.setText(R.string.what_also_would_you_like_to_add);
         AddMedCountFragment addMedCountFragment = (AddMedCountFragment) getSupportFragmentManager()
@@ -490,7 +509,7 @@ public class AddMedicationActivity extends AppCompatActivity {
         }
     }
     public void hideAddMedWithFoodFragment() {
-        progressBar.setProgress(80);
+        progressBar.setProgress(90);
         icon.setImageResource(R.drawable.also_add_info);
         message.setText(R.string.what_also_would_you_like_to_add);
         AddMedWithFoodFragment addMedWithFoodFragment = (AddMedWithFoodFragment) getSupportFragmentManager()
@@ -501,7 +520,7 @@ public class AddMedicationActivity extends AppCompatActivity {
         }
     }
     public void hideAddMedInstructionFragment() {
-        progressBar.setProgress(80);
+        progressBar.setProgress(90);
         icon.setImageResource(R.drawable.also_add_info);
         message.setText(R.string.what_also_would_you_like_to_add);
         MedAddInstructionFragment medAddInstructionFragment = (MedAddInstructionFragment) getSupportFragmentManager()

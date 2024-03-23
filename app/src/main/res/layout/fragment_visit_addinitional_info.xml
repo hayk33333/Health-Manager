@@ -1,0 +1,262 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:elevation="20dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back_icon" />
+
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/background_rounded_corners"
+        android:padding="25dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="MissingConstraints">
+
+            <LinearLayout
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/doctor_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:background="@drawable/list_button_bg"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/phonendoscope_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true"
+                        android:src="@drawable/phonendoscope_icon" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/phonendoscope_icon"
+                        android:paddingEnd="50dp"
+                        android:paddingStart="20dp"
+                        android:text="@string/add_doctor_details"
+                        android:textAllCaps="false"
+                        android:textColor="@color/dark_gray"
+                        tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                    <ImageView
+                        android:id="@+id/first_mark"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:foregroundGravity="center"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/check_mark_icon"
+                        android:visibility="gone"
+                        />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
+
+                <RelativeLayout
+                    android:id="@+id/hospital_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+
+                    android:background="@drawable/list_button_bg"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/hospital_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:srcCompat="@drawable/hospital_icon"
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left|center_vertical"
+                        android:layout_toEndOf="@+id/hospital_icon"
+                        android:paddingEnd="50dp"
+                        android:paddingStart="20dp"
+                        android:layout_centerVertical="true"
+                        android:text="@string/add_hospital_details"
+                        android:textAllCaps="false"
+                        android:textColor="@color/dark_gray"
+                        tools:ignore="RtlHardcoded,RtlSymmetry" />
+                    <ImageView
+                        android:id="@+id/second_mark"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:foregroundGravity="center"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/check_mark_icon"
+                        android:visibility="gone"
+                        />
+
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/notification"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:clickable="true"-->
+<!--                    android:background="@drawable/list_button_bg"-->
+<!--                    android:orientation="horizontal">-->
+<!--                    <ImageView-->
+<!--                        android:id="@+id/notification_icon"-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="60dp"-->
+<!--                        app:srcCompat="@drawable/notification_icon"-->
+<!--                        />-->
+
+
+<!--                    <TextView-->
+<!--                        -->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:gravity="left|center_vertical"-->
+<!--                        android:paddingStart="20dp"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:paddingEnd="50dp"-->
+<!--                        android:layout_toEndOf="@+id/notification_icon"-->
+<!--                        android:text="@string/add_comments"-->
+<!--                        android:textAllCaps="false"-->
+<!--                        android:textColor="@color/dark_gray"-->
+<!--                        tools:ignore="RtlHardcoded,RtlSymmetry" />-->
+<!--                    <ImageView-->
+<!--                        android:id="@+id/third_mark"-->
+<!--                        android:layout_width="30dp"-->
+<!--                        android:layout_height="30dp"-->
+<!--                        android:foregroundGravity="center"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_alignParentEnd="true"-->
+<!--                        android:src="@drawable/check_mark_icon"-->
+<!--                        android:visibility="gone"-->
+<!--                        />-->
+
+
+<!--                </RelativeLayout>-->
+
+<!--                <View-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="1dp"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:background="@color/et_background" />-->
+                <RelativeLayout
+                    android:id="@+id/comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:background="@drawable/list_button_bg"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/notes_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        app:srcCompat="@drawable/notes_icon"
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left|center_vertical"
+                        android:paddingStart="20dp"
+                        android:layout_centerVertical="true"
+                        android:paddingEnd="50dp"
+                        android:layout_toEndOf="@+id/notes_icon"
+                        android:text="@string/add_comments"
+                        android:textAllCaps="false"
+                        android:textColor="@color/dark_gray"
+                        tools:ignore="RtlHardcoded,RtlSymmetry" />
+                    <ImageView
+                        android:id="@+id/fourth_mark"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:foregroundGravity="center"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/check_mark_icon"
+                        android:visibility="gone"
+                        />
+
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/et_background" />
+
+
+
+                <Button
+                    android:id="@+id/save"
+                    android:layout_width="300dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="50dp"
+                    android:background="@drawable/button_background"
+                    android:textAllCaps="false"
+                    android:text="@string/save"
+                    android:layout_marginTop="100dp"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </LinearLayout>
+
+
+
+        </ScrollView>
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

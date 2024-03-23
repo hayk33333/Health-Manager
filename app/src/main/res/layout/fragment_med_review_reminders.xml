@@ -46,6 +46,37 @@
             android:theme="@style/NumberPickerStyle" />
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/dose_picker"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:elevation="200dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints"
+        android:visibility="gone">
+        <EditText
+            android:id="@+id/med_dose"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:elevation="250dp"
+            android:background="@drawable/edit_text_background"
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:maxLength="5"
+            android:textColor="@color/black" />
+
+
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/back"
@@ -97,6 +128,18 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/time_picker"
         app:layout_constraintEnd_toEndOf="@+id/time_picker" />
+    <TextView
+        android:id="@+id/ok_dose"
+        android:layout_width="80sp"
+        android:layout_height="80sp"
+        android:elevation="220dp"
+        android:gravity="center"
+        android:text="@string/ok"
+        android:textColor="@drawable/pressed_text_color"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/dose_picker"
+        app:layout_constraintEnd_toEndOf="@+id/dose_picker" />
 
     <ProgressBar
         android:id="@+id/progress_circular"

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="75dp"
     android:orientation="horizontal"
+    android:background="@color/white"
 
     >
 
@@ -21,6 +22,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Button для отображения времени -->
+    <TextView
+        android:id="@+id/dose_types"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:text="pills"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <Button
         android:id="@+id/time_button"
         android:layout_width="80dp"
@@ -35,20 +47,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Button для отображения названия лекарства -->
     <Button
-        android:id="@+id/pills_button"
-        android:layout_width="80dp"
+        android:id="@+id/dose_count"
+        android:layout_width="60dp"
         android:layout_height="40dp"
         android:layout_gravity="end"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
+        android:background="@drawable/fragment_background"
         android:backgroundTint="@color/gray"
         android:gravity="center"
-        android:text="pills"
+        android:text="5"
         android:textColor="@color/black"
-        android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/dose_types"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View

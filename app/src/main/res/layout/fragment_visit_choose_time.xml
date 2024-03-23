@@ -42,6 +42,7 @@
                 android:id="@+id/linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:layout_marginTop="20dp"
                 android:visibility="visible">
@@ -51,6 +52,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="50dp"
                     android:orientation="horizontal">
 
                     <NumberPicker
@@ -76,39 +79,7 @@
                         android:textSize="20sp"
                         android:theme="@style/NumberPickerStyle" />
                 </LinearLayout>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:gravity="center"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:text="@string/how_much_many_do_you_take_it"
-                    />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
 
-
-                    <EditText
-                        android:id="@+id/med_dose"
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:background="@drawable/edit_text_background"
-                        android:gravity="center"
-                        android:inputType="numberDecimal"
-                        android:maxLength="5"
-                        android:textColor="@color/black" />
-
-
-
-                </LinearLayout>
 
 
                 <Button
@@ -116,10 +87,10 @@
                     android:layout_width="300dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="70dp"
                     android:layout_marginBottom="50dp"
                     android:background="@drawable/button_background"
-                    android:text="Next"
+                    android:text="@string/next"
                     android:textColor="@color/white" />
             </LinearLayout>
         </ScrollView>

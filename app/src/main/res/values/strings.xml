@@ -89,7 +89,39 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="previous">Previous</string>
-
+    <string name="ok">Ok</string>
+    <string name="what_also_would_you_like_to_add">What also would you like to add</string>
+    <string name="before_eating">Before eating</string>
+    <string name="after_eating">After eating</string>
+    <string name="from_eating">From eating</string>
+    <string name="when_should_we_remind_you_to_refill_your_prescription">When should we remind you to refill your prescription?</string>
+    <string name="how_many_pill_s_do_you_have_left">How many Pill(s) do you have left?</string>
+    <string name="should_this_be_taken_with_food">Should this be taken with food?</string>
+    <string name="add_instruction">Add instruction</string>
+    <string name="specify_the_time_of_use_of_the_med_with_food">Specify the time of use of the med with food</string>
+    <string name="set_medications_count">Set medications count</string>
+    <string name="save">Save</string>
+    <string name="select_image_source">Select Image Source</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="add_med_instruction">Add med instruction</string>
+    <string name="how_much_many_do_you_take_it">How much / many do you take it?</string>
+    <string name="pill_s">pill(s)</string>
+    <string name="ml">mL</string>
+    <string name="syringe_s">Syringe(s)</string>
+    <string name="unit">Unit</string>
+    <string name="ampules_s">Ampules(s)</string>
+    <string name="vial_s">Vial(s)</string>
+    <string name="cup_s">Cup(s)</string>
+    <string name="drop_s">Drop(s)</string>
+    <string name="packet_s">Packet(s)</string>
+    <string name="gram_s">Gram(s)</string>
+    <string name="tablespoon_s">Tablespoon(s)</string>
+    <string name="teaspoon_s">Teaspoon(s)</string>
+    <string name="how_much_many_do_you_have_left">How much / many do you have left?</string>
+    <string name="add_a_visit">Add a Visit</string>
+    <string name="when_should_you_go_for_your_visit">When should you go for your visit?</string>
+    <string name="what_time_should_you_go_for_your_visit">What time should you go for your visit?</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -126,21 +158,14 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-    <string name="ok">Ok</string>
-    <string name="what_also_would_you_like_to_add">What also would you like to add</string>
-    <string name="before_eating">Before eating</string>
-    <string name="after_eating">After eating</string>
-    <string name="from_eating">From eating</string>
-    <string name="when_should_we_remind_you_to_refill_your_prescription">When should we remind you to refill your prescription?</string>
-    <string name="how_many_pill_s_do_you_have_left">How many Pill(s) do you have left?</string>
-    <string name="should_this_be_taken_with_food">Should this be taken with food?</string>
-    <string name="add_instruction">Add instruction</string>
-    <string name="specify_the_time_of_use_of_the_med_with_food">Specify the time of use of the med with food</string>
-    <string name="set_medications_count">Set medications count</string>
-    <string name="save">Save</string>
-    <string name="select_image_source">Select Image Source</string>
-    <string name="gallery">Gallery</string>
-    <string name="camera">Camera</string>
-    <string name="add_med_instruction">Add med instruction</string>
-
+    <string name="visit_name">Visit name</string>
+    <string name="what_would_you_like_to_name_the_visit">What would you like to name the visit?</string>
+    <string name="please_enter_the_visit_name">Please enter the visit name</string>
+    <string name="add_doctor_details">Add Doctor Details</string>
+    <string name="add_hospital_details">Add Hospital Details</string>
+    <string name="add_comments">Add Comments</string>
+    <string name="phone_number">Phone number</string>
+    <string name="specialization">Specialization</string>
+    <string name="doctor_s_office_location">Doctor\'s Office Location</string>
+    <string name="additional_comments">Additional Comments</string>
 </resources>

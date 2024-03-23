@@ -54,6 +54,8 @@
             android:inputType="number"
             android:background="@drawable/edit_text_background"
             android:layout_gravity="center"
+            android:maxLength="5"
+
             />
 
         <TextView
@@ -74,6 +76,8 @@
             android:inputType="number"
             android:background="@drawable/edit_text_background"
             android:layout_gravity="center"
+            android:maxLength="5"
+
             />
         <Button
             android:id="@+id/next"

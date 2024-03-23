@@ -54,17 +54,17 @@ public class RegistrationActivity extends AppCompatActivity  {
     private EditText repeatPassword;
 
     private FirebaseAuth firebaseAuth;
-    Drawable red_et_background;
-    Drawable et_background;
-    TextView message;
-    NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
-    Intents intents = new Intents(this);
+    private Drawable red_et_background;
+    private Drawable et_background;
+    private TextView message;
+    private NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
+    private Intents intents = new Intents(this);
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
 
 
     private GoogleSignInClient mGoogleSignInClient;
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
     private FirebaseFirestore db;
 
 

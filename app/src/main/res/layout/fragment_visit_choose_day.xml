@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="bottom"
     android:elevation="20dp"
-    tools:context="AddMedFragments.MedHowTimesDayFragment">
+    android:orientation="vertical"
+    >
 
     <ImageView
         android:id="@+id/back"
@@ -33,44 +34,32 @@
         app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="Every"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/hour"
-            app:layout_constraintTop_toTopOf="parent" />
-
 
         <NumberPicker
-            android:id="@+id/numberPicker"
+            android:id="@+id/day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
             android:textSize="20sp"
-            android:theme="@style/NumberPickerStyle"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView4" />
+            android:layout_gravity="center"
+            android:theme="@style/NumberPickerStyle" />
 
-        <TextView
+        <NumberPicker
+            android:id="@+id/month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="hours"
-            android:textColor="@color/black"
             android:textSize="20sp"
+            android:layout_marginStart="10dp"
             android:layout_gravity="center"
+            android:theme="@style/NumberPickerStyle" />
+        <NumberPicker
+            android:id="@+id/year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/hour"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center"
+            android:theme="@style/NumberPickerStyle" />
     </LinearLayout>
 
 
@@ -89,3 +78,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -16,10 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthManagerRegistration"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCxw_Hm9vz33zyxiHexvZ-EL-zsJNsQcD8" />
         <activity
-            android:name=".TimePicker"
-            android:exported="false"
-            android:theme="@style/Theme.HealthManagerRegistration" />
+            android:name=".AddVisitActivity"
+            android:exported="false" />
         <activity
             android:name=".AddMedicationActivity"
             android:exported="false"

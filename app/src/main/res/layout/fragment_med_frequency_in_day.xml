@@ -94,18 +94,18 @@
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:background="@color/et_background" />
-            <Button
-                android:id="@+id/every_x_hours"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/list_button_bg"
-                android:text="@string/every_x_hours"
-                android:paddingStart="20dp"
-                android:textAllCaps="false"
+<!--            <Button-->
+<!--                android:id="@+id/every_x_hours"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="60dp"-->
+<!--                android:background="@drawable/list_button_bg"-->
+<!--                android:text="@string/every_x_hours"-->
+<!--                android:paddingStart="20dp"-->
+<!--                android:textAllCaps="false"-->
 
-                android:textColor="@color/dark_gray"
-                android:gravity="left|center_vertical"
-                tools:ignore="RtlHardcoded,RtlSymmetry" />
+<!--                android:textColor="@color/dark_gray"-->
+<!--                android:gravity="left|center_vertical"-->
+<!--                tools:ignore="RtlHardcoded,RtlSymmetry" />-->
             <View
                 android:layout_width="1dp"
                 android:layout_height="1dp"
