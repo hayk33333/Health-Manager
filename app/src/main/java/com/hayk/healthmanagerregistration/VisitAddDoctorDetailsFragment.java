@@ -79,35 +79,33 @@ public class VisitAddDoctorDetailsFragment extends Fragment {
         } else {
             visitData.put("doctorName", name);
         }
-        if (name.isEmpty()) {
+        if (email.isEmpty()) {
             visitData.put("doctorEmail", null);
 
         } else {
             visitData.put("doctorEmail", email);
 
         }
-        if (name.isEmpty()) {
+        if (phone.isEmpty()) {
             visitData.put("doctorPhone", null);
         } else {
             visitData.put("doctorPhone", phone);
         }
-        if (name.isEmpty()) {
+        if (specialization.isEmpty()) {
             visitData.put("doctorSpecialization", null);
         } else {
             visitData.put("doctorSpecialization", specialization);
         }
-        if (name.isEmpty()) {
+        if (officeLocation.isEmpty()) {
             visitData.put("doctorOfficeLocation", null);
         } else {
             visitData.put("doctorOfficeLocation", officeLocation);
         }
-        if (name.isEmpty()) {
+        if (comment.isEmpty()) {
             visitData.put("doctorComment", null);
         } else {
             visitData.put("doctorComment", comment);
         }
-
-
 
         visitsCollection
                 .document(documentId)

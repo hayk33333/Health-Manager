@@ -132,8 +132,8 @@ public class AddVisitActivity extends AppCompatActivity {
                 .commit();
     }
     public void showVisitAddCommentFragment() {
-        icon.setImageResource(R.drawable.visit_addinitional_info_icon);
-        message.setText(R.string.what_also_would_you_like_to_add);
+        icon.setImageResource(R.drawable.visit_name_icon);
+        message.setText(R.string.add_your_visit_additional_comment);
         Bundle bundle = new Bundle();
         bundle.putString("documentId", documentId);
         VisitAddCommentFragment visitAddCommentFragment = new VisitAddCommentFragment();

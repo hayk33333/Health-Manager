@@ -168,4 +168,8 @@
     <string name="specialization">Specialization</string>
     <string name="doctor_s_office_location">Doctor\'s Office Location</string>
     <string name="additional_comments">Additional Comments</string>
+    <string name="address">Address</string>
+    <string name="website">Website</string>
+    <string name="comment">Comment</string>
+    <string name="add_your_visit_additional_comment">Add your visit additional comment</string>
 </resources>
