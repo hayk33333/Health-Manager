@@ -14,7 +14,7 @@ import android.widget.TextView;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class VisitsFragment extends Fragment {
-    Button addVisit;
+    private Button addVisit;
 
 
 

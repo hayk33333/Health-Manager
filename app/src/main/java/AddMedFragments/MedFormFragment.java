@@ -28,14 +28,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class MedFormFragment extends Fragment {
-    ImageView back;
-    Button pill, injection, solution, drops, powder, other;
-    AddMedicationActivity addMedicationActivity;
+    private ImageView back;
+    private Button pill, injection, solution, drops, powder, other;
+    private AddMedicationActivity addMedicationActivity;
     private FirebaseFirestore db;
-    String documentId;
-    Button[] buttons;
-    String[] medForms;
-
+    private String documentId;
+    private Button[] buttons;
+    private String[] medForms;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

@@ -26,16 +26,14 @@ import java.util.List;
 import java.util.Map;
 
 public class DaysOfWeekFragment extends Fragment {
-    ImageView back;
-    Button monday, tuesday, wednesday, thursday, friday, saturday, sunday, next;
-    Button[] buttons;
-
-    boolean[] clickable;
-    String documentId;
-    String[] daysOfWeek;
-    FirebaseFirestore db;
-    AddMedicationActivity addMedicationActivity;
-
+    private ImageView back;
+    private Button monday, tuesday, wednesday, thursday, friday, saturday, sunday, next;
+    private Button[] buttons;
+    private boolean[] clickable;
+    private String documentId;
+    private String[] daysOfWeek;
+    private FirebaseFirestore db;
+    private AddMedicationActivity addMedicationActivity;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

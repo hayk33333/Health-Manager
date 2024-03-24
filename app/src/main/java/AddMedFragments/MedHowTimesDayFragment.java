@@ -25,12 +25,12 @@ import java.util.Map;
 
 
 public class MedHowTimesDayFragment extends Fragment {
-    ImageView back;
-    Button next;
-    String documentId;
-    FirebaseFirestore db;
-    NumberPicker numberPicker;
-    AddMedicationActivity addMedicationActivity;
+    private ImageView back;
+    private Button next;
+    private String documentId;
+    private FirebaseFirestore db;
+    private NumberPicker numberPicker;
+    private AddMedicationActivity addMedicationActivity;
 
 
     @Override
@@ -63,6 +63,7 @@ public class MedHowTimesDayFragment extends Fragment {
         });
 
     }
+
     private void addHowTimesDayToDB(String howTimesDay) {
         CollectionReference medsCollection = db.collection("meds");
 

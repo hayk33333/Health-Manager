@@ -319,7 +319,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        hideProgressBar();
 
 
         if (requestCode == RC_SIGN_IN) {
@@ -330,6 +329,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
+                hideProgressBar();
                 Log.w(TAG, "Google sign in failed with status code: " + e.getStatusCode(), e);
                 System.err.println(e);
             }
@@ -353,7 +353,7 @@ public class LoginActivity extends AppCompatActivity {
                             intents.MainActivity();
 
                         } else {
-
+                            hideProgressBar();
                             System.out.println("signInWithCredential:failure" + task.getException());
                         }
                     }

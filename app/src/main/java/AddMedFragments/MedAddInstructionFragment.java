@@ -49,7 +49,7 @@ public class MedAddInstructionFragment extends Fragment {
     private static final int REQUEST_IMAGE_CAPTURE = 2;
     private Button addImg, next;
     private LinearLayout imageContainer;
-    Drawable deleteIcon;
+    private Drawable deleteIcon;
     private Bitmap imageBitmap;
     private ArrayList<Bitmap> images;
     private StorageReference storageReference;

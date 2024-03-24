@@ -25,14 +25,14 @@ import java.util.Map;
 
 
 public class MedFrequencyFragment extends Fragment {
-    ImageView back;
-    Button everyDay, everyOtherDay, everyXDays, specificDays, everyXWeeks, everyXMonths;
-    String documentId;
+    private ImageView back;
+    private Button everyDay, everyOtherDay, everyXDays, specificDays, everyXWeeks, everyXMonths;
+    private String documentId;
     private FirebaseFirestore db;
-    Button[] buttons;
-    String[] medFrequency;
-    String[] functionNames;
-    AddMedicationActivity addMedicationActivity;
+    private Button[] buttons;
+    private String[] medFrequency;
+    private String[] functionNames;
+    private AddMedicationActivity addMedicationActivity;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

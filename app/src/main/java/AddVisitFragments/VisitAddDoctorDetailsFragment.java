@@ -1,4 +1,4 @@
-package com.hayk.healthmanagerregistration;
+package AddVisitFragments;
 
 import android.os.Bundle;
 
@@ -17,6 +17,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hayk.healthmanagerregistration.AddVisitActivity;
+import com.hayk.healthmanagerregistration.R;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 

@@ -24,11 +24,11 @@ import java.util.Map;
 
 
 public class AddMedWithFoodFragment extends Fragment {
-    ImageView back;
-    AddMedicationActivity addMedicationActivity;
-    String documentId;
-    FirebaseFirestore db;
-    Button afterEating, beforeEating, fromEating;
+    private ImageView back;
+    private AddMedicationActivity addMedicationActivity;
+    private String documentId;
+    private FirebaseFirestore db;
+    private Button afterEating, beforeEating, fromEating;
 
 
     @Override

@@ -33,14 +33,14 @@ import java.util.Map;
 
 
 public class VerificationFragmentLogin extends Fragment {
-    Button loginButton;
-    TextView registerAgain, sendAgain, back, secondMessage, message;
+    private Button loginButton;
+    private TextView registerAgain, sendAgain, back, secondMessage, message;
     private FirebaseUser user;
-    FrameLayout overlay;
-    ProgressBar progressBar;
-    Intents intents = new Intents(getActivity());
-    FirebaseDatabase database;
-    FirebaseFirestore db;
+    private FrameLayout overlay;
+    private ProgressBar progressBar;
+    private Intents intents = new Intents(getActivity());
+    private FirebaseDatabase database;
+    private FirebaseFirestore db;
 
 
     public VerificationFragmentLogin(FirebaseUser user) {
@@ -119,9 +119,10 @@ public class VerificationFragmentLogin extends Fragment {
             @Override
             public void onClick(View view) {
                 showProgressBar();
-                RegistrationActivity registrationActivity = (RegistrationActivity) requireActivity();
-                registrationActivity.deleteUser(user);
+                Intents intents = new Intents(getActivity());
+                RegistrationActivity registrationActivity = new RegistrationActivity();
                 intents.RegistrationActivity();
+                registrationActivity.deleteUser(user);
             }
         });
 

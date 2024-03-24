@@ -1,5 +1,6 @@
-package com.hayk.healthmanagerregistration;
+package AddVisitFragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,11 +11,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.hayk.healthmanagerregistration.AddVisitActivity;
+import com.hayk.healthmanagerregistration.MapsActivity;
+import com.hayk.healthmanagerregistration.R;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.units.qual.A;
@@ -29,11 +36,14 @@ public class VisitAddHospitalDetailsFragment extends Fragment {
     private String documentId;
     private FirebaseFirestore db;
     private ImageView back;
-    private Button next;
+    private Button next, addLocation;
+    private TextView addressTV;
+
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        addressTV = view.findViewById(R.id.address);
         db = FirebaseFirestore.getInstance();
         documentId = getArguments().getString("documentId");
         back = view.findViewById(R.id.back);
@@ -41,8 +51,10 @@ public class VisitAddHospitalDetailsFragment extends Fragment {
         nameEt = view.findViewById(R.id.hospital_name);
         emailEt = view.findViewById(R.id.hospital_email);
         phoneNumberEt = view.findViewById(R.id.hospital_phone);
-        addressEt = view.findViewById(R.id.hospital_address);
+        addLocation = view.findViewById(R.id.add_location);
+        //addressEt = view.findViewById(R.id.hospital_address);
         websiteEt = view.findViewById(R.id.hospital_web);
+        getAddressFromDB();
         commentEt = view.findViewById(R.id.hospital_additional_comments);
         addVisitActivity = (AddVisitActivity) requireActivity();
         back.setOnClickListener(new View.OnClickListener() {
@@ -51,16 +63,24 @@ public class VisitAddHospitalDetailsFragment extends Fragment {
                 addVisitActivity.hideVisitHospitalDetailsFragment();
             }
         });
+        addLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), MapsActivity.class);
+                intent.putExtra("documentId", documentId);
+                startActivity(intent);
+            }
+        });
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String hospitalName = nameEt.getText().toString();
                 String hospitalEmail = emailEt.getText().toString();
                 String hospitalPhone = phoneNumberEt.getText().toString();
-                String hospitalAddress = addressEt.getText().toString();
+                //String hospitalAddress = addressEt.getText().toString();
                 String hospitalWebsite = websiteEt.getText().toString();
                 String hospitalComment = commentEt.getText().toString();
-                addHospitalDetailsToDB(hospitalName, hospitalEmail, hospitalPhone, hospitalAddress, hospitalWebsite, hospitalComment);
+                addHospitalDetailsToDB(hospitalName, hospitalEmail, hospitalPhone, hospitalWebsite, hospitalComment);
                 addVisitActivity.hideVisitHospitalDetailsFragment();
             }
         });
@@ -68,8 +88,42 @@ public class VisitAddHospitalDetailsFragment extends Fragment {
 
     }
 
-    private void addHospitalDetailsToDB(String name, String email, String phone, String addres,
-                                      String website, String comment) {
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAddressFromDB();
+    }
+
+    private void getAddressFromDB() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference medsCollection = db.collection("visits");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String address = documentSnapshot.getString("hospitalAddress");
+                            if (address != null) {
+                                addressTV.setText(getString(R.string.address_) + address);
+
+                            }
+                        } else {
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("Ошибка при чтении из базы данных");
+                    }
+                });
+    }
+
+
+    private void addHospitalDetailsToDB(String name, String email, String phone,
+                                        String website, String comment) {
         CollectionReference visitsCollection = db.collection("visits");
 
         Map<String, Object> visitData = new HashMap<>();
@@ -95,11 +149,11 @@ public class VisitAddHospitalDetailsFragment extends Fragment {
         } else {
             visitData.put("hospitalWebsite", website);
         }
-        if (addres.isEmpty()) {
-            visitData.put("hospitalAddress", null);
-        } else {
-            visitData.put("hospitalAddress", addres);
-        }
+//        if (addres.isEmpty()) {
+//            visitData.put("hospitalAddress", null);
+//        } else {
+//            visitData.put("hospitalAddress", addres);
+//        }
         if (comment.isEmpty()) {
             visitData.put("hospitalComment", null);
         } else {

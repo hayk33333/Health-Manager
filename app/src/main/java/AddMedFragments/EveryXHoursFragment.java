@@ -24,18 +24,16 @@ import java.util.Map;
 
 
 public class EveryXHoursFragment extends Fragment {
-    ImageView back;
-    NumberPicker numberPicker;
-    Button next;
-    String documentId;
-    FirebaseFirestore db;
-
-
+    private ImageView back;
+    private NumberPicker numberPicker;
+    private Button next;
+    private String documentId;
+    private FirebaseFirestore db;
 
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view,savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
         back = view.findViewById(R.id.back);
         numberPicker = view.findViewById(R.id.numberPicker);
         db = FirebaseFirestore.getInstance();
@@ -45,7 +43,7 @@ public class EveryXHoursFragment extends Fragment {
         numberPicker.setMaxValue(6);
         documentId = getArguments().getString("documentId");
 
-        String[] displayedValues = {"1/2","1", "2", "3", "4", "6", "8"};
+        String[] displayedValues = {"1/2", "1", "2", "3", "4", "6", "8"};
         numberPicker.setDisplayedValues(displayedValues);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +61,7 @@ public class EveryXHoursFragment extends Fragment {
             }
         });
     }
+
     private void addEveryXHoursToDB(String everyXHours) {
         CollectionReference medsCollection = db.collection("meds");
 

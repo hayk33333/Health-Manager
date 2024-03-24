@@ -31,12 +31,12 @@ import java.util.Map;
 
 
 public class MedNameFragment extends Fragment {
-    Button next;
-    EditText medNameEt;
-    Drawable red_et_background;
-    Drawable et_background;
-    TextView message;
-    ImageView back;
+    private Button next;
+    private EditText medNameEt;
+    private Drawable red_et_background;
+    private Drawable et_background;
+    private TextView message;
+    private ImageView back;
     private FirebaseFirestore db;
     String documentId;
 

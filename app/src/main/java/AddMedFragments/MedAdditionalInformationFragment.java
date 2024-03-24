@@ -35,9 +35,10 @@ public class MedAdditionalInformationFragment extends Fragment {
     private RelativeLayout addInstruction, addCount, medWithEating;
     private String documentId;
     private Button save;
-    FirebaseFirestore db;
-    FirebaseAuth firebaseAuth;
-    FirebaseUser firebaseUser;
+    private FirebaseFirestore db;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+
 
 
     @Override
@@ -56,6 +57,7 @@ public class MedAdditionalInformationFragment extends Fragment {
         documentId = getArguments().getString("documentId");
         medWithEating = view.findViewById(R.id.med_with_eating);
         addMedicationActivity = (AddMedicationActivity) requireActivity();
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +92,8 @@ public class MedAdditionalInformationFragment extends Fragment {
         });
 
     }
+
+
 
     private void saveMedToDb() {
         String userId = firebaseUser.getUid();

@@ -424,7 +424,6 @@ public class RegistrationActivity extends AppCompatActivity  {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        hideProgressBar();
 
 
         if (requestCode == RC_SIGN_IN) {
@@ -435,6 +434,7 @@ public class RegistrationActivity extends AppCompatActivity  {
 
 
             } catch (ApiException e) {
+                hideProgressBar();
                 System.err.println(e);
             }
         }
@@ -455,6 +455,7 @@ public class RegistrationActivity extends AppCompatActivity  {
                             addUserToDB(user, userName, email);
                             intents.MainActivity();
                         } else {
+                            hideProgressBar();
                             System.out.println("signInWithCredential:failure" + task.getException());
                         }
                     }

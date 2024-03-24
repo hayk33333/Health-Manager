@@ -18,6 +18,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
+import AddVisitFragments.VisitAddCommentFragment;
+import AddVisitFragments.VisitAddDoctorDetailsFragment;
+import AddVisitFragments.VisitAddHospitalDetailsFragment;
+import AddVisitFragments.VisitAdditionalInfoFragment;
+import AddVisitFragments.VisitChooseDayFragment;
+import AddVisitFragments.VisitChooseTimeFragment;
+import AddVisitFragments.VisitNameFragment;
+
 
 public class AddVisitActivity extends AppCompatActivity {
     private TextView message;

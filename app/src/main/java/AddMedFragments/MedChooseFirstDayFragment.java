@@ -26,12 +26,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MedChooseFirstDayFragment extends Fragment {
-    NumberPicker day, month, year;
-    ImageView back;
-    Button next;
-    FirebaseFirestore db;
-    AddMedicationActivity addMedicationActivity;
-    String documentId;
+   private NumberPicker day, month, year;
+   private ImageView back;
+   private Button next;
+   private FirebaseFirestore db;
+   private AddMedicationActivity addMedicationActivity;
+   private String documentId;
 
 
     @Override

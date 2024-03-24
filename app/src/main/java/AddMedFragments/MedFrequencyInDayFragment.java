@@ -25,14 +25,14 @@ import java.util.Map;
 
 
 public class MedFrequencyInDayFragment extends Fragment {
-    ImageView back;
-    Button onceDay, moreTimes, twiceDay, everyXHours;
-    AddMedicationActivity addMedicationActivity;
+    private ImageView back;
+    private Button onceDay, moreTimes, twiceDay, everyXHours;
+    private AddMedicationActivity addMedicationActivity;
     private FirebaseFirestore db;
-    Button[] buttons;
-    String[] medFrequencyInDay;
-    String[] functionNames;
-    String documentId;
+    private Button[] buttons;
+    private String[] medFrequencyInDay;
+    private String[] functionNames;
+    private String documentId;
 
 
 

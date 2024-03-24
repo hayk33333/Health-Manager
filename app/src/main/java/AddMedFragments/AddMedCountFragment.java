@@ -29,13 +29,13 @@ import java.util.Map;
 
 
 public class AddMedCountFragment extends Fragment {
-    AddMedicationActivity addMedicationActivity;
-    ImageView back;
-    EditText pillsCount, pillsRemindCount;
-    FirebaseFirestore db;
-    String documentId;
-    Button next;
-    Drawable red_et_background,et_background;
+    private AddMedicationActivity addMedicationActivity;
+    private ImageView back;
+    private EditText pillsCount, pillsRemindCount;
+    private FirebaseFirestore db;
+    private String documentId;
+    private Button next;
+    private Drawable red_et_background,et_background;
 
 
 
