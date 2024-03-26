@@ -34,6 +34,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -42,7 +43,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import NoNetwork.NetworkCheckThread;
 
 
-public class RegistrationActivity extends AppCompatActivity  {
+public class RegistrationActivity extends AppCompatActivity {
     TextView logIn;
     private Button eyeButton;
     private boolean isEyeButtonOpen = false;
@@ -58,7 +59,7 @@ public class RegistrationActivity extends AppCompatActivity  {
     private Drawable et_background;
     private TextView message;
     private NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
-    private Intents intents = new Intents(this);
+    private Intents intents;
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
 
@@ -68,13 +69,11 @@ public class RegistrationActivity extends AppCompatActivity  {
     private FirebaseFirestore db;
 
 
-
-
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        intents = new Intents(this);
         setContentView(R.layout.activity_registration);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -110,9 +109,6 @@ public class RegistrationActivity extends AppCompatActivity  {
                 signIn();
             }
         });
-
-
-
 
 
         logIn.setOnClickListener(new View.OnClickListener() {
@@ -214,7 +210,6 @@ public class RegistrationActivity extends AppCompatActivity  {
     }
 
 
-
     public void registerUser() {
         String userEmail = email.getText().toString().trim();
         String userPassword = password.getText().toString().trim();
@@ -246,18 +241,17 @@ public class RegistrationActivity extends AppCompatActivity  {
             }
 
 
-        }
-        else {
+        } else {
             showProgressBar();
             firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword)
                     .addOnCompleteListener(RegistrationActivity.this, task -> {
                         if (task.isSuccessful()) {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            if (userPassword.equals(userRepeatPassword)){
+                            if (userPassword.equals(userRepeatPassword)) {
                                 message.setText("");
                                 addUserToDB(user, userName, userEmail);
                                 sendVerificationEmail(user);
-                            }else {
+                            } else {
                                 repeatPassword.setBackground(red_et_background);
                                 message.setText(R.string.the_passwords_don_t_match);
                                 hideProgressBar();
@@ -270,14 +264,15 @@ public class RegistrationActivity extends AppCompatActivity  {
                             if (errorMessage.contains("email address is badly formatted")) {
                                 message.setText(R.string.invalid_email_format_please_check_the_entered_address);
                                 email.setBackground(red_et_background);
-                            }if (errorMessage.contains("The email address is already in use by another account")) {
+                            }
+                            if (errorMessage.contains("The email address is already in use by another account")) {
                                 message.setText(R.string.the_email_address_is_already_in_use_by_another_account);
                                 email.setBackground(red_et_background);
-                            }if (errorMessage.contains("Password should be at least 6 characters")) {
+                            }
+                            if (errorMessage.contains("Password should be at least 6 characters")) {
                                 message.setText(R.string.password_should_be_at_least_6_characters);
                                 password.setBackground(red_et_background);
-                            }
-                            else {
+                            } else {
                                 System.err.println(errorMessage);
                             }
                             hideProgressBar();
@@ -285,7 +280,6 @@ public class RegistrationActivity extends AppCompatActivity  {
                     });
         }
     }
-
 
 
     private void sendVerificationEmail(FirebaseUser user) {
@@ -301,7 +295,21 @@ public class RegistrationActivity extends AppCompatActivity  {
     }
 
     private void addUserToDB(FirebaseUser user, String userName, String email) {
-        User userParams = new User(userName, email,user.isEmailVerified());
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(userName)
+                .build();
+        user.updateProfile(profileUpdates).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                System.out.println("user displayname updates successfully " + user.getDisplayName());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println("user displayname updates unsuccessfully " + e.getMessage());
+            }
+        });
+        User userParams = new User(userName, email, user.isEmailVerified());
         db.collection("users").document(user.getUid())
                 .set(userParams)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -317,6 +325,7 @@ public class RegistrationActivity extends AppCompatActivity  {
                     }
                 });
     }
+
     private void deleteUserFromDB(FirebaseUser user) {
         String userID = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -377,11 +386,12 @@ public class RegistrationActivity extends AppCompatActivity  {
         }
     }
 
-    public void deleteUser(FirebaseUser user){
+    public void deleteUser(FirebaseUser user) {
         deleteUserFromDB(user);
         FirebaseAuth.getInstance().getCurrentUser().delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+
                     } else {
 
                     }
@@ -412,11 +422,13 @@ public class RegistrationActivity extends AppCompatActivity  {
         googleSignInButton.setEnabled(true);
         repeatPassword.setEnabled(true);
     }
-    public void showProgressBar(){
+
+    public void showProgressBar() {
         blockActivity();
         progressBar.setVisibility(View.VISIBLE);
     }
-    public void hideProgressBar(){
+
+    public void hideProgressBar() {
         unblockActivity();
         progressBar.setVisibility(View.GONE);
     }
@@ -439,6 +451,7 @@ public class RegistrationActivity extends AppCompatActivity  {
             }
         }
     }
+
     private void firebaseAuthWithGoogle(String idToken) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
@@ -454,6 +467,7 @@ public class RegistrationActivity extends AppCompatActivity  {
 
                             addUserToDB(user, userName, email);
                             intents.MainActivity();
+                            finish();
                         } else {
                             hideProgressBar();
                             System.out.println("signInWithCredential:failure" + task.getException());
@@ -461,6 +475,7 @@ public class RegistrationActivity extends AppCompatActivity  {
                     }
                 });
     }
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);

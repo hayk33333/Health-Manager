@@ -51,12 +51,12 @@ public class VisitAddDoctorDetailsFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String doctorName = nameEt.getText().toString();
-                String doctorEmail = emailEt.getText().toString();
-                String doctorPhone = phoneNumberEt.getText().toString();
-                String doctorSpecialization = specializationEt.getText().toString();
-                String doctorOfficeLocation = officeLocationEt.getText().toString();
-                String doctorComment = commentEt.getText().toString();
+                String doctorName = nameEt.getText().toString().trim();
+                String doctorEmail = emailEt.getText().toString().trim();
+                String doctorPhone = phoneNumberEt.getText().toString().trim();
+                String doctorSpecialization = specializationEt.getText().toString().trim();
+                String doctorOfficeLocation = officeLocationEt.getText().toString().trim();
+                String doctorComment = commentEt.getText().toString().trim();
                 addDoctorDetailsToDB(doctorName, doctorEmail, doctorPhone, doctorSpecialization, doctorOfficeLocation, doctorComment);
                 addVisitActivity.hideVisitDoctorDetailsFragment();
             }

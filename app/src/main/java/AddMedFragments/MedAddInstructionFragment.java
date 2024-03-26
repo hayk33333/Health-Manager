@@ -89,7 +89,7 @@ public class MedAddInstructionFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                String instruction = instructionText.getText().toString();
+                String instruction = instructionText.getText().toString().trim();
                 if (!instruction.isEmpty()) {
                     blockFragment();
                     progressBar.setVisibility(View.VISIBLE);
@@ -186,7 +186,6 @@ public class MedAddInstructionFragment extends Fragment {
         LinearLayout imageLayout = new LinearLayout(requireContext());
         imageLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-        // Создаем ImageView для отображения изображения
         ImageView imageView = new ImageView(requireContext());
         images.add(bitmap);
         imageView.setImageBitmap(bitmap);
@@ -237,7 +236,6 @@ public class MedAddInstructionFragment extends Fragment {
     }
 
     private void uploadImage(ArrayList<Bitmap> images) {
-        // Создаем счетчик завершения
         AtomicInteger uploadCount = new AtomicInteger(0);
 
         for (int i = 0; i < images.size(); i++) {
@@ -257,13 +255,10 @@ public class MedAddInstructionFragment extends Fragment {
                         if (task1.isSuccessful()) {
                             Uri downloadUri = task1.getResult();
                             if (downloadUri != null) {
-                                // Добавляем URL в массив
                                 imageUrls.add(downloadUri.toString());
 
-                                // Увеличиваем счетчик завершения
                                 int count = uploadCount.incrementAndGet();
 
-                                // Если все изображения загружены, сохраняем URL в Firestore
                                 if (count == images.size()) {
                                     saveImageUriToDb(imageUrls);
                                 }
@@ -271,7 +266,6 @@ public class MedAddInstructionFragment extends Fragment {
                         }
                     });
                 } else {
-                    // Обработка ошибки загрузки
                     progressBar.setVisibility(View.GONE);
                     unBlockFragment();
                     System.out.println("UploadImage Ошибка загрузки изображения ");
@@ -319,7 +313,6 @@ public class MedAddInstructionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_med_add_instruction, container, false);
     }
 }

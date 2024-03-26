@@ -52,7 +52,7 @@ public class VisitAddCommentFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String comment = commentEt.getText().toString();
+                String comment = commentEt.getText().toString().trim();
                 addVisitCommentToDB(comment);
                 addVisitActivity.hideVisitCommentFragment();
             }

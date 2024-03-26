@@ -81,7 +81,7 @@ public class MedNameFragment extends Fragment {
             public void onClick(View view) {
                 message.setText("");
                 medNameEt.setBackground(et_background);
-                String medName = medNameEt.getText().toString();
+                String medName = medNameEt.getText().toString().trim();
                 if (medName.isEmpty()) {
                     message.setText("Please enter the med name");
                     medNameEt.setBackground(red_et_background);

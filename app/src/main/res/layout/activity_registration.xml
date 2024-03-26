@@ -83,7 +83,7 @@
                         android:layout_alignBottom="@id/registration_name"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="16dp"
-                        app:srcCompat="@drawable/person_icon" />
+                        app:srcCompat="@drawable/user_icon" />
                 </RelativeLayout>
 
                 <TextView

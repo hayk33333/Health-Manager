@@ -1,18 +1,340 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".OptionsFragment">
 
-    <TextView
-        android:id="@+id/log_out"
+    <View
+        android:id="@+id/blockView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="@color/black"
-        android:gravity="center"
-        android:textSize="30dp"
-        android:text="log out" />
+        android:background="#80000000"
+        android:visibility="gone"
+        android:elevation="10dp"
+        />
 
-</FrameLayout>
+    <LinearLayout
+        android:id="@+id/change_username_dialog"
+        android:layout_width="370dp"
+        android:layout_height="240dp"
+        android:elevation="10dp"
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:background="@drawable/fragment_background"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView2">
+
+        <EditText
+            android:id="@+id/change_username_et"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/black"
+            android:hint="@string/new_username"
+            android:textColorHint="@color/hint_color"
+            android:background="@drawable/edit_text_background"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            >
+            <TextView
+                android:id="@+id/cancel_username"
+                android:layout_marginTop="70dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:textColor="@drawable/pressed_text_color"
+                android:text="@string/cancel"
+                android:gravity="center_horizontal|bottom"
+
+                android:layout_gravity="end"
+                android:textSize="20sp"
+
+                />
+
+        <TextView
+            android:id="@+id/ok_username"
+            android:layout_marginTop="70dp"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:textColor="@drawable/pressed_text_color"
+            android:text="@string/ok"
+            android:gravity="center_horizontal|bottom"
+
+            android:layout_gravity="end"
+            android:textSize="20sp"
+            />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/change_password_dialog"
+        android:layout_width="370dp"
+        android:layout_height="450dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/fragment_background"
+        android:elevation="10dp"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView2">
+
+        <EditText
+            android:id="@+id/change_password_old_et"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/edit_text_background"
+            android:hint="@string/old_password"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/hint_color" />
+
+        <EditText
+            android:id="@+id/change_password_new_et"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/edit_text_background"
+            android:hint="@string/new_password"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/hint_color" />
+
+        <EditText
+            android:id="@+id/change_password_confirm_et"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/edit_text_background"
+            android:hint="@string/confirm_password"
+            android:paddingHorizontal="20dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/hint_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/cancel_password"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="70dp"
+                android:text="@string/cancel"
+                android:textColor="@drawable/pressed_text_color"
+                android:textSize="20sp"
+                android:gravity="center_horizontal|bottom"
+
+                />
+
+            <TextView
+                android:id="@+id/ok_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30sp"
+                android:layout_marginTop="70dp"
+                android:text="@string/ok"
+                android:gravity="center_horizontal|bottom"
+                android:textColor="@drawable/pressed_text_color"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="20dp"
+        android:padding="20dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@color/black" />
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userImg"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/person_icon" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_horizontal"
+                android:text="@string/name"
+                android:textColor="@color/black" />
+
+            <RelativeLayout
+                android:id="@+id/change_username"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/list_button_bg"
+                android:clickable="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/change_username_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/change_username_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/change_username_icon"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="50dp"
+                    android:text="@string/change_username"
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/change_password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/list_button_bg"
+                android:clickable="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/change_password_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/change_password_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/change_password_icon"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="50dp"
+                    android:text="@string/change_password"
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/delete_account"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/list_button_bg"
+                android:clickable="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/delete_account_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/delete_account_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/delete_account_icon"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="50dp"
+                    android:text="@string/delete_account"
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/log_out"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/list_button_bg"
+                android:clickable="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/log_out_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/log_out_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/log_out_icon"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="50dp"
+                    android:text="@string/log_out"
+                    android:textAllCaps="false"
+                    android:textColor="@color/dark_gray"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

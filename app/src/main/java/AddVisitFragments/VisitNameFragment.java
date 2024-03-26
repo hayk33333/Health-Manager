@@ -73,7 +73,7 @@ public class VisitNameFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 visitName.setBackground(et_background);
-                String name = visitName.getText().toString();
+                String name = visitName.getText().toString().trim();
                 if (name.isEmpty()) {
                     visitName.setBackground(red_et_background);
                     message.setText(R.string.please_enter_the_visit_name);

@@ -31,7 +31,7 @@ public class VerificationFragment extends Fragment {
     FrameLayout overlay;
     ProgressBar progressBar;
     FirebaseDatabase database;
-    Intents intents = new Intents(getActivity());
+    Intents intents;
 
 
     public VerificationFragment(FirebaseUser user) {
@@ -48,6 +48,7 @@ public class VerificationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        intents = new Intents(getActivity());
         message = view.findViewById(R.id.verification_fragment_message);
         finish = view.findViewById(R.id.finish);
         back = view.findViewById(R.id.back);
@@ -67,7 +68,7 @@ public class VerificationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 showProgressBar();
-                secondMessage.setTextColor(Color.RED);
+                secondMessage.setTextColor(Color.BLACK);
                 user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

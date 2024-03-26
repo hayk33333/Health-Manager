@@ -17,20 +17,21 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnItemSelectedListener {
 
-    BottomNavigationView bottomNavigationView;
-    HomeFragment homeFragment;
-    MedicationsFragment medicationsFragment;
-    VisitsFragment visitsFragment;
-    OptionsFragment optionsFragment;
-    FirebaseAuth firebaseAuth;
-    FirebaseUser currentUser;
-    Intents intents = new Intents(this);
+    private BottomNavigationView bottomNavigationView;
+    private HomeFragment homeFragment;
+    private MedicationsFragment medicationsFragment;
+    private VisitsFragment visitsFragment;
+    private OptionsFragment optionsFragment;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser currentUser;
+    private Intents intents;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        intents = new Intents(this);
         setContentView(R.layout.activity_main);
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();

@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView message;
     TextView forgotPassword;
     NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
-    Intents intents = new Intents(this);
+    Intents intents;
     ProgressBar progressBar;
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -68,11 +68,11 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
 
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        intents = new Intents(this);
         setContentView(R.layout.activity_login);
 
 
@@ -217,6 +217,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                 });
                                 intents.MainActivity();
+                                finish();
 
                             } else {
                                 showVerificationFragment(user);
@@ -351,6 +352,7 @@ public class LoginActivity extends AppCompatActivity {
                             String password = user.getEmail();
                             addUserToDB(user, userName, password);
                             intents.MainActivity();
+                            finish();
 
                         } else {
                             hideProgressBar();
@@ -367,7 +369,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void addUserToDB(FirebaseUser user, String userName, String email) {
-        User userParams = new User(userName, email,user.isEmailVerified());
+        User userParams = new User(userName, email, user.isEmailVerified());
         db.collection("users").document(user.getUid())
                 .set(userParams)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -383,6 +385,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
     private void updateUserEmailVerification(FirebaseUser user, boolean newEmailVerifiedStatus) {
         DocumentReference userRef = db.collection("users").document(user.getUid());
 

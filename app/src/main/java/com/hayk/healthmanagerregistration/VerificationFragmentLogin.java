@@ -38,7 +38,7 @@ public class VerificationFragmentLogin extends Fragment {
     private FirebaseUser user;
     private FrameLayout overlay;
     private ProgressBar progressBar;
-    private Intents intents = new Intents(getActivity());
+    private Intents intents;
     private FirebaseDatabase database;
     private FirebaseFirestore db;
 
@@ -57,6 +57,7 @@ public class VerificationFragmentLogin extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        intents = new Intents(getActivity());
         loginButton = view.findViewById(R.id.verification_fragment_login_button);
         registerAgain = view.findViewById(R.id.register_again);
         sendAgain = view.findViewById(R.id.send_again);
