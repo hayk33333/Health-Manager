@@ -1,5 +1,6 @@
 package AddMedFragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,9 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,15 +21,23 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hayk.healthmanagerregistration.AddMedicationActivity;
+import com.hayk.healthmanagerregistration.AlarmReceiver;
 import com.hayk.healthmanagerregistration.R;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class MedAdditionalInformationFragment extends Fragment {
-    private ImageView back, firstMark,secondMark,thirdMark;
+    private ImageView back, firstMark, secondMark, thirdMark;
     private AddMedicationActivity addMedicationActivity;
     private RelativeLayout addInstruction, addCount, medWithEating;
     private String documentId;
@@ -40,10 +47,9 @@ public class MedAdditionalInformationFragment extends Fragment {
     private FirebaseUser firebaseUser;
 
 
-
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view,savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
         db = FirebaseFirestore.getInstance();
         save = view.findViewById(R.id.save);
         back = view.findViewById(R.id.back);
@@ -61,8 +67,8 @@ public class MedAdditionalInformationFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setMedFirstAlarm();
                 saveMedToDb();
-                getActivity().finish();
             }
         });
         addCount.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +99,49 @@ public class MedAdditionalInformationFragment extends Fragment {
 
     }
 
+    private void setMedFirstAlarm() {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String medFrequency = documentSnapshot.getString("medFrequency");
+                            if (medFrequency.equals("onceDay")) {
+                                getDataForOnceDay(getActivity());
+                            } else if (medFrequency.equals("twiceDay")) {
+                                getDataForTwiceDay(getActivity());
+                            } else if (medFrequency.equals("moreTimes")) {
+                                getDataForMoreTimes(getActivity());
+                            } else if (medFrequency.equals("everyXDays")) {
+                                getDataForEveryXDays(getActivity());
+
+                            } else if (medFrequency.equals("everyXWeeks")) {
+                                getDataForEveryXWeeks(getActivity());
+
+                            } else if (medFrequency.equals("everyXMonths")) {
+                                getDataForEveryXMonths(getActivity());
+
+                            } else if (medFrequency.equals("specificDays")) {
+                                getDataForSpecificDays(getActivity());
+                            } else if (medFrequency.equals("everyOtherDay")) {
+                                getDataForEveryOtherDays(getActivity());
+                            }
+                            getActivity().finish();
+
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
 
 
     private void saveMedToDb() {
@@ -121,7 +170,7 @@ public class MedAdditionalInformationFragment extends Fragment {
                 });
     }
 
-    public void setCheckMarks(){
+    public void setCheckMarks() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference medsCollection = db.collection("meds");
 
@@ -168,13 +217,433 @@ public class MedAdditionalInformationFragment extends Fragment {
                 });
     }
 
+    private void getDataForOnceDay(Context context) {
+        CollectionReference medsCollection = db.collection("meds");
 
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String medTime = documentSnapshot.getString("medTime");
+                            setAlarmForOnceDay(context, medTime, documentId, "onceDay");
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void setAlarmForOnceDay(Context context, String time, String medId, String medFrequency) {
+        LocalDate currentDate = LocalDate.now();
+        String[] parts = time.split(":");
+        int hour;
+        int minute;
+
+        String hourStr = parts[0];
+        hour = Integer.parseInt(hourStr);
+
+        String minuteStr = parts[1];
+        minute = Integer.parseInt(minuteStr);
+
+        AlarmDates alarmDates = new AlarmDates(currentDate.getYear(), currentDate.getMonth().getValue() - 1, currentDate.getDayOfMonth(), hour, minute, medId, medFrequency);
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        alarmReceiver.setAlarm(context, alarmDates);
+    }
+
+    private void getDataForTwiceDay(Context context) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String firstTime = documentSnapshot.getString("medFirstTime");
+                            String secondTime = documentSnapshot.getString("medSecondTime");
+                            setAlarmForTwiceDay(context, firstTime, secondTime, "twiceDay");
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void setAlarmForTwiceDay(Context context, String firstTime, String secondTime, String medFrequency) {
+        LocalDate currentDate = LocalDate.now();
+        String[] parts = firstTime.split(":");
+        int firstHour;
+        int firstMinute;
+
+        String hourStr = parts[0];
+        firstHour = Integer.parseInt(hourStr);
+
+        String minuteStr = parts[1];
+        firstMinute = Integer.parseInt(minuteStr);
+        String[] parts1 = secondTime.split(":");
+        int secondHour;
+        int secondMinute;
+
+        String secondHourStr = parts1[0];
+        secondHour = Integer.parseInt(secondHourStr);
+
+        String secondMinuteStr = parts1[1];
+        secondMinute = Integer.parseInt(secondMinuteStr);
+        Calendar secondTimeCalendar = Calendar.getInstance();
+        secondTimeCalendar.setTimeInMillis(System.currentTimeMillis());
+
+        secondTimeCalendar.set(Calendar.HOUR_OF_DAY, secondHour);
+        secondTimeCalendar.set(Calendar.MINUTE, secondMinute);
+        secondTimeCalendar.set(Calendar.SECOND, 0);
+        Calendar firstTimeCalendar = Calendar.getInstance();
+        firstTimeCalendar.setTimeInMillis(System.currentTimeMillis());
+
+        firstTimeCalendar.set(Calendar.HOUR_OF_DAY, firstHour);
+        firstTimeCalendar.set(Calendar.MINUTE, firstMinute);
+        firstTimeCalendar.set(Calendar.SECOND, 0);
+        int hour;
+        int minute;
+        if (secondTimeCalendar.getTimeInMillis() <= System.currentTimeMillis()) {
+            hour = firstHour;
+            minute = firstMinute;
+            System.out.println("setAlarm arajin if " + hour + ":" + minute);
+        } else if (firstTimeCalendar.getTimeInMillis() <= System.currentTimeMillis()) {
+
+            hour = secondHour;
+            minute = secondMinute;
+            System.out.println("setAlarm erkrord if " + hour + ":" + minute);
+        } else {
+
+            hour = firstHour;
+            minute = firstMinute;
+            System.out.println("setAlarm else " + hour + ":" + minute);
+        }
+        AlarmDates alarmDates = new AlarmDates(currentDate.getYear(), currentDate.getMonth().getValue() - 1, currentDate.getDayOfMonth(), hour, minute, documentId, medFrequency);
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        alarmReceiver.setAlarm(context, alarmDates);
+    }
+
+    private void getDataForEveryXDays(Context context) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String medTime = documentSnapshot.getString("medTime");
+                            String day = String.valueOf(documentSnapshot.getLong("day"));
+                            String year = String.valueOf(documentSnapshot.getLong("year"));
+                            String month = String.valueOf(documentSnapshot.getLong("month"));
+                            setAlarmForEveryXDays(context, medTime, documentId, "everyXDays", year, month, day);
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void setAlarmForEveryXDays(Context context, String time, String medId, String medFrequency, String year, String month, String day) {
+        String[] parts = time.split(":");
+        int hour;
+        int minute;
+
+        String hourStr = parts[0];
+        hour = Integer.parseInt(hourStr);
+
+        String minuteStr = parts[1];
+        minute = Integer.parseInt(minuteStr);
+
+        AlarmDates alarmDates = new AlarmDates(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(day), hour, minute, medId, medFrequency);
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        alarmReceiver.setAlarm(context, alarmDates);
+    }
+
+    private void getDataForEveryXWeeks(Context context) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String medTime = documentSnapshot.getString("medTime");
+                            String day = String.valueOf(documentSnapshot.getLong("day"));
+                            String year = String.valueOf(documentSnapshot.getLong("year"));
+                            String month = String.valueOf(documentSnapshot.getLong("month"));
+                            setAlarmForEveryXWeeks(context, medTime, documentId, "everyXWeeks", year, month, day);
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void setAlarmForEveryXWeeks(Context context, String time, String medId, String medFrequency, String year, String month, String day) {
+        String[] parts = time.split(":");
+        int hour;
+        int minute;
+
+        String hourStr = parts[0];
+        hour = Integer.parseInt(hourStr);
+
+        String minuteStr = parts[1];
+        minute = Integer.parseInt(minuteStr);
+
+        AlarmDates alarmDates = new AlarmDates(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(day), hour, minute, medId, medFrequency);
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        alarmReceiver.setAlarm(context, alarmDates);
+    }
+
+    private void getDataForEveryXMonths(Context context) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String medTime = documentSnapshot.getString("medTime");
+                            String day = String.valueOf(documentSnapshot.getLong("day"));
+                            String year = String.valueOf(documentSnapshot.getLong("year"));
+                            String month = String.valueOf(documentSnapshot.getLong("month"));
+                            setAlarmForEveryXMonths(context, medTime, documentId, "everyXMonths", year, month, day);
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void setAlarmForEveryXMonths(Context context, String time, String medId, String medFrequency, String year, String month, String day) {
+        String[] parts = time.split(":");
+        int hour;
+        int minute;
+
+        String hourStr = parts[0];
+        hour = Integer.parseInt(hourStr);
+
+        String minuteStr = parts[1];
+        minute = Integer.parseInt(minuteStr);
+
+        AlarmDates alarmDates = new AlarmDates(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(day), hour, minute, medId, medFrequency);
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        alarmReceiver.setAlarm(context, alarmDates);
+    }
+
+    private void getDataForMoreTimes(Context context) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            List<String> times = (List<String>) documentSnapshot.get("times");
+                            setAlarmForMoreTimes(context, times, documentId, "moreTimes");
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void setAlarmForMoreTimes(Context context, List<String> times, String medId, String medFrequency) {
+        for (String time : times) {
+            String[] parts = time.split(":");
+            int hour = Integer.parseInt(parts[0]);
+            int minute = Integer.parseInt(parts[1]);
+
+            LocalDate currentDate = LocalDate.now();
+
+            LocalDateTime alarmDateTime = LocalDateTime.of(currentDate, LocalTime.of(hour, minute));
+
+            AlarmDates alarmDates;
+            if (!LocalDateTime.now().isAfter(alarmDateTime)) {
+                alarmDates = new AlarmDates(
+                        alarmDateTime.getYear(),
+                        alarmDateTime.getMonthValue() - 1,
+                        alarmDateTime.getDayOfMonth(),
+                        alarmDateTime.getHour(),
+                        alarmDateTime.getMinute(),
+                        medId,
+                        medFrequency
+                );
+                AlarmReceiver alarmReceiver = new AlarmReceiver();
+                alarmReceiver.setAlarm(context, alarmDates);
+                break;
+            }
+            parts = times.get(0).split(":");
+            hour = Integer.parseInt(parts[0]);
+            minute = Integer.parseInt(parts[1]);
+            alarmDateTime = LocalDateTime.of(currentDate, LocalTime.of(hour, minute));
+            alarmDates = new AlarmDates(
+                    alarmDateTime.getYear(),
+                    alarmDateTime.getMonthValue() - 1,
+                    alarmDateTime.getDayOfMonth(),
+                    alarmDateTime.getHour(),
+                    alarmDateTime.getMinute(),
+                    medId,
+                    medFrequency
+            );
+            AlarmReceiver alarmReceiver = new AlarmReceiver();
+            alarmReceiver.setAlarm(context, alarmDates);
+
+        }
+    }
+
+    private void getDataForSpecificDays(Context context) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String medTime = documentSnapshot.getString("medTime");
+                            List<String> daysOfWeek1 = (List<String>) documentSnapshot.get("daysOfWeek");
+                            String[] daysOfWeek = daysOfWeek1.toArray(new String[0]);
+
+                            setAlarmWithSpecificDaysOfWeek(context, medTime, documentId, "specificDays", daysOfWeek);
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void setAlarmWithSpecificDaysOfWeek(Context context, String time, String medId, String medFrequency, String[] specificDaysOfWeek) {
+        String[] parts = time.split(":");
+        int hour = Integer.parseInt(parts[0]);
+        int minute = Integer.parseInt(parts[1]);
+
+        LocalDate currentDate = LocalDate.now();
+        LocalTime alarmTime = LocalTime.of(hour, minute);
+        LocalDateTime currentDateTime = LocalDateTime.of(currentDate, alarmTime);
+
+        LocalDate nextAlarmDate = getNextAlarmDateWithSpecificDaysOfWeek(currentDateTime, specificDaysOfWeek);
+
+        int year = nextAlarmDate.getYear();
+        int month = nextAlarmDate.getMonthValue() - 1;
+        int dayOfMonth = nextAlarmDate.getDayOfMonth();
+
+        AlarmDates alarmDates = new AlarmDates(year, month, dayOfMonth, hour, minute, medId, medFrequency);
+
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        alarmReceiver.setAlarm(context, alarmDates);
+    }
+
+    private void getDataForEveryOtherDays(Context context) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String medTime = documentSnapshot.getString("everyOtherDay");
+                            String day = String.valueOf(documentSnapshot.getLong("day"));
+                            String year = String.valueOf(documentSnapshot.getLong("year"));
+                            String month = String.valueOf(documentSnapshot.getLong("month"));
+                            setAlarmEveryOtherDay(context, medTime, documentId, "onceDay", year, day, month);
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void setAlarmEveryOtherDay(Context context, String medTime, String medId, String onceDay, String year, String day, String month) {
+        String[] parts = medTime.split(":");
+        int hour;
+        int minute;
+
+        String hourStr = parts[0];
+        hour = Integer.parseInt(hourStr);
+
+        String minuteStr = parts[1];
+        minute = Integer.parseInt(minuteStr);
+
+        AlarmDates alarmDates = new AlarmDates(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(day), hour, minute, medId, medFrequency);
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        alarmReceiver.setAlarm(context, alarmDates);
+    }
+
+
+    private LocalDate getNextAlarmDateWithSpecificDaysOfWeek(LocalDateTime currentDateTime, String[] specificDaysOfWeek) {
+        LocalDate nextAlarmDate = currentDateTime.toLocalDate();
+
+        if (specificDaysOfWeek != null && specificDaysOfWeek.length > 0) {
+            DayOfWeek currentDayOfWeek = currentDateTime.getDayOfWeek();
+            boolean found = false;
+            for (String day : specificDaysOfWeek) {
+                DayOfWeek desiredDay = DayOfWeek.valueOf(day.toUpperCase());
+                if (desiredDay.compareTo(currentDayOfWeek) >= 0) {
+                    nextAlarmDate = nextAlarmDate.with(TemporalAdjusters.nextOrSame(desiredDay));
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                nextAlarmDate = nextAlarmDate.plusWeeks(1).with(TemporalAdjusters.next(DayOfWeek.valueOf(specificDaysOfWeek[0].toUpperCase())));
+            }
+        }
+
+        return nextAlarmDate;
+    }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_med_additional_information, container, false);
     }
 }

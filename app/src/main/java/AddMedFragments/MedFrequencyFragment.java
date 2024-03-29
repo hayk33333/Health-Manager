@@ -38,7 +38,7 @@ public class MedFrequencyFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         back = view.findViewById(R.id.back);
-        everyDay = view .findViewById(R.id.every_day);
+        everyDay = view.findViewById(R.id.every_day);
         everyOtherDay = view.findViewById(R.id.every_other_day);
         everyXDays = view.findViewById(R.id.every_x_days);
         specificDays = view.findViewById(R.id.specific_days);
@@ -46,9 +46,9 @@ public class MedFrequencyFragment extends Fragment {
         everyXMonths = view.findViewById(R.id.every_x_months);
         addMedicationActivity = (AddMedicationActivity) requireActivity();
         buttons = new Button[]{everyDay, everyOtherDay, everyXDays, specificDays, everyXWeeks, everyXMonths};
-        medFrequency = new String[]{ "everyDay", "everyOtherDay", "everyXDays", "specificDays", "everyXWeeks", "everyXMonths"};
-        functionNames = new String[]{"showMedFrequencyInDayFragment","showMedChooseDayFragment","showMedEveryXDaysFragment",
-                                     "showDaysOfWeekFragment", "showMedEveryXWeeksFragment", "showMedEveryXMonthsFragment"};
+        medFrequency = new String[]{"everyDay", "everyOtherDay", "everyXDays", "specificDays", "everyXWeeks", "everyXMonths"};
+        functionNames = new String[]{"showMedFrequencyInDayFragment", "showMedChooseDayFragment", "showMedEveryXDaysFragment",
+                "showDaysOfWeekFragment", "showMedEveryXWeeksFragment", "showMedEveryXMonthsFragment"};
         documentId = getArguments().getString("documentId");
         db = FirebaseFirestore.getInstance();
         for (int i = 0; i < buttons.length; i++) {
@@ -56,13 +56,15 @@ public class MedFrequencyFragment extends Fragment {
             buttons[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addMedFrequencyToDB(medFrequency[j]);
+                    if (!medFrequency[j].equals("everyDay")) {
+                        addMedFrequencyToDB(medFrequency[j]);
+                    }
                     callFunctionByName(addMedicationActivity, functionNames[j]);
                 }
             });
         }
 
-       
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,6 +73,7 @@ public class MedFrequencyFragment extends Fragment {
             }
         });
     }
+
     private void addMedFrequencyToDB(String medFrequency) {
         CollectionReference medsCollection = db.collection("meds");
 
@@ -93,6 +96,7 @@ public class MedFrequencyFragment extends Fragment {
                     }
                 });
     }
+
     public static void callFunctionByName(AddMedicationActivity activity, String functionName) {
         try {
             Method method = AddMedicationActivity.class.getMethod(functionName);

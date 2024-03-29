@@ -158,7 +158,7 @@ public class MedFirstDoseTimeFragment extends Fragment {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             // Получаем данные из документа
-                            frequency[0] = documentSnapshot.getString("medFrequencyInDay");
+                            frequency[0] = documentSnapshot.getString("medFrequency");
                             medFrequencyInDay = frequency[0];
                         } else {
                             System.out.println("med does not exists");

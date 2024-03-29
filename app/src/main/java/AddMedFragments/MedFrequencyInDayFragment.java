@@ -74,7 +74,7 @@ public class MedFrequencyInDayFragment extends Fragment {
         CollectionReference medsCollection = db.collection("meds");
 
         Map<String, Object> medData = new HashMap<>();
-        medData.put("medFrequencyInDay", medFrequencyInDay);
+        medData.put("medFrequency", medFrequencyInDay);
 
         medsCollection
                 .document(documentId)
