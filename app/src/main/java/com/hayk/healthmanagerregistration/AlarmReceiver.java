@@ -27,6 +27,7 @@ import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import AddMedFragments.AlarmDates;
 
@@ -59,20 +60,52 @@ public class AlarmReceiver extends BroadcastReceiver {
         calendar.set(Calendar.MILLISECOND, 0);
 
         if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            if (alarmDates.getMedFrequency().equals("onceDay")
+                    || alarmDates.getMedFrequency().equals("twiceDay")
+                    || alarmDates.getMedFrequency().equals("moreTimes"))
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
+        Random random = new Random();
+
+
+        int min = 1;
+        int max = 100;
+        int requestCode = random.nextInt(max - min + 1) + min;
 
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("medId", alarmDates.getMedId());
+
         intent.putExtra("medFrequency", alarmDates.getMedFrequency());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        System.out.println("Alaem seted");
+        System.out.println("Alaem seted" + requestCode);
 
     }
 
 
     private void sendNotification(Context context, String medId, String medFrequency) {
+//        CollectionReference medsCollection = db.collection("meds");
+//
+//        medsCollection.document(medId).get()
+//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        if (documentSnapshot.exists()) {
+//                            String doseType = documentSnapshot.getString("doseType");
+//                            String doseCount = documentSnapshot.getString("doseCount");
+//
+//                            setAlarmForOnceDay(context, medTime, medId, "onceDay");
+//                        } else {
+//                            System.out.println("med does not exists");
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("error to read from db");
+//                    }
+//                });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -84,11 +117,12 @@ public class AlarmReceiver extends BroadcastReceiver {
             notificationManager.createNotificationChannel(channel);
         }
 
+
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "channel_id")
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Title")
-                        .setContentText("text");
+                        .setContentTitle("Health Manager")
+                        .setContentText("Take your med");
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -110,8 +144,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             getDataForEveryXMonths(context, medId);
         } else if (medFrequency.equals("specificDays")) {
             getDataForSpecificDays(context, medId);
-        }
-        else if (medFrequency.equals("everyOtherDay")) {
+        } else if (medFrequency.equals("everyOtherDay")) {
             getDataForEveryOtherDays(context, medId);
         }
 
@@ -140,7 +173,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                     }
                 });
     }
-
 
 
     private void getDataForOnceDay(Context context, String medId) {
@@ -526,11 +558,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         alarmReceiver.setAlarm(context, alarmDates);
     }
+
     private void setAlarmEveryOtherDay(Context context, String medTime, String medId, String medFrequency) {
-        LocalDate currentDate = LocalDate.now();
         String[] parts = medTime.split(":");
         int hour = Integer.parseInt(parts[0]);
         int minute = Integer.parseInt(parts[1]);
+
+        LocalDate currentDate = LocalDate.now();
+
 
         LocalDate futureDate = currentDate.plusDays(2);
 

@@ -583,11 +583,11 @@ public class MedAdditionalInformationFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-                            String medTime = documentSnapshot.getString("everyOtherDay");
+                            String medTime = documentSnapshot.getString("medTime");
                             String day = String.valueOf(documentSnapshot.getLong("day"));
                             String year = String.valueOf(documentSnapshot.getLong("year"));
                             String month = String.valueOf(documentSnapshot.getLong("month"));
-                            setAlarmEveryOtherDay(context, medTime, documentId, "onceDay", year, day, month);
+                            setAlarmEveryOtherDay(context, medTime, documentId, "everyOtherDay", year, day, month);
                         } else {
                             System.out.println("med does not exists");
                         }
@@ -601,7 +601,7 @@ public class MedAdditionalInformationFragment extends Fragment {
                 });
     }
 
-    private void setAlarmEveryOtherDay(Context context, String medTime, String medId, String onceDay, String year, String day, String month) {
+    private void setAlarmEveryOtherDay(Context context, String medTime, String medId, String medFrequency, String year, String day, String month) {
         String[] parts = medTime.split(":");
         int hour;
         int minute;

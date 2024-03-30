@@ -1,5 +1,6 @@
 package AddVisitFragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hayk.healthmanagerregistration.AddVisitActivity;
+import com.hayk.healthmanagerregistration.AlarmReceiverVisit;
 import com.hayk.healthmanagerregistration.R;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -64,6 +64,7 @@ public class VisitAdditionalInfoFragment extends Fragment {
         });
         comments.setOnClickListener(view13 -> addVisitActivity.showVisitAddCommentFragment());
         save.setOnClickListener(view12 -> {
+           // getDataForVisitAlarm();
             saveVisitToDb();
             getActivity().finish();
         });
@@ -71,6 +72,48 @@ public class VisitAdditionalInfoFragment extends Fragment {
         addVisitActivity = (AddVisitActivity) requireActivity();
         back.setOnClickListener(view1 -> addVisitActivity.hideVisitAdditionalInfoFragment());
 
+    }
+
+    private void getDataForVisitAlarm() {
+        CollectionReference medsCollection = db.collection("visits");
+
+        medsCollection.document(documentId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String visitTime = documentSnapshot.getString("visitTime");
+                            String day = String.valueOf(documentSnapshot.getLong("day"));
+                            String year = String.valueOf(documentSnapshot.getLong("year"));
+                            String month = String.valueOf(documentSnapshot.getLong("month"));
+                            setAlarmForVisit(getActivity(), visitTime, year, day, month);
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void setAlarmForVisit(Context context, String visitTime, String year, String month, String day) {
+        String[] parts = visitTime.split(":");
+        int hour;
+        int minute;
+
+        String hourStr = parts[0];
+        hour = Integer.parseInt(hourStr);
+
+        String minuteStr = parts[1];
+        minute = Integer.parseInt(minuteStr);
+        getActivity().finish();
+
+        AlarmReceiverVisit alarmReceiverVisit = new AlarmReceiverVisit();
+        alarmReceiverVisit.setAlarm(context, Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(day),hour,minute);
     }
 
 
@@ -90,6 +133,7 @@ public class VisitAdditionalInfoFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         System.out.println("Документ успешно создан в коллекции 'users/visit'! Документ ID: " + documentId);
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

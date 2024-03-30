@@ -44,28 +44,23 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Intents intents;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         intents = new Intents(this);
-        LocalDate currentDate = LocalDate.now();
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlarmReceiver.class); // Замените на свой класс, который обрабатывает оповещения
-        // Получение списка PendingIntent, связанных с вашим приложением
-//        System.out.println(System.currentTimeMillis());
-//        for (double i = 1711686659264D; i < (double) System.currentTimeMillis(); i++) {
+//        for (int i = 0; i < 101; i++) {
 //
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast((Context) this, i, intent, PendingIntent.FLAG_IMMUTABLE);
 //
-//        // Если PendingIntent не равен null, значит, оповещение существует, и мы его отменяем
-//        if (pendingIntent != null) {
-//            alarmManager.cancel(pendingIntent);
-//            pendingIntent.cancel();
+//            // Если PendingIntent не равен null, значит, оповещение существует, и мы его отменяем
+//            if (pendingIntent != null) {
+//                alarmManager.cancel(pendingIntent);
+//                pendingIntent.cancel();
+//            }
 //        }
-//        }
-//            Toast.makeText(this, "jnj", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "jnj", Toast.LENGTH_SHORT).show();
 
 
         setContentView(R.layout.activity_main);
@@ -78,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             finish();
 
         }
-      //  AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        //  AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         int permissionState = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS);
         // If the permission is not granted, request it.
