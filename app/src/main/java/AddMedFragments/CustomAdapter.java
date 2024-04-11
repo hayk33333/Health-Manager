@@ -21,7 +21,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     private ItemClickListener mClickListener;
     private String doseType;
 
-    CustomAdapter(Context context, List<String> data, String doseType, List<String> doseData) {
+    public CustomAdapter(Context context, List<String> data, String doseType, List<String> doseData) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
         this.doseType = doseType;
@@ -33,10 +33,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         View view = mInflater.inflate(R.layout.list_item_layout, parent, false);
         return new ViewHolder(view);
     }
-//    public void updateTime(int position, String newTime) {
-//        mData.set(position, newTime);
-//        notifyItemChanged(position);
-//    }
+
 
 
 
@@ -92,7 +89,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
 
     }
-    void setClickListener(ItemClickListener itemClickListener) {
+    public void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 

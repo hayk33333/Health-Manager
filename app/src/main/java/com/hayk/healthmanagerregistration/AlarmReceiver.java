@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -26,7 +28,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import AddMedFragments.AlarmDates;
@@ -45,6 +49,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @SuppressLint("ScheduleExactAlarm")
     public void setAlarm(Context context, AlarmDates alarmDates) {
+        db = FirebaseFirestore.getInstance();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Calendar calendar = Calendar.getInstance();
@@ -65,21 +70,116 @@ public class AlarmReceiver extends BroadcastReceiver {
                     || alarmDates.getMedFrequency().equals("moreTimes"))
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
-        Random random = new Random();
+        CollectionReference medsCollection = db.collection("requestCode");
+
+        medsCollection.document("medRequestCode").get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            long requestCode = documentSnapshot.getLong("code");
+                            Intent intent = new Intent(context, AlarmReceiver.class);
+                            intent.putExtra("medId", alarmDates.getMedId());
+
+                            intent.putExtra("medFrequency", alarmDates.getMedFrequency());
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) requestCode, intent, PendingIntent.FLAG_IMMUTABLE);
+                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                            requestCode++;
+                            addNewRequestCodeTODb(requestCode);
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+
+        String hour = (alarmDates.getHour() < 10) ? "0" + alarmDates.getHour() : String.valueOf(alarmDates.getHour());
+        String minute = (alarmDates.getMinute() < 10) ? "0" + alarmDates.getMinute() : String.valueOf(alarmDates.getMinute());
+        String nextTime = hour + ":" + minute;
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
+
+        String formattedDay = String.format("%02d", dayOfMonth);
+        String formattedMonth = String.format("%02d", month);
+        String formattedYear = String.format("%04d", year);
+
+        String nextDate = formattedDay + "/" + formattedMonth + "/" + formattedYear;
+
+        setNextTimeTODB(nextTime, alarmDates.getMedId());
+        setNextDateTODB(nextDate, alarmDates.getMedId());
+    }
+
+    private void setNextDateTODB(String nextDate, String medId) {
+        CollectionReference med = db.collection("meds");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("nextDate", nextDate);
+
+        med.document(medId)
+                .update(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successful");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                        System.out.println("failure");
+                    }
+                });
+    }
 
 
-        int min = 1;
-        int max = 100;
-        int requestCode = random.nextInt(max - min + 1) + min;
+    private void setNextTimeTODB(String nextTime, String medId) {
+        CollectionReference med = db.collection("meds");
 
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("medId", alarmDates.getMedId());
+        Map<String, Object> data = new HashMap<>();
+        data.put("nextTime", nextTime);
 
-        intent.putExtra("medFrequency", alarmDates.getMedFrequency());
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        System.out.println("Alaem seted" + requestCode);
+        med.document(medId)
+                .update(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                    }
+                });
 
+    }
+
+    private void addNewRequestCodeTODb(long requestCode) {
+        CollectionReference medsCollection = db.collection("requestCode");
+
+        HashMap<String, Integer> data = new HashMap<>();
+        data.put("code", (int) requestCode);
+
+        medsCollection
+                .document("medRequestCode")
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Значение ' успешно добавлено в коллекцию 'meds'!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Ошибка при добавлении значения '' в коллекцию 'meds': " + e.getMessage());
+                    }
+                });
     }
 
 
