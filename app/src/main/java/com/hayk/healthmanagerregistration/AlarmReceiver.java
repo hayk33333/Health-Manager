@@ -22,12 +22,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +47,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         db = FirebaseFirestore.getInstance();
         String medId = intent.getStringExtra("medId");
         String medFrequency = intent.getStringExtra("medFrequency");
-        sendNotification(context, medId, medFrequency);
+        getDataForNotification(context, medId, medFrequency);
     }
 
     @SuppressLint("ScheduleExactAlarm")
@@ -182,30 +185,85 @@ public class AlarmReceiver extends BroadcastReceiver {
                 });
     }
 
+    private void getDataForNotification(Context context, String medId, String medFrequency) {
+        CollectionReference medsCollection = db.collection("meds");
 
-    private void sendNotification(Context context, String medId, String medFrequency) {
-//        CollectionReference medsCollection = db.collection("meds");
-//
-//        medsCollection.document(medId).get()
-//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                        if (documentSnapshot.exists()) {
-//                            String doseType = documentSnapshot.getString("doseType");
-//                            String doseCount = documentSnapshot.getString("doseCount");
-//
-//                            setAlarmForOnceDay(context, medTime, medId, "onceDay");
-//                        } else {
-//                            System.out.println("med does not exists");
-//                        }
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        System.out.println("error to read from db");
-//                    }
-//                });
+        medsCollection.document(medId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String doseType = documentSnapshot.getString("doseType");
+                            String doseCount = documentSnapshot.getString("doseCount");
+                            String medName = documentSnapshot.getString("medName");
+                            String nextTime = documentSnapshot.getString("nextTime");
+                            String text = null;
+                            if (doseType.equals("other")) {
+                                text = "Don't forget to take your " + medName + " at " + nextTime;
+                            } else {
+                                if (medFrequency.equals("twiceDay")) {
+                                    String firstDoseCount = documentSnapshot.getString("firstDoseCount");
+                                    String secondDoseCount = documentSnapshot.getString("secondDoseCount");
+                                    String medFirstTime = documentSnapshot.getString("medFirstTime");
+
+                                    SimpleDateFormat inputFormat = new SimpleDateFormat("HH:mm");
+                                    SimpleDateFormat outputFormat = new SimpleDateFormat("H:m");
+
+                                    try {
+                                        Date date = inputFormat.parse(nextTime);
+                                        nextTime = outputFormat.format(date);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (nextTime.equals(medFirstTime)) {
+                                        doseCount = firstDoseCount;
+                                    } else {
+                                        doseCount = secondDoseCount;
+                                    }
+                                    text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
+
+
+                                } else if (medFrequency.equals("moreTimes")) {
+                                    List<String> medTimes = (List<String>) documentSnapshot.get("times");
+                                    List<String> medDoses = (List<String>) documentSnapshot.get("doses");
+                                    SimpleDateFormat inputFormat = new SimpleDateFormat("HH:mm");
+                                    SimpleDateFormat outputFormat = new SimpleDateFormat("H:m");
+
+                                    try {
+                                        Date date = inputFormat.parse(nextTime);
+                                        nextTime = outputFormat.format(date);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    for (String t : medTimes) {
+                                        if (t.equals(nextTime)) {
+                                            doseCount = medDoses.get(medTimes.indexOf(t));
+                                        }
+                                    }
+                                    text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
+
+                                } else {
+                                    text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
+                                }
+                            }
+
+                            sendNotification(context, medId, medFrequency, text);
+
+
+                        } else {
+                            System.out.println("med does not exists");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("error to read from db");
+                    }
+                });
+    }
+
+    private void sendNotification(Context context, String medId, String medFrequency, String notificationText) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -221,8 +279,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "channel_id")
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Health Manager")
-                        .setContentText("Take your med");
+                        .setContentText(notificationText);
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
