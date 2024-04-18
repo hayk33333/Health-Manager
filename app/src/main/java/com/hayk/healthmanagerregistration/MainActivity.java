@@ -49,18 +49,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         intents = new Intents(this);
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmReceiver.class); // Замените на свой класс, который обрабатывает оповещения
-//        for (int i = 0; i < 101; i++) {
-//
-//            PendingIntent pendingIntent = PendingIntent.getBroadcast((Context) this, i, intent, PendingIntent.FLAG_IMMUTABLE);
-//
-//            // Если PendingIntent не равен null, значит, оповещение существует, и мы его отменяем
-//            if (pendingIntent != null) {
-//                alarmManager.cancel(pendingIntent);
-//                pendingIntent.cancel();
-//            }
-//        }
-//        Toast.makeText(this, "jnj", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, AlarmReceiver.class);
+
 
 
         setContentView(R.layout.activity_main);
@@ -73,10 +63,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             finish();
 
         }
-        //  AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         int permissionState = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS);
-        // If the permission is not granted, request it.
         if (permissionState == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
         }

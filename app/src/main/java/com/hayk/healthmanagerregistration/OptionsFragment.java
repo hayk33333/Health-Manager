@@ -215,10 +215,8 @@ public class OptionsFragment extends Fragment {
     }
 
     private void hideKeyboard() {
-        // Получение менеджера ввода методов
         InputMethodManager inputMethodManager = (InputMethodManager) requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
 
-        // Получение текущего фокуса и скрытие клавиатуры
         View view = requireActivity().getCurrentFocus();
         if (view != null) {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);

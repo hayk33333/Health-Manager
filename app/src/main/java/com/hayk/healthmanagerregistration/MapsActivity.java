@@ -108,17 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (addresses != null && !addresses.isEmpty()) {
                         Address address = addresses.get(0);
                         addressLine = address.getAddressLine(0);
-//                        String city = address.getLocality();
-//                        String state = address.getAdminArea();
-//                        String country = address.getCountryName();
-//                        String postalCode = address.getPostalCode();
-//                        String knownName = address.getFeatureName();
-//                        System.out.println("city " + city);
-//                        System.out.println("state " + state);
-//                        System.out.println("country " + country);
-//                        System.out.println("postalCode " + postalCode);
-//                        System.out.println("knownName " + knownName);
-//                        System.out.println("Address" + addressLine);
+
                         Log.d(TAG, "Address: " + addressLine);
                     } else {
                         Log.d(TAG, "No address found for the given coordinates");

@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,15 +44,24 @@ import AddMedFragments.AlarmDates;
 
 public class AlarmReceiver extends BroadcastReceiver {
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         String medId = intent.getStringExtra("medId");
         String medFrequency = intent.getStringExtra("medFrequency");
-        getDataForNotification(context, medId, medFrequency);
+        isMedExist(context, medId, medFrequency);
+        for (int i = 0; i < 10; i++) {
+
+        }
     }
+
+
 
     @SuppressLint("ScheduleExactAlarm")
     public void setAlarm(Context context, AlarmDates alarmDates) {
@@ -70,9 +83,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
             if (alarmDates.getMedFrequency().equals("onceDay")
                     || alarmDates.getMedFrequency().equals("twiceDay")
-                    || alarmDates.getMedFrequency().equals("moreTimes"))
+                    || alarmDates.getMedFrequency().equals("moreTimes")) {
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
+            } else {
+                setNextAlarm(context, alarmDates.getMedId(), alarmDates.getMedFrequency());
+                return;
+            }
         }
+
         CollectionReference medsCollection = db.collection("requestCode");
 
         medsCollection.document("medRequestCode").get()
@@ -116,6 +134,29 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         setNextTimeTODB(nextTime, alarmDates.getMedId());
         setNextDateTODB(nextDate, alarmDates.getMedId());
+    }
+
+    private void isMedExist(Context context, String medId, String medFrequency) {
+        if (currentUser != null) {
+            db.collection("users").document(currentUser.getUid()).collection("userMeds")
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                String docName = document.getId();
+                                if (docName.equals(medId)) {
+                                    getDataForNotification(context, medId, medFrequency);
+                                    break;
+                                }
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                        }
+                    });
+        }
     }
 
     private void setNextDateTODB(String nextDate, String medId) {
@@ -197,7 +238,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                             String doseCount = documentSnapshot.getString("doseCount");
                             String medName = documentSnapshot.getString("medName");
                             String nextTime = documentSnapshot.getString("nextTime");
-                            String text = null;
+                            String text;
+                            int count = 0;
                             if (doseType.equals("other")) {
                                 text = "Don't forget to take your " + medName + " at " + nextTime;
                             } else {
@@ -220,6 +262,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                                     } else {
                                         doseCount = secondDoseCount;
                                     }
+                                    count = Integer.parseInt(doseCount);
                                     text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
 
 
@@ -240,14 +283,18 @@ public class AlarmReceiver extends BroadcastReceiver {
                                             doseCount = medDoses.get(medTimes.indexOf(t));
                                         }
                                     }
+                                    count = Integer.parseInt(doseCount);
+
                                     text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
 
                                 } else {
+                                    count = Integer.parseInt(doseCount);
+
                                     text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
                                 }
                             }
 
-                            sendNotification(context, medId, medFrequency, text);
+                            sendNotification(context, medId, medFrequency, text, count);
 
 
                         } else {
@@ -263,7 +310,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 });
     }
 
-    private void sendNotification(Context context, String medId, String medFrequency, String notificationText) {
+    private void sendNotification(Context context, String medId, String medFrequency, String notificationText, int count) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -274,17 +321,77 @@ public class AlarmReceiver extends BroadcastReceiver {
             );
             notificationManager.createNotificationChannel(channel);
         }
+        Intent intent = new Intent(context, SplashActivity.class);
+        PendingIntent deletePendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "channel_id")
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentText(notificationText);
+                        .setContentText(notificationText)
+                        .addAction(R.drawable.logo,"take",deletePendingIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+        updateMedCount(context, medId, medFrequency, count);
 
+
+    }
+
+    private void updateMedCount(Context context, String medId, String medFrequency, int doseCount) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(medId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            try {
+                                long count = documentSnapshot.getLong("medCount");
+                                System.out.println("nullchchchc");
+
+                                count -= doseCount;
+                                if (count < 0) {
+                                    count = 0;
+                                }
+                                HashMap<String, Object> data = new HashMap<>();
+                                data.put("medCount", String.valueOf(count));
+                                medsCollection.document(medId).update(data)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                setNextAlarm(context, medId, medFrequency);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                System.out.println("Error updating document: " + e);
+                                                setNextAlarm(context, medId, medFrequency);
+                                            }
+                                        });
+
+                            }catch (Exception e){
+                                setNextAlarm(context, medId, medFrequency);
+                            }
+
+
+                        } else {
+                            setNextAlarm(context, medId, medFrequency);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Error reading document: " + e);
+                        setNextAlarm(context, medId, medFrequency);
+                    }
+                });
+    }
+
+    private void setNextAlarm(Context context, String medId, String medFrequency) {
         if (medFrequency.equals("onceDay")) {
             getDataForOnceDay(context, medId);
         } else if (medFrequency.equals("twiceDay")) {
@@ -304,8 +411,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         } else if (medFrequency.equals("everyOtherDay")) {
             getDataForEveryOtherDays(context, medId);
         }
-
     }
+
 
     private void getDataForEveryOtherDays(Context context, String medId) {
         CollectionReference medsCollection = db.collection("meds");

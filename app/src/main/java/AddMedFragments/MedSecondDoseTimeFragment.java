@@ -208,7 +208,6 @@ public class MedSecondDoseTimeFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-                            // Получаем данные из документа
                             firstTime = documentSnapshot.getString("medFirstTime");
 
                         } else {

@@ -164,7 +164,6 @@ public class MedTimeFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-                            // Получаем данные из документа
                             medForm = documentSnapshot.getString("medForm");
                             setMedDoseTypes(medForm);
                         } else {
@@ -229,7 +228,6 @@ public class MedTimeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_med_time, container, false);
     }
 }

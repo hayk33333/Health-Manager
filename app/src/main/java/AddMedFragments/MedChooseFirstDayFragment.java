@@ -117,7 +117,7 @@ public class MedChooseFirstDayFragment extends Fragment {
         medData.put("day", selectedDay);
 
         medsCollection
-                .document(documentId) // Замените documentId на вашу переменную с идентификатором документа
+                .document(documentId)
                 .update(medData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -147,7 +147,6 @@ public class MedChooseFirstDayFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_med_choose_first_day, container, false);
     }
 }

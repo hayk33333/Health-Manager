@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,11 +43,25 @@ public class MedicationsFragment extends Fragment implements CustomAdapter.ItemC
     private RecyclerView recyclerView;
     private View rootView;
     private ProgressBar progressBar;
+    private TextView noMed;
 
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        recyclerView.setVisibility(View.GONE);
+//        noMed.setVisibility(View.GONE);
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//        getUserMeds();
+//    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        noMed = view.findViewById(R.id.no_med_text);
         progressBar = view.findViewById(R.id.progress_circular);
         addMedButton = view.findViewById(R.id.add_med_button);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -74,11 +90,13 @@ public class MedicationsFragment extends Fragment implements CustomAdapter.ItemC
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             String docName = document.getId();
                             userMedIds.add(docName);
-                            setRecyclerView(userMedIds);
                         }
-                        if (userMedIds.isEmpty()){
+                        if (userMedIds.isEmpty()) {
                             progressBar.setVisibility(View.GONE);
+                            noMed.setVisibility(View.VISIBLE);
+                            return;
                         }
+                        setRecyclerView(userMedIds);
 
 
                     }
@@ -86,6 +104,7 @@ public class MedicationsFragment extends Fragment implements CustomAdapter.ItemC
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
                     }
                 });
     }
@@ -117,7 +136,9 @@ public class MedicationsFragment extends Fragment implements CustomAdapter.ItemC
                                 medDates.add(medNextDate);
                                 medForms.add(medForm);
                                 if (id.equals(userMedIds.get(userMedIds.size() - 1))) {
-                                    MedRecyclerViewAdapter medRecyclerViewAdapter = new MedRecyclerViewAdapter(getContext(),medNames, medTimes, medDates, medForms);
+                                    noMed.setVisibility(View.GONE);
+                                    recyclerView.setVisibility(View.VISIBLE);
+                                    MedRecyclerViewAdapter medRecyclerViewAdapter = new MedRecyclerViewAdapter(getActivity(), medNames, medTimes, medDates, medForms);
                                     recyclerView.setAdapter(medRecyclerViewAdapter);
                                     progressBar.setVisibility(View.GONE);
                                 }
@@ -132,6 +153,7 @@ public class MedicationsFragment extends Fragment implements CustomAdapter.ItemC
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             System.out.println("error to read from db");
+                            recyclerView.setVisibility(View.VISIBLE);
                         }
                     });
 

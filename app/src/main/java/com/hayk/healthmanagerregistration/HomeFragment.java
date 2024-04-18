@@ -44,5 +44,4 @@ public class HomeFragment extends Fragment {
     }
 
 
-    // Остальной код вашего фрагмента
 }

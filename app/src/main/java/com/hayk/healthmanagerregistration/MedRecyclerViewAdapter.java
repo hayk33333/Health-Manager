@@ -1,7 +1,9 @@
 package com.hayk.healthmanagerregistration;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +25,10 @@ public class MedRecyclerViewAdapter extends RecyclerView.Adapter<MedRecyclerView
     private List<String> times;
     private List<String> dates;
     private List<String> forms;
-    private Context context;
+    private Activity context;
 
 
-    public MedRecyclerViewAdapter(Context context, List<String> medNames, List<String> times, List<String> dates, List<String> forms) {
+    public MedRecyclerViewAdapter(Activity context, List<String> medNames, List<String> times, List<String> dates, List<String> forms) {
         this.context = context;
         this.dates = dates;
         this.medNames = medNames;
@@ -64,13 +66,15 @@ public class MedRecyclerViewAdapter extends RecyclerView.Adapter<MedRecyclerView
         private ImageView img;
 
 
-        public MyViewHolder(@NonNull View itemView, Context context) {
+        public MyViewHolder(@NonNull View itemView, Activity context) {
             super(itemView);
             this.context = context;
             medName = itemView.findViewById(R.id.medName);
             medTime = itemView.findViewById(R.id.med_time_text);
             medDate = itemView.findViewById(R.id.med_date_text);
             img = itemView.findViewById(R.id.medication_icon);
+
+
         }
 
         public void bind(String medNameText, String medTimeText, String medDateText, String medForm) {

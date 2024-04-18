@@ -8,6 +8,20 @@
     android:padding="20dp"
     >
 
+    <TextView
+        android:id="@+id/no_med_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+        app:layout_constraintTop_toTopOf="@+id/recyclerView"
+        tools:layout_editor_absoluteX="20dp"
+        android:textColor="@color/hint_color"
+        android:text="@string/here_you_will_see_your_meds"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textSize="20sp"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
