@@ -86,6 +86,12 @@ public class VisitRecyclerViewAdapter extends RecyclerView.Adapter<VisitRecycler
 
         public void bind(String visitNameText, String dateText, String doctorNameText, String hospitalNameText) {
             visitName.setText(visitNameText);
+            if (hospitalNameText.isEmpty()){
+                hospitalName.setVisibility(View.GONE);
+            }
+            if (doctorNameText.isEmpty()){
+                doctorName.setVisibility(View.GONE);
+            }
             hospitalName.setText("Hospital:" + hospitalNameText);
             doctorName.setText("Doctor:" + doctorNameText);
             date.setText(dateText);

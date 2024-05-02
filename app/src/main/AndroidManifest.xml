@@ -84,6 +84,16 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".NotificationHandler"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.hayk.healthmanagerregistration.ACTION_SKIP" />
+                <action android:name="com.hayk.healthmanagerregistration.ACTION_SNOOZE" />
+                <action android:name="com.hayk.healthmanagerregistration.ACTION_TAKE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

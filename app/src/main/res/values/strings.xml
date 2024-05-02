@@ -187,4 +187,7 @@
     <string name="next_reminder">Next Reminder:</string>
     <string name="here_you_will_see_your_meds">Here you will see your meds</string>
     <string name="here_you_will_see_your_visits">Here You will see your visits</string>
+    <string name="snooze">Snooze</string>
+    <string name="skip">Skip</string>
+    <string name="take">Take</string>
 </resources>

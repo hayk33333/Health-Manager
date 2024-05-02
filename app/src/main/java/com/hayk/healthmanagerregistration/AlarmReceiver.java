@@ -56,11 +56,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         String medId = intent.getStringExtra("medId");
         String medFrequency = intent.getStringExtra("medFrequency");
         isMedExist(context, medId, medFrequency);
-        for (int i = 0; i < 10; i++) {
 
-        }
     }
-
 
 
     @SuppressLint("ScheduleExactAlarm")
@@ -200,7 +197,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                     public void onFailure(@androidx.annotation.NonNull Exception e) {
                     }
                 });
-
     }
 
     private void addNewRequestCodeTODb(long requestCode) {
@@ -311,6 +307,9 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private void sendNotification(Context context, String medId, String medFrequency, String notificationText, int count) {
+        int requestCode = (int) System.currentTimeMillis();
+
+        System.out.println(requestCode);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -321,22 +320,38 @@ public class AlarmReceiver extends BroadcastReceiver {
             );
             notificationManager.createNotificationChannel(channel);
         }
-        Intent intent = new Intent(context, SplashActivity.class);
-        PendingIntent deletePendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        Intent snoozeIntent = new Intent(context, NotificationHandler.class);
+        snoozeIntent.setAction("ACTION_SNOOZE");
+        snoozeIntent.putExtra("medId", medId);
+        snoozeIntent.putExtra("requestCode", requestCode);
+        PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(context, requestCode, snoozeIntent, PendingIntent.FLAG_IMMUTABLE);
 
+        Intent skipIntent = new Intent(context, NotificationHandler.class);
+        skipIntent.setAction("ACTION_SKIP");
+        skipIntent.putExtra("medId", medId);
+        skipIntent.putExtra("requestCode", requestCode);
+
+        PendingIntent skipPendingIntent = PendingIntent.getBroadcast(context, requestCode, skipIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        Intent takeIntent = new Intent(context, NotificationHandler.class);
+        takeIntent.setAction("ACTION_TAKE");
+        takeIntent.putExtra("medId", medId);
+        takeIntent.putExtra("requestCode", requestCode);
+
+        PendingIntent takePendingIntent = PendingIntent.getBroadcast(context, requestCode, takeIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "channel_id")
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentText(notificationText)
-                        .addAction(R.drawable.logo,"take",deletePendingIntent);
+                        .addAction(R.drawable.logo, context.getString(R.string.skip), skipPendingIntent)
+                        .addAction(R.drawable.logo, context.getString(R.string.take), takePendingIntent)
+                        .addAction(R.drawable.logo, context.getString(R.string.snooze), snoozePendingIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-        updateMedCount(context, medId, medFrequency, count);
-
-
+        notificationManager.notify(requestCode, builder.build());
+        setNextAlarm(context, medId, medFrequency);
     }
 
     private void updateMedCount(Context context, String medId, String medFrequency, int doseCount) {
@@ -372,7 +387,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                                             }
                                         });
 
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 setNextAlarm(context, medId, medFrequency);
                             }
 
@@ -584,7 +599,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void getDataForSpecificDays(Context context, String medId) {
         CollectionReference medsCollection = db.collection("meds");
-
         medsCollection.document(medId).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -804,25 +818,54 @@ public class AlarmReceiver extends BroadcastReceiver {
         int minute = Integer.parseInt(parts[1]);
 
         LocalDate currentDate = LocalDate.now();
-        LocalTime alarmTime = LocalTime.of(hour, minute);
-        LocalDateTime currentDateTime = LocalDateTime.of(currentDate, alarmTime);
+        LocalTime currentTime = LocalTime.now();
+        int temp = 0;
+        boolean found = false;
 
-        LocalDate nextAlarmDate = getNextAlarmDateWithSpecificDaysOfWeek(currentDateTime, specificDaysOfWeek);
-        LocalDateTime todayAlarmDateTime = LocalDateTime.of(currentDate, alarmTime);
-        if (currentDateTime.isAfter(todayAlarmDateTime)) {
-            nextAlarmDate = nextAlarmDate.minusDays(1);
+
+        int dayOfWeekNow = currentDate.getDayOfWeek().getValue();
+        for (String day : specificDaysOfWeek) {
+            int dayValue = DayOfWeek.valueOf(day.toUpperCase()).getValue();
+            if (dayValue > dayOfWeekNow) {
+                temp = dayValue - dayOfWeekNow;
+                found = true;
+                break;
+            } else if (dayValue == dayOfWeekNow) {
+                int hourNow = currentTime.getHour();
+                int minuteNow = currentTime.getMinute();
+                if (hourNow < hour) {
+                    found = true;
+                    temp = 0;
+                    break;
+                } else if (hourNow == hour) {
+
+                    if (minuteNow < minute){
+                        found = true;
+                        temp = 0;
+                        break;
+                    }
+                }
+
+            }
+
         }
+        if (!found) {
+            temp = 7 - dayOfWeekNow + DayOfWeek.valueOf(specificDaysOfWeek[0].toUpperCase()).getValue();
+        }
+        LocalDate futureDate = currentDate.plusDays(temp);
 
-        int year = nextAlarmDate.getYear();
-        int month = nextAlarmDate.getMonthValue() - 1;
-        int dayOfMonth = nextAlarmDate.getDayOfMonth();
-
-        AlarmDates alarmDates = new AlarmDates(year, month, dayOfMonth, hour, minute, medId, medFrequency);
-
+        AlarmDates alarmDates = new AlarmDates(
+                futureDate.getYear(),
+                futureDate.getMonthValue() - 1,
+                futureDate.getDayOfMonth(),
+                hour,
+                minute,
+                medId,
+                medFrequency
+        );
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         alarmReceiver.setAlarm(context, alarmDates);
     }
-
     private void setAlarmEveryOtherDay(Context context, String medTime, String medId, String medFrequency) {
         String[] parts = medTime.split(":");
         int hour = Integer.parseInt(parts[0]);
@@ -846,28 +889,4 @@ public class AlarmReceiver extends BroadcastReceiver {
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         alarmReceiver.setAlarm(context, alarmDates);
     }
-
-
-    private LocalDate getNextAlarmDateWithSpecificDaysOfWeek(LocalDateTime currentDateTime, String[] specificDaysOfWeek) {
-        LocalDate nextAlarmDate = currentDateTime.toLocalDate();
-
-        if (specificDaysOfWeek != null && specificDaysOfWeek.length > 0) {
-            DayOfWeek currentDayOfWeek = currentDateTime.getDayOfWeek();
-            boolean found = false;
-            for (String day : specificDaysOfWeek) {
-                DayOfWeek desiredDay = DayOfWeek.valueOf(day.toUpperCase());
-                if (desiredDay.compareTo(currentDayOfWeek) >= 0) {
-                    nextAlarmDate = nextAlarmDate.with(TemporalAdjusters.nextOrSame(desiredDay));
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                nextAlarmDate = nextAlarmDate.plusWeeks(1).with(TemporalAdjusters.next(DayOfWeek.valueOf(specificDaysOfWeek[0].toUpperCase())));
-            }
-        }
-
-        return nextAlarmDate;
-    }
-
 }

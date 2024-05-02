@@ -560,20 +560,57 @@ public class MedAdditionalInformationFragment extends Fragment {
         int minute = Integer.parseInt(parts[1]);
 
         LocalDate currentDate = LocalDate.now();
-        LocalTime alarmTime = LocalTime.of(hour, minute);
-        LocalDateTime currentDateTime = LocalDateTime.of(currentDate, alarmTime);
+        LocalTime currentTime = LocalTime.now();
+        int temp = 0;
+        boolean found = false;
 
-        LocalDate nextAlarmDate = getNextAlarmDateWithSpecificDaysOfWeek(currentDateTime, specificDaysOfWeek);
 
-        int year = nextAlarmDate.getYear();
-        int month = nextAlarmDate.getMonthValue() - 1;
-        int dayOfMonth = nextAlarmDate.getDayOfMonth();
+        int dayOfWeekNow = currentDate.getDayOfWeek().getValue();
+        for (String day : specificDaysOfWeek) {
+            int dayValue = DayOfWeek.valueOf(day.toUpperCase()).getValue();
+            if (dayValue > dayOfWeekNow) {
+                System.out.println("1");
+                temp = dayValue - dayOfWeekNow;
+                found = true;
+                break;
+            } else if (dayValue == dayOfWeekNow) {
+                int hourNow = currentTime.getHour();
+                int minuteNow = currentTime.getMinute();
+                if (hourNow < hour) {
 
-        AlarmDates alarmDates = new AlarmDates(year, month, dayOfMonth, hour, minute, medId, medFrequency);
+                    found = true;
+                    temp = 0;
+                    break;
+                } else if (hourNow == hour) {
 
+                    if (minuteNow < minute){
+                        found = true;
+                        temp = 0;
+                        break;
+                    }
+                }
+
+            }
+
+        }
+        if (!found) {
+            temp = 7 - dayOfWeekNow + DayOfWeek.valueOf(specificDaysOfWeek[0].toUpperCase()).getValue();
+        }
+        LocalDate futureDate = currentDate.plusDays(temp);
+
+        AlarmDates alarmDates = new AlarmDates(
+                futureDate.getYear(),
+                futureDate.getMonthValue() - 1,
+                futureDate.getDayOfMonth(),
+                hour,
+                minute,
+                medId,
+                medFrequency
+        );
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         alarmReceiver.setAlarm(context, alarmDates);
     }
+
 
     private void getDataForEveryOtherDays(Context context) {
         CollectionReference medsCollection = db.collection("meds");
@@ -618,27 +655,6 @@ public class MedAdditionalInformationFragment extends Fragment {
     }
 
 
-    private LocalDate getNextAlarmDateWithSpecificDaysOfWeek(LocalDateTime currentDateTime, String[] specificDaysOfWeek) {
-        LocalDate nextAlarmDate = currentDateTime.toLocalDate();
-
-        if (specificDaysOfWeek != null && specificDaysOfWeek.length > 0) {
-            DayOfWeek currentDayOfWeek = currentDateTime.getDayOfWeek();
-            boolean found = false;
-            for (String day : specificDaysOfWeek) {
-                DayOfWeek desiredDay = DayOfWeek.valueOf(day.toUpperCase());
-                if (desiredDay.compareTo(currentDayOfWeek) >= 0) {
-                    nextAlarmDate = nextAlarmDate.with(TemporalAdjusters.nextOrSame(desiredDay));
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                nextAlarmDate = nextAlarmDate.plusWeeks(1).with(TemporalAdjusters.next(DayOfWeek.valueOf(specificDaysOfWeek[0].toUpperCase())));
-            }
-        }
-
-        return nextAlarmDate;
-    }
 
 
     @Override
