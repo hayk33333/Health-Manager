@@ -148,7 +148,7 @@
                 android:gravity="left|center_vertical"
                 android:paddingStart="20dp"
                 android:textAllCaps="false"
-
+                android:visibility="gone"
                 android:text="@string/other"
                 android:textColor="@color/dark_gray"
                 tools:ignore="RtlHardcoded,RtlSymmetry" />
@@ -158,7 +158,9 @@
                 android:layout_height="1dp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:background="@color/et_background" />
+                android:background="@color/et_background"
+                android:visibility="gone"
+                />
         </LinearLayout>
 
 

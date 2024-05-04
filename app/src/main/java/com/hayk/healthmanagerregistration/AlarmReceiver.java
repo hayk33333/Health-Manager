@@ -236,7 +236,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                             String nextTime = documentSnapshot.getString("nextTime");
                             String text;
                             int count = 0;
-                            if (doseType.equals("other")) {
+                            if (doseType == null) {
                                 text = "Don't forget to take your " + medName + " at " + nextTime;
                             } else {
                                 if (medFrequency.equals("twiceDay")) {
@@ -324,12 +324,17 @@ public class AlarmReceiver extends BroadcastReceiver {
         snoozeIntent.setAction("ACTION_SNOOZE");
         snoozeIntent.putExtra("medId", medId);
         snoozeIntent.putExtra("requestCode", requestCode);
+        snoozeIntent.putExtra("text", notificationText);
+        snoozeIntent.putExtra("doseCount", count);
         PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(context, requestCode, snoozeIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent skipIntent = new Intent(context, NotificationHandler.class);
         skipIntent.setAction("ACTION_SKIP");
         skipIntent.putExtra("medId", medId);
         skipIntent.putExtra("requestCode", requestCode);
+        skipIntent.putExtra("text", notificationText);
+        skipIntent.putExtra("doseCount", count);
+
 
         PendingIntent skipPendingIntent = PendingIntent.getBroadcast(context, requestCode, skipIntent, PendingIntent.FLAG_IMMUTABLE);
 
@@ -337,6 +342,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         takeIntent.setAction("ACTION_TAKE");
         takeIntent.putExtra("medId", medId);
         takeIntent.putExtra("requestCode", requestCode);
+        takeIntent.putExtra("doseCount", count);
+        takeIntent.putExtra("text", notificationText);
+
 
         PendingIntent takePendingIntent = PendingIntent.getBroadcast(context, requestCode, takeIntent, PendingIntent.FLAG_IMMUTABLE);
 
@@ -351,59 +359,25 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(requestCode, builder.build());
+        setIsTake(medId);
         setNextAlarm(context, medId, medFrequency);
     }
 
-    private void updateMedCount(Context context, String medId, String medFrequency, int doseCount) {
+    private void setIsTake(String medId) {
         CollectionReference medsCollection = db.collection("meds");
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("isTake", false);
+        medsCollection.document(medId).update(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
 
-        medsCollection.document(medId).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            try {
-                                long count = documentSnapshot.getLong("medCount");
-                                System.out.println("nullchchchc");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
-                                count -= doseCount;
-                                if (count < 0) {
-                                    count = 0;
-                                }
-                                HashMap<String, Object> data = new HashMap<>();
-                                data.put("medCount", String.valueOf(count));
-                                medsCollection.document(medId).update(data)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                setNextAlarm(context, medId, medFrequency);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                System.out.println("Error updating document: " + e);
-                                                setNextAlarm(context, medId, medFrequency);
-                                            }
-                                        });
-
-                            } catch (Exception e) {
-                                setNextAlarm(context, medId, medFrequency);
-                            }
-
-
-                        } else {
-                            setNextAlarm(context, medId, medFrequency);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Error reading document: " + e);
-                        setNextAlarm(context, medId, medFrequency);
-                    }
-                });
+            }
+        });
     }
 
     private void setNextAlarm(Context context, String medId, String medFrequency) {

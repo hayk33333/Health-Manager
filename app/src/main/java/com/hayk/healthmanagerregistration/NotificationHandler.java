@@ -1,12 +1,15 @@
 package com.hayk.healthmanagerregistration;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,63 +22,67 @@ import java.util.HashMap;
 
 public class NotificationHandler extends BroadcastReceiver {
     FirebaseFirestore db;
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
         db = FirebaseFirestore.getInstance();
         String action = intent.getAction();
         int requestCode = intent.getIntExtra("requestCode", 0);
-        Toast.makeText(context, String.valueOf(requestCode), Toast.LENGTH_SHORT).show();
+        int doseCount = intent.getIntExtra("doseCount", 0);
+        String text = intent.getStringExtra("text");
         String medId = intent.getStringExtra("medId");
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(requestCode);
 
         if ("ACTION_SNOOZE".equals(action)) {
-            handleSnoozeAction(context, medId);
+            handleSnoozeAction(context, text,medId,doseCount);
         } else if ("ACTION_SKIP".equals(action)) {
             handleSkipAction(context, medId);
         } else if ("ACTION_TAKE".equals(action)) {
-            handleTakeAction(context, medId);
+            handleTakeAction(context, medId, doseCount);
         }
     }
 
-    private void handleSnoozeAction(Context context, String medId) {
-        CollectionReference medsCollection = db.collection("meds");
-
-        medsCollection.document(medId).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            String medName = documentSnapshot.getString("medName");
-                            Toast.makeText(context, medName, Toast.LENGTH_SHORT).show();
-                        } else {
-                            System.out.println("med does not exists");
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("error to read from db");
-                    }
-                });
-
-    }
-    private void handleTakeAction(Context context, String medId) {
-        System.out.println("take");
-        Toast.makeText(context, "take", Toast.LENGTH_SHORT).show();
-        Toast.makeText(context, medId, Toast.LENGTH_SHORT).show();
-
-
-    }
     private void handleSkipAction(Context context, String medId) {
-        Toast.makeText(context, "skip", Toast.LENGTH_SHORT).show();
-        Toast.makeText(context, medId, Toast.LENGTH_SHORT).show();
-
+        setIsTake(medId, false);
         System.out.println("skip");
 
     }
-    private void updateMedCount(Context context, String medId, String medFrequency, int doseCount) {
+
+    private void handleSnoozeAction(Context context,String text,String medId, int count) {
+        AlarmReceiverNotification alarm = new AlarmReceiverNotification();
+        alarm.setAlarm(context, 10, text, "MED_SNOOZE", medId,count);
+    }
+
+    private void handleTakeAction(Context context, String medId, int doseCount) {
+        System.out.println("take");
+
+        updateMedCount(context, medId, doseCount);
+        setIsTake(medId, true);
+
+
+    }
+
+    private void setIsTake(String medId, boolean isTake) {
+        CollectionReference medsCollection = db.collection("meds");
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("isTake", isTake);
+        medsCollection.document(medId).update(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+
+    private void updateMedCount(Context context, String medId, int doseCount) {
         CollectionReference medsCollection = db.collection("meds");
 
         medsCollection.document(medId).get()
@@ -85,13 +92,20 @@ public class NotificationHandler extends BroadcastReceiver {
                         if (documentSnapshot.exists()) {
                             try {
                                 long count = documentSnapshot.getLong("medCount");
+                                long remindCount = documentSnapshot.getLong("medRemindCount");
+
 
                                 count -= doseCount;
                                 if (count < 0) {
                                     count = 0;
                                 }
+                                if (count <= remindCount) {
+
+                                    getNotificationText(context, medId, (int) (remindCount));
+                                }
                                 HashMap<String, Object> data = new HashMap<>();
-                                data.put("medCount", String.valueOf(count));
+                                data.put("medCount", count);
+
                                 medsCollection.document(medId).update(data)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -105,11 +119,15 @@ public class NotificationHandler extends BroadcastReceiver {
                                             }
                                         });
 
+
                             } catch (Exception e) {
+                                System.out.println("catch" + e.getMessage());
                             }
 
 
                         } else {
+                            System.out.println("chka");
+
                         }
                     }
                 })
@@ -119,5 +137,35 @@ public class NotificationHandler extends BroadcastReceiver {
                         System.out.println("Error reading document: " + e);
                     }
                 });
+    }
+
+    private void getNotificationText(Context context, String medId, int count) {
+        CollectionReference medsCollection = db.collection("meds");
+
+        medsCollection.document(medId).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String doseType = documentSnapshot.getString("doseType");
+                            String medName = documentSnapshot.getString("medName");
+                            String text = "Only " + count + " " + doseType + " left of " + medName + ". It's time to stock up.";
+                            AlarmReceiverNotification alarm = new AlarmReceiverNotification();
+                            alarm.setAlarm(context, 10, text, "MED_RUN_OUT", medId, count);
+
+
+                        } else {
+                            System.out.println("chka");
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Error reading document: " + e);
+                    }
+                });
+
     }
 }

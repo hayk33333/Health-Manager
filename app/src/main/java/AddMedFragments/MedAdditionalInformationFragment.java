@@ -67,10 +67,12 @@ public class MedAdditionalInformationFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setIsTake();
                 setMedFirstAlarm();
                 saveMedToDb();
             }
         });
+
         addCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,6 +99,22 @@ public class MedAdditionalInformationFragment extends Fragment {
             }
         });
 
+    }
+    private void setIsTake() {
+        CollectionReference medsCollection = db.collection("meds");
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("isTake", false);
+        medsCollection.document(documentId).update(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@androidx.annotation.NonNull Exception e) {
+
+            }
+        });
     }
 
     private void setMedFirstAlarm() {
