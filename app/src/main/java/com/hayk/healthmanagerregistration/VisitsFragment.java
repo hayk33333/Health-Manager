@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,7 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VisitsFragment extends Fragment {
+public class VisitsFragment extends Fragment{
     private Button addVisit;
     private RecyclerView recyclerView;
     private View rootView;
@@ -39,8 +40,12 @@ public class VisitsFragment extends Fragment {
     private TextView noVisit;
 
 
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        noVisit.setVisibility(View.GONE);
+        getUserVisits();
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -79,6 +84,7 @@ public class VisitsFragment extends Fragment {
                         if (userVisitIds.isEmpty()) {
                             progressBar.setVisibility(View.GONE);
                             noVisit.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
                             return;
                         }
                         setRecyclerView(userVisitIds);
@@ -99,6 +105,7 @@ public class VisitsFragment extends Fragment {
         List<String> visitDates = new ArrayList<>();
         List<String> hospitalNames = new ArrayList<>();
         List<String> doctorNames = new ArrayList<>();
+        List<String> visitIds = new ArrayList<>();
 
 
         for (String id : userVisitIds) {
@@ -143,11 +150,12 @@ public class VisitsFragment extends Fragment {
                                 visitNames.add(visitName);
                                 hospitalNames.add(hospitalName);
                                 doctorNames.add(doctorName);
+                                visitIds.add(id);
 
                                 if (id.equals(userVisitIds.get(userVisitIds.size() - 1))) {
                                     noVisit.setVisibility(View.GONE);
                                     recyclerView.setVisibility(View.VISIBLE);
-                                    VisitRecyclerViewAdapter visitRecyclerViewAdapter = new VisitRecyclerViewAdapter(getActivity(), visitNames, visitDates, doctorNames, hospitalNames);
+                                    VisitRecyclerViewAdapter visitRecyclerViewAdapter = new VisitRecyclerViewAdapter(getActivity(), visitNames, visitDates, doctorNames, hospitalNames, visitIds);
                                     recyclerView.setAdapter(visitRecyclerViewAdapter);
                                     progressBar.setVisibility(View.GONE);
                                 }
@@ -175,4 +183,6 @@ public class VisitsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_visits, container, false);
         return rootView;
     }
+
+
 }

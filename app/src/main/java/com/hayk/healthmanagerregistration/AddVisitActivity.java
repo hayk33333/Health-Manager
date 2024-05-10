@@ -25,6 +25,7 @@ import AddVisitFragments.VisitAdditionalInfoFragment;
 import AddVisitFragments.VisitChooseDayFragment;
 import AddVisitFragments.VisitChooseTimeFragment;
 import AddVisitFragments.VisitNameFragment;
+import AddVisitFragments.VisitNotificationDataFragment;
 
 
 public class AddVisitActivity extends AppCompatActivity {
@@ -150,6 +151,17 @@ public class AddVisitActivity extends AppCompatActivity {
                 .add(android.R.id.content, visitAddCommentFragment)
                 .commit();
     }
+    public void showVisitNotificationDataFragment() {
+        icon.setImageResource(R.drawable.visit_time_icon);
+        message.setText(R.string.when_would_you_like_to_receive_a_notification);
+        Bundle bundle = new Bundle();
+        bundle.putString("documentId", documentId);
+        VisitNotificationDataFragment visitNotificationDataFragment = new VisitNotificationDataFragment();
+        visitNotificationDataFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, visitNotificationDataFragment)
+                .commit();
+    }
     public void hideVisitChooseDayFragment() {
         icon.setImageResource(R.drawable.visit_name_icon);
         message.setText(R.string.what_would_you_like_to_name_the_visit);
@@ -174,7 +186,7 @@ public class AddVisitActivity extends AppCompatActivity {
     }
     public void hideVisitAdditionalInfoFragment() {
         icon.setImageResource(R.drawable.visit_time_icon);
-        message.setText(R.string.what_time_should_you_go_for_your_visit);
+        message.setText(R.string.when_would_you_like_to_receive_a_notification);
         VisitAdditionalInfoFragment visitAdditionalInfoFragment = (VisitAdditionalInfoFragment) getSupportFragmentManager()
                 .findFragmentById(android.R.id.content);
 
@@ -217,5 +229,15 @@ public class AddVisitActivity extends AppCompatActivity {
 
     }
 
+    public void hideVisitNotificationDataFragment() {
+        icon.setImageResource(R.drawable.visit_time_icon);
+        message.setText(R.string.what_time_should_you_go_for_your_visit);
+        VisitNotificationDataFragment visitNotificationDataFragment = (VisitNotificationDataFragment) getSupportFragmentManager()
+                .findFragmentById(android.R.id.content);
 
+        if (visitNotificationDataFragment != null && !visitNotificationDataFragment.isDetached()) {
+            getSupportFragmentManager().beginTransaction().remove(visitNotificationDataFragment).commit();
+        }
+
+    }
 }

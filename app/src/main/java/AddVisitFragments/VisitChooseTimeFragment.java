@@ -69,7 +69,7 @@ public class VisitChooseTimeFragment extends Fragment {
                 int minuteValue = minute.getValue();
                 String time = String.valueOf(hourValue) + ":" + String.valueOf(minuteValue * 5);
                 addVisitTimeToDB(time);
-                addVisitActivity.showVisitAdditionalInfoFragment();
+                addVisitActivity.showVisitNotificationDataFragment();
 
             }
         });

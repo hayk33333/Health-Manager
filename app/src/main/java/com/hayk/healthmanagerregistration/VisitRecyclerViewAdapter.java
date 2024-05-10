@@ -2,6 +2,7 @@ package com.hayk.healthmanagerregistration;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +23,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import AddMedFragments.CustomAdapter;
+
 public class VisitRecyclerViewAdapter extends RecyclerView.Adapter<VisitRecyclerViewAdapter.MyViewHolder> {
 
     private List<String> visitNames;
@@ -29,15 +33,16 @@ public class VisitRecyclerViewAdapter extends RecyclerView.Adapter<VisitRecycler
     private List<String> dates;
     private List<String> doctorNames;
     private List<String> hospitalNames;
+    private static List<String> visitIds;
 
 
-    public VisitRecyclerViewAdapter(Activity context, List<String> visitNames,List<String> dates, List<String> doctorNames, List<String> hospitalNames) {
+    public VisitRecyclerViewAdapter(Activity context, List<String> visitNames, List<String> dates, List<String> doctorNames, List<String> hospitalNames, List<String> visitIds) {
         this.context = context;
         this.visitNames = visitNames;
         this.dates = dates;
         this.doctorNames = doctorNames;
         this.hospitalNames = hospitalNames;
-
+        this.visitIds = visitIds;
     }
 
     @NonNull
@@ -53,8 +58,10 @@ public class VisitRecyclerViewAdapter extends RecyclerView.Adapter<VisitRecycler
         String visitDate = dates.get(position);
         String hospitalName = hospitalNames.get(position);
         String doctorName = doctorNames.get(position);
+        String visitId = visitIds.get(position);
+        System.out.println(visitId);
 
-        holder.bind(visitName, visitDate, doctorName,hospitalName);
+        holder.bind(visitName, visitDate, doctorName,hospitalName, visitId);
     }
 
     @Override
@@ -82,9 +89,10 @@ public class VisitRecyclerViewAdapter extends RecyclerView.Adapter<VisitRecycler
 
 
 
+
         }
 
-        public void bind(String visitNameText, String dateText, String doctorNameText, String hospitalNameText) {
+        public void bind(String visitNameText, String dateText, String doctorNameText, String hospitalNameText, String visitId) {
             visitName.setText(visitNameText);
             if (hospitalNameText.isEmpty()){
                 hospitalName.setVisibility(View.GONE);
@@ -95,7 +103,15 @@ public class VisitRecyclerViewAdapter extends RecyclerView.Adapter<VisitRecycler
             hospitalName.setText("Hospital:" + hospitalNameText);
             doctorName.setText("Doctor:" + doctorNameText);
             date.setText(dateText);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, VisitInfoActivity.class);
 
+                    intent.putExtra("visitId", visitId);
+                    context.startActivity(intent);
+                }
+            });
 //            try {
 //                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 //                Date date = sdf.parse();
@@ -118,6 +134,8 @@ public class VisitRecyclerViewAdapter extends RecyclerView.Adapter<VisitRecycler
 
 
         }
+
+
     }
 
     private static boolean isSameDay(Calendar cal1, Calendar cal2) {
@@ -130,4 +148,5 @@ public class VisitRecyclerViewAdapter extends RecyclerView.Adapter<VisitRecycler
         cal1.add(Calendar.DAY_OF_MONTH, 1);
         return isSameDay(cal1, cal2);
     }
+
 }

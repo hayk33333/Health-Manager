@@ -27,6 +27,7 @@ import com.hayk.healthmanagerregistration.R;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class VisitAdditionalInfoFragment extends Fragment {
@@ -49,6 +50,7 @@ public class VisitAdditionalInfoFragment extends Fragment {
         doctorDetails = view.findViewById(R.id.doctor_details);
         hospitalDetails = view.findViewById(R.id.hospital_details);
         comments = view.findViewById(R.id.comments);
+        setFalse();
         doctorDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,7 +66,7 @@ public class VisitAdditionalInfoFragment extends Fragment {
         });
         comments.setOnClickListener(view13 -> addVisitActivity.showVisitAddCommentFragment());
         save.setOnClickListener(view12 -> {
-           // getDataForVisitAlarm();
+            getDataForVisitAlarm();
             saveVisitToDb();
             getActivity().finish();
         });
@@ -72,6 +74,29 @@ public class VisitAdditionalInfoFragment extends Fragment {
         addVisitActivity = (AddVisitActivity) requireActivity();
         back.setOnClickListener(view1 -> addVisitActivity.hideVisitAdditionalInfoFragment());
 
+    }
+
+    private void setFalse() {
+        CollectionReference visitsCollection = db.collection("visits");
+
+        Map<String, Object> visitData = new HashMap<>();
+        boolean isDataExist = false;
+
+        visitData.put("isDoctorDataExist", isDataExist);
+        visitData.put("isHospitalDataExist", isDataExist);
+        visitsCollection
+                .document(documentId)
+                .update(visitData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                    }
+                });
     }
 
     private void getDataForVisitAlarm() {
@@ -82,11 +107,14 @@ public class VisitAdditionalInfoFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
+                            System.out.println("getData");
                             String visitTime = documentSnapshot.getString("visitTime");
                             String day = String.valueOf(documentSnapshot.getLong("day"));
                             String year = String.valueOf(documentSnapshot.getLong("year"));
                             String month = String.valueOf(documentSnapshot.getLong("month"));
-                            setAlarmForVisit(getActivity(), visitTime, year, day, month);
+                            String dataType = documentSnapshot.getString("notificationDataType");
+                            String dataCount = documentSnapshot.getString("notificationDataCount");
+                            setAlarmForVisit(getActivity(), dataType, dataCount, visitTime, year, month, day);
                         } else {
                             System.out.println("med does not exists");
                         }
@@ -100,20 +128,10 @@ public class VisitAdditionalInfoFragment extends Fragment {
                 });
     }
 
-    private void setAlarmForVisit(Context context, String visitTime, String year, String month, String day) {
-        String[] parts = visitTime.split(":");
-        int hour;
-        int minute;
-
-        String hourStr = parts[0];
-        hour = Integer.parseInt(hourStr);
-
-        String minuteStr = parts[1];
-        minute = Integer.parseInt(minuteStr);
-        getActivity().finish();
-
+    private void setAlarmForVisit(Context context, String type, String count, String time, String year, String month, String day) {
+        System.out.println("setAlarmForVisits()");
         AlarmReceiverVisit alarmReceiverVisit = new AlarmReceiverVisit();
-        alarmReceiverVisit.setAlarm(context, Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(day),hour,minute);
+        alarmReceiverVisit.setAlarm(context, type, count, time, year, month, day, documentId);
     }
 
 

@@ -91,6 +91,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (location != null) {
                 LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(@NonNull LatLng latLng) {
+                        Toast.makeText(MapsActivity.this, R.string.please_press_and_hold_to_specify_the_location, Toast.LENGTH_SHORT).show();
+                    }
+                });
                 mMap.setOnMapLongClickListener(latLng -> {
                     mMap.clear();
                     mMap.addMarker(new MarkerOptions().position(latLng));

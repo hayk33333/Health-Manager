@@ -190,4 +190,20 @@
     <string name="snooze">Snooze</string>
     <string name="skip">Skip</string>
     <string name="take">Take</string>
+    <string name="ago">ago</string>
+    <string name="when_would_you_like_to_receive_a_notification">When would you like to receive a notification?</string>
+    <string name="you_should_visit_the_hospital_in">"You should visit the hospital in "</string>
+    <string name="you_should_visit">"You should visit "</string>
+    <string name="hospital">" hospital "</string>
+    <string name="at_the_hospital">" at the hospital "</string>
+    <string name="in">" in "</string>
+    <string name="please_press_and_hold_to_specify_the_location">Please press and hold to specify the location</string>
+    <string name="time">Time:</string>
+    <string name="data">Data:</string>
+    <string name="email_">Email:</string>
+    <string name="phone">Phone:</string>
+    <string name="specialization_">Specialization:</string>
+    <string name="office_location">Office Location:</string>
+    <string name="Address">Address:</string>
+    <string name="Website">Website:</string>
 </resources>

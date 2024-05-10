@@ -76,6 +76,12 @@ public class VisitAddDoctorDetailsFragment extends Fragment {
         CollectionReference visitsCollection = db.collection("visits");
 
         Map<String, Object> visitData = new HashMap<>();
+        boolean isDataExist;
+        if (name.isEmpty() && email.isEmpty() && phone.isEmpty() && specialization.isEmpty() && comment.isEmpty() && officeLocation.isEmpty()){
+            isDataExist = false;
+        } else {
+            isDataExist = true;
+        }
         if (name.isEmpty()) {
             visitData.put("doctorName", null);
         } else {
@@ -108,7 +114,7 @@ public class VisitAddDoctorDetailsFragment extends Fragment {
         } else {
             visitData.put("doctorComment", comment);
         }
-
+        visitData.put("isDoctorDataExist", isDataExist);
         visitsCollection
                 .document(documentId)
                 .update(visitData)

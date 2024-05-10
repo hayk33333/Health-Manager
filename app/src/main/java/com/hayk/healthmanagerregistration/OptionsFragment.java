@@ -503,7 +503,7 @@ public class OptionsFragment extends Fragment {
     }
     public void deleteUser(FirebaseUser user) {
         deleteUserFromDB(user);
-        FirebaseAuth.getInstance().getCurrentUser().delete()
+        user.delete()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Intent intent = new Intent(getActivity(), LoginActivity.class);
