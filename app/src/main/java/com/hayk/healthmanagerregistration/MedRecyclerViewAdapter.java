@@ -2,6 +2,7 @@ package com.hayk.healthmanagerregistration;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -25,15 +26,17 @@ public class MedRecyclerViewAdapter extends RecyclerView.Adapter<MedRecyclerView
     private List<String> times;
     private List<String> dates;
     private List<String> forms;
+    private List<String> medIds;
     private Activity context;
 
 
-    public MedRecyclerViewAdapter(Activity context, List<String> medNames, List<String> times, List<String> dates, List<String> forms) {
+    public MedRecyclerViewAdapter(Activity context, List<String> medNames, List<String> times, List<String> dates, List<String> forms, List<String> medIds) {
         this.context = context;
         this.dates = dates;
         this.medNames = medNames;
         this.times = times;
         this.forms = forms;
+        this.medIds = medIds;
     }
 
     @NonNull
@@ -49,7 +52,8 @@ public class MedRecyclerViewAdapter extends RecyclerView.Adapter<MedRecyclerView
         String medTime = times.get(position);
         String medDate = dates.get(position);
         String medForm = forms.get(position);
-        holder.bind(medName, medTime, medDate, medForm);
+        String medId = medIds.get(position);
+        holder.bind(medName, medTime, medDate, medForm, medId);
     }
 
     @Override
@@ -77,10 +81,18 @@ public class MedRecyclerViewAdapter extends RecyclerView.Adapter<MedRecyclerView
 
         }
 
-        public void bind(String medNameText, String medTimeText, String medDateText, String medForm) {
+        public void bind(String medNameText, String medTimeText, String medDateText, String medForm, String medId) {
             medName.setText(medNameText);
             String reminderLabel = context.getString(R.string.next_reminder);
             String nextReminder = reminderLabel + medTimeText;
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, MedInfoActivity.class);
+                    intent.putExtra("medId", medId);
+                    context.startActivity(intent);
+                }
+            });
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 Date date = sdf.parse(medDateText);

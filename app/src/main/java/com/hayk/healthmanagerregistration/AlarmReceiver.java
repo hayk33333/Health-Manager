@@ -62,6 +62,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @SuppressLint("ScheduleExactAlarm")
     public void setAlarm(Context context, AlarmDates alarmDates) {
+
         db = FirebaseFirestore.getInstance();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -411,7 +412,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-                            String medTime = documentSnapshot.getString("everyOtherDay");
+                            String medTime = documentSnapshot.getString("medTime");
 
                             setAlarmEveryOtherDay(context, medTime, medId, "onceDay");
                         } else {

@@ -206,4 +206,9 @@
     <string name="office_location">Office Location:</string>
     <string name="Address">Address:</string>
     <string name="Website">Website:</string>
+    <string name="med_form">Med Form:</string>
+    <string name="reminders">Reminders:</string>
+    <string name="you_should_take_it">"You should take it "</string>
+    <string name="amount_of_med">"Amount of med:"</string>
+    <string name="medication_list">Medication list:</string>
 </resources>

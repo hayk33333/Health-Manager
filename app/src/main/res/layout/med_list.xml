@@ -17,8 +17,9 @@
     <ImageView
         android:id="@+id/medication_icon"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="-20dp"
+        android:layout_height="180dp"
+        android:scaleType="fitXY"
+
         app:srcCompat="@drawable/pill_list_img"
 
         />
@@ -29,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Medication Name"
+        android:layout_marginTop="10dp"
         android:textColor="@color/black"
         android:textSize="15sp" />
 

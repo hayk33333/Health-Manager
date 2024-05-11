@@ -6,22 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".VisitInfoActivity"
     android:orientation="vertical"
-    >
+    tools:context=".VisitInfoActivity">
 
     <ProgressBar
         android:id="@+id/progress_circular"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:elevation="200dp"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollView3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:visibility="gone"
-        />
+        tools:ignore="MissingConstraints" />
+
     <ImageView
         android:id="@+id/back"
         android:layout_width="40dp"
@@ -29,11 +28,10 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:clickable="true"
+        android:elevation="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back_icon"
-        android:elevation="5dp"
-        />
+        app:srcCompat="@drawable/back_icon" />
 
     <ImageView
         android:id="@+id/delete"
@@ -47,30 +45,112 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/delete_icon" />
 
-    <ScrollView
-        android:id="@+id/scrollView3"
+    <LinearLayout
+        android:id="@+id/linearLayout7"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-
-            >
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="150dp"
                 android:background="@color/my_color" />
 
-            <ImageView
+            <TextView
+                android:id="@+id/med_name"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                app:srcCompat="@drawable/delete_icon" />
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="bottom"
+                android:text="Paracetamol"
+                android:textColor="@color/white"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+        </FrameLayout>
 
 
-        </LinearLayout>
-    </ScrollView>
+        <ScrollView
+            android:id="@+id/scrollView3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/med_form"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Med Form:Solution"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    />
+                <TextView
+                    android:id="@+id/med_reminders"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Reminders:Every 4 days"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp"
+
+                    />
+                <TextView
+                    android:id="@+id/med_times"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Medication List:18:30-300ML"
+                    android:textSize="20sp"
+
+                    android:layout_marginBottom="10dp"
+
+                    />
+                <TextView
+                    android:id="@+id/med_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Amount Of Med:5000ML"
+                    android:textSize="20sp"
+
+                    android:layout_marginBottom="10dp"
+
+                    />
+                <TextView
+                    android:id="@+id/med_food"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="You should take it before eating"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp"
+
+                    />
+                <TextView
+                    android:id="@+id/med_instruction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Instruction:Adults can usually take 1 or 2 tablets (500mg) every 4-6 hours, but shouldn't take more than 4g (8 x 500mg tablets) in the space of 24 hours. Children under 16 need to take a lower dose, depending on their age or weight – check the packet or leaflet, or ask a pharmacist or doctor for advice."
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp"
+
+                    />
+            </LinearLayout>
+
+
+        </ScrollView>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

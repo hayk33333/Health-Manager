@@ -45,18 +45,13 @@ public class MedicationsFragment extends Fragment implements CustomAdapter.ItemC
     private ProgressBar progressBar;
     private TextView noMed;
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        recyclerView.setVisibility(View.GONE);
-//        noMed.setVisibility(View.GONE);
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//        getUserMeds();
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        recyclerView.setVisibility(View.GONE);
+        noMed.setVisibility(View.GONE);
+        getUserMeds();
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -114,6 +109,7 @@ public class MedicationsFragment extends Fragment implements CustomAdapter.ItemC
         List<String> medTimes = new ArrayList<>();
         List<String> medDates = new ArrayList<>();
         List<String> medForms = new ArrayList<>();
+        List<String> medIds = new ArrayList<>();
         if (userMedIds.isEmpty()) {
             progressBar.setVisibility(View.GONE);
             return;
@@ -135,10 +131,11 @@ public class MedicationsFragment extends Fragment implements CustomAdapter.ItemC
                                 medTimes.add(medNextTime);
                                 medDates.add(medNextDate);
                                 medForms.add(medForm);
+                                medIds.add(id);
                                 if (id.equals(userMedIds.get(userMedIds.size() - 1))) {
                                     noMed.setVisibility(View.GONE);
                                     recyclerView.setVisibility(View.VISIBLE);
-                                    MedRecyclerViewAdapter medRecyclerViewAdapter = new MedRecyclerViewAdapter(getActivity(), medNames, medTimes, medDates, medForms);
+                                    MedRecyclerViewAdapter medRecyclerViewAdapter = new MedRecyclerViewAdapter(getActivity(), medNames, medTimes, medDates, medForms, medIds);
                                     recyclerView.setAdapter(medRecyclerViewAdapter);
                                     progressBar.setVisibility(View.GONE);
                                 }
