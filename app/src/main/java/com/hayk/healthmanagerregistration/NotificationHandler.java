@@ -59,7 +59,7 @@ public class NotificationHandler extends BroadcastReceiver {
         System.out.println("take");
 
         updateMedCount(context, medId, doseCount);
-        setIsTake(medId, true);
+        //setIsTake(medId, true);
 
 
     }

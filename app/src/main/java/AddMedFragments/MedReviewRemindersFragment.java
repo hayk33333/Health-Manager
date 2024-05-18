@@ -139,7 +139,6 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
 
         int currentMinute = (1380 - (firstMinute + firstHour * 60)) / (howTimesInDay - 1);
         int firstTimeMinute = firstHour * 60 + firstMinute;
-        Toast.makeText(getActivity(), String.valueOf(howTimesInDay), Toast.LENGTH_SHORT).show();
         for (int i = 0; i < howTimesInDay; i++) {
             int hour, minute;
             hour = firstTimeMinute / 60;

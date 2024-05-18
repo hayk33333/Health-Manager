@@ -86,6 +86,41 @@ public class AlarmReceiverNotification extends BroadcastReceiver {
     }
 
     private void sendNotificationForMedRunOut(Context context, String text) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel(
+                    "channel_id",
+                    "Channel Name",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingIntent = PendingIntent.getActivity(context,(int) System.currentTimeMillis() , intent, PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(context, "channel_id")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentText(text)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+    }
+
+    private void sendNotificationForMedSnooze(Context context, String text, String medId, int count) {
+        int requestCode = (int) System.currentTimeMillis();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager =
@@ -98,29 +133,14 @@ public class AlarmReceiverNotification extends BroadcastReceiver {
             notificationManager.createNotificationChannel(channel);
         }
 
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent;
 
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(context, "channel_id")
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentText(text);
-
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-    }
-    private void sendNotificationForMedSnooze(Context context, String text, String medId, int count) {
-        int requestCode = (int) System.currentTimeMillis();
-
-        System.out.println(requestCode);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager notificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel channel = new NotificationChannel(
-                    "channel_id",
-                    "Channel Name",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            notificationManager.createNotificationChannel(channel);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingIntent = PendingIntent.getActivity(context,(int) System.currentTimeMillis() , intent, PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
         Intent snoozeIntent = new Intent(context, NotificationHandler.class);
         snoozeIntent.setAction("ACTION_SNOOZE");
@@ -136,8 +156,6 @@ public class AlarmReceiverNotification extends BroadcastReceiver {
         skipIntent.putExtra("requestCode", requestCode);
         skipIntent.putExtra("text", text);
         skipIntent.putExtra("doseCount", count);
-
-
         PendingIntent skipPendingIntent = PendingIntent.getBroadcast(context, requestCode, skipIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent takeIntent = new Intent(context, NotificationHandler.class);
@@ -146,14 +164,13 @@ public class AlarmReceiverNotification extends BroadcastReceiver {
         takeIntent.putExtra("requestCode", requestCode);
         takeIntent.putExtra("doseCount", count);
         takeIntent.putExtra("text", text);
-
-
         PendingIntent takePendingIntent = PendingIntent.getBroadcast(context, requestCode, takeIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "channel_id")
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentText(text)
+                        .setContentIntent(pendingIntent)
                         .addAction(R.drawable.logo, context.getString(R.string.skip), skipPendingIntent)
                         .addAction(R.drawable.logo, context.getString(R.string.take), takePendingIntent)
                         .addAction(R.drawable.logo, context.getString(R.string.snooze), snoozePendingIntent);
@@ -162,6 +179,7 @@ public class AlarmReceiverNotification extends BroadcastReceiver {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(requestCode, builder.build());
     }
+
     private void addNewRequestCodeTODb(long requestCode) {
         CollectionReference medsCollection = db.collection("requestCode");
 

@@ -7,14 +7,14 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".VisitInfoActivity">
+    tools:context=".MedInfoActivity">
 
     <ProgressBar
         android:id="@+id/progress_circular"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:elevation="200dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,9 @@
         android:id="@+id/linearLayout7"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+
+        >
 
 
         <FrameLayout
@@ -59,7 +61,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:background="@color/my_color" />
+                android:background="@color/my_color"
+
+                />
 
             <TextView
                 android:id="@+id/med_name"
@@ -68,7 +72,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginBottom="20dp"
                 android:gravity="bottom"
-                android:text="Paracetamol"
                 android:textColor="@color/white"
                 android:textSize="30dp"
                 android:textStyle="bold" />
@@ -80,28 +83,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="15dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="visible"
+                >
 
                 <TextView
                     android:id="@+id/med_form"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Med Form:Solution"
                     android:textSize="20sp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
+
                     />
                 <TextView
                     android:id="@+id/med_reminders"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Reminders:Every 4 days"
                     android:textSize="20sp"
                     android:layout_marginBottom="10dp"
 
@@ -111,29 +116,75 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Medication List:18:30-300ML"
                     android:textSize="20sp"
 
                     android:layout_marginBottom="10dp"
 
                     />
-                <TextView
+                <LinearLayout
                     android:id="@+id/med_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Amount Of Med:5000ML"
-                    android:textSize="20sp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    >
 
-                    android:layout_marginBottom="10dp"
+                    <TextView
 
-                    />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:gravity="center_vertical"
+
+                        />
+                    <Button
+                        android:id="@+id/minus_count"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/black_corners_background"
+                        android:textSize="20sp"
+                        android:layout_marginStart="10dp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center_horizontal"
+                        />
+                    <EditText
+                        android:id="@+id/amount_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:text=""
+                        android:paddingHorizontal="15dp"
+                        android:textColor="@color/black"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="5"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/black_corners_background"
+                        />
+                    <TextView
+                        android:id="@+id/dose_type_tv"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <Button
+                        android:id="@+id/plus_count"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/black_corners_background"
+                        android:textSize="20sp"
+                        android:layout_marginStart="10dp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center_horizontal"
+                        />
+
+                </LinearLayout>
                 <TextView
                     android:id="@+id/med_food"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="You should take it before eating"
                     android:textSize="20sp"
                     android:layout_marginBottom="10dp"
 
@@ -143,7 +194,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Instruction:Adults can usually take 1 or 2 tablets (500mg) every 4-6 hours, but shouldn't take more than 4g (8 x 500mg tablets) in the space of 24 hours. Children under 16 need to take a lower dose, depending on their age or weight – check the packet or leaflet, or ask a pharmacist or doctor for advice."
                     android:textSize="20sp"
                     android:layout_marginBottom="10dp"
 

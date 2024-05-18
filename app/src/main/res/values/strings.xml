@@ -211,4 +211,17 @@
     <string name="you_should_take_it">"You should take it "</string>
     <string name="amount_of_med">"Amount of med:"</string>
     <string name="medication_list">Medication list:</string>
+    <string name="times_in_day">" times in day"</string>
+    <string name="months">" months"</string>
+    <string name="Every">"Every "</string>
+    <string name="weeks">" weeks"</string>
+    <string name="Days">" days"</string>
+    <string name="you_will_never_receive_a_notification_because_the_time_you_specified_has_already_passed">You will never receive a notification because the time you specified has already passed․</string>
+    <string name="missed">Missed</string>
+    <string name="here_you_should_see_your_reminders_for_today">Here you should see your reminders for today and upcoming hospital visits
+</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="days_ago">days ago</string>
+    <string name="day">day</string>
 </resources>

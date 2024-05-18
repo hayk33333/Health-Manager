@@ -35,7 +35,7 @@ import AddMedFragments.CustomAdapter;
 import AddMedFragments.MedReviewRemindersFragment;
 
 
-public class MedicationsFragment extends Fragment implements CustomAdapter.ItemClickListener {
+public class MedicationsFragment extends Fragment {
     private Button addMedButton;
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
@@ -170,13 +170,5 @@ public class MedicationsFragment extends Fragment implements CustomAdapter.ItemC
         return rootView;
     }
 
-    @Override
-    public void onTimeButtonClick(View view, int position) {
 
-    }
-
-    @Override
-    public void onDoseCountButtonClick(View view, int position) {
-
-    }
 }

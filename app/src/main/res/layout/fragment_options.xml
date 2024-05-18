@@ -276,6 +276,7 @@
                 android:layout_height="50dp"
                 android:background="@drawable/list_button_bg"
                 android:clickable="true"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <ImageView

@@ -310,7 +310,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     private void sendNotification(Context context, String medId, String medFrequency, String notificationText, int count) {
         int requestCode = (int) System.currentTimeMillis();
 
-        System.out.println(requestCode);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -321,6 +320,17 @@ public class AlarmReceiver extends BroadcastReceiver {
             );
             notificationManager.createNotificationChannel(channel);
         }
+
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingIntent = PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
         Intent snoozeIntent = new Intent(context, NotificationHandler.class);
         snoozeIntent.setAction("ACTION_SNOOZE");
         snoozeIntent.putExtra("medId", medId);
@@ -335,8 +345,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         skipIntent.putExtra("requestCode", requestCode);
         skipIntent.putExtra("text", notificationText);
         skipIntent.putExtra("doseCount", count);
-
-
         PendingIntent skipPendingIntent = PendingIntent.getBroadcast(context, requestCode, skipIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent takeIntent = new Intent(context, NotificationHandler.class);
@@ -345,14 +353,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         takeIntent.putExtra("requestCode", requestCode);
         takeIntent.putExtra("doseCount", count);
         takeIntent.putExtra("text", notificationText);
-
-
         PendingIntent takePendingIntent = PendingIntent.getBroadcast(context, requestCode, takeIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "channel_id")
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentText(notificationText)
+                        .setContentIntent(pendingIntent)
                         .addAction(R.drawable.logo, context.getString(R.string.skip), skipPendingIntent)
                         .addAction(R.drawable.logo, context.getString(R.string.take), takePendingIntent)
                         .addAction(R.drawable.logo, context.getString(R.string.snooze), snoozePendingIntent);
@@ -381,7 +388,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         });
     }
 
-    private void setNextAlarm(Context context, String medId, String medFrequency) {
+    public void setNextAlarm(Context context, String medId, String medFrequency) {
+        db = FirebaseFirestore.getInstance();
         if (medFrequency.equals("onceDay")) {
             getDataForOnceDay(context, medId);
         } else if (medFrequency.equals("twiceDay")) {

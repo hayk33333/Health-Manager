@@ -145,6 +145,15 @@ public class AlarmReceiverVisit extends BroadcastReceiver {
                             } else {
                                 text = context.getString(R.string.you_should_visit) + doctorName + context.getString(R.string.in) + hospitalName + context.getString(R.string.hospital) +  count + " " + type + ".";
                             }
+                            PendingIntent pendingIntent;
+                            Intent intent = new Intent(context, SplashActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                pendingIntent = PendingIntent.getActivity(context,(int) System.currentTimeMillis() , intent, PendingIntent.FLAG_IMMUTABLE);
+                            } else {
+                                pendingIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            }
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 NotificationManager notificationManager =
                                         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -160,7 +169,10 @@ public class AlarmReceiverVisit extends BroadcastReceiver {
                             NotificationCompat.Builder builder =
                                     new NotificationCompat.Builder(context, "channel_id")
                                             .setSmallIcon(R.mipmap.ic_launcher)
-                                            .setContentText(text);
+                                            .setContentText(text)
+                                            .setContentIntent(pendingIntent)
+                                            .setAutoCancel(true);
+
 
                             NotificationManager notificationManager =
                                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
