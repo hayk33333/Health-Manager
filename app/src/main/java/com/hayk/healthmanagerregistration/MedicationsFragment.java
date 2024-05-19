@@ -91,6 +91,7 @@ public class MedicationsFragment extends Fragment {
                             noMed.setVisibility(View.VISIBLE);
                             return;
                         }
+
                         setRecyclerView(userMedIds);
 
 
@@ -105,6 +106,11 @@ public class MedicationsFragment extends Fragment {
     }
 
     private void setRecyclerView(List<String> userMedIds) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         List<String> medNames = new ArrayList<>();
         List<String> medTimes = new ArrayList<>();
         List<String> medDates = new ArrayList<>();

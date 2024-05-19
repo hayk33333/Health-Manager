@@ -95,6 +95,7 @@ public class MedRecyclerViewAdapter extends RecyclerView.Adapter<MedRecyclerView
             });
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
                 Date date = sdf.parse(medDateText);
 
                 Calendar calendarToday = Calendar.getInstance();
@@ -107,11 +108,18 @@ public class MedRecyclerViewAdapter extends RecyclerView.Adapter<MedRecyclerView
                     medDateText = "Tomorrow";
                 }
 
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+
             medDate.setText(medDateText);
             medTime.setText(nextReminder);
+            if (medDateText == null) {
+                medDate.setVisibility(View.GONE);
+            }
+            if (medTimeText == null){
+                medTime.setVisibility(View.GONE);
+            }
             Drawable pill_img = context.getResources().getDrawable(R.drawable.pill_list_img);
             Drawable injection_img = context.getResources().getDrawable(R.drawable.injection_list_img);
             Drawable solution_img = context.getResources().getDrawable(R.drawable.solution_list_img);

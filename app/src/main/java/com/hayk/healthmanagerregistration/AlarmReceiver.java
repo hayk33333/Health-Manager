@@ -231,6 +231,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
+                            System.out.println(medFrequency);
+
                             String doseType = documentSnapshot.getString("doseType");
                             String doseCount = documentSnapshot.getString("doseCount");
                             String medName = documentSnapshot.getString("medName");
@@ -269,18 +271,22 @@ public class AlarmReceiver extends BroadcastReceiver {
                                     SimpleDateFormat inputFormat = new SimpleDateFormat("HH:mm");
                                     SimpleDateFormat outputFormat = new SimpleDateFormat("H:m");
 
-                                    try {
-                                        Date date = inputFormat.parse(nextTime);
-                                        nextTime = outputFormat.format(date);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
+//                                    try {
+//                                        Date date = inputFormat.parse(nextTime);
+//                                        nextTime = outputFormat.format(date);
+//                                    } catch (ParseException e) {
+//                                        e.printStackTrace();
+//                                    }
                                     for (String t : medTimes) {
                                         if (t.equals(nextTime)) {
                                             doseCount = medDoses.get(medTimes.indexOf(t));
                                         }
                                     }
-                                    count = Integer.parseInt(doseCount);
+                                    try {
+                                        count = Integer.parseInt(doseCount);
+                                    }catch (NumberFormatException e) {
+                                        count = 1;
+                                    }
 
                                     text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
 
@@ -822,7 +828,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                     break;
                 } else if (hourNow == hour) {
 
-                    if (minuteNow < minute){
+                    if (minuteNow < minute) {
                         found = true;
                         temp = 0;
                         break;
@@ -849,6 +855,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         alarmReceiver.setAlarm(context, alarmDates);
     }
+
     private void setAlarmEveryOtherDay(Context context, String medTime, String medId, String medFrequency) {
         String[] parts = medTime.split(":");
         int hour = Integer.parseInt(parts[0]);

@@ -95,7 +95,10 @@ public class MedAddInstructionFragment extends Fragment {
                     progressBar.setVisibility(View.VISIBLE);
                     addInstructionTextToDb(instruction);
                 } else {
-                    addMedicationActivity.hideAddMedInstructionFragment();
+                    blockFragment();
+                    progressBar.setVisibility(View.VISIBLE);
+                    uploadImage(images);
+                   // addMedicationActivity.hideAddMedInstructionFragment();
                 }
             }
         });

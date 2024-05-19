@@ -93,7 +93,7 @@
     <string name="what_also_would_you_like_to_add">What also would you like to add</string>
     <string name="before_eating">Before eating</string>
     <string name="after_eating">After eating</string>
-    <string name="from_eating">From eating</string>
+    <string name="from_eating">During eating</string>
     <string name="when_should_we_remind_you_to_refill_your_prescription">When should we remind you to refill your prescription?</string>
     <string name="how_many_pill_s_do_you_have_left">How many Pill(s) do you have left?</string>
     <string name="should_this_be_taken_with_food">Should this be taken with food?</string>
@@ -118,7 +118,7 @@
     <string name="gram_s">Gram(s)</string>
     <string name="tablespoon_s">Tablespoon(s)</string>
     <string name="teaspoon_s">Teaspoon(s)</string>
-    <string name="how_much_many_do_you_have_left">How much / many do you have left?</string>
+    <string name="how_much_many_do_you_have_left">How much / many do you have now?</string>
     <string name="add_a_visit">Add a Visit</string>
     <string name="when_should_you_go_for_your_visit">When should you go for your visit?</string>
     <string name="what_time_should_you_go_for_your_visit">What time should you go for your visit?</string>
@@ -224,4 +224,5 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="days_ago">days ago</string>
     <string name="day">day</string>
+    <string name="instruction_pdf">Instruction pdf</string>
 </resources>
