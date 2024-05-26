@@ -3,24 +3,24 @@
 
     <item
         android:id="@+id/home"
-        android:title="Home"
+        android:title="@string/home"
         android:icon="@drawable/home_icon"/>
 
     <item
         android:id="@+id/medications"
-        android:title="Medication"
+        android:title="@string/medication"
         android:icon="@drawable/medication_icon"/>
 
 
 
     <item
         android:id="@+id/calendar"
-        android:title="Visits"
+        android:title="@string/visits"
         android:icon="@drawable/calendar_icon"/>
 
     <item
         android:id="@+id/options"
-        android:title="Options"
+        android:title="@string/options"
         android:icon="@drawable/user_icon"/>
 
 </menu>

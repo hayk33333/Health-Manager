@@ -41,6 +41,7 @@ public class MedTimeFragment extends Fragment {
     private LinearLayout linearLayout;
     private ProgressBar progressBar;
     private String[] types;
+    private String[] typesForDb;
     private Drawable red_et_background,et_background;
 
 
@@ -86,7 +87,7 @@ public class MedTimeFragment extends Fragment {
                 String dose = medDose.getText().toString();
                 String type = null;
                 if (!medForm.equals("other")) {
-                    type = types[doseTypes.getValue()];
+                    type = typesForDb[doseTypes.getValue()];
                 }
 
                 if (dose.isEmpty()) {
@@ -183,12 +184,16 @@ public class MedTimeFragment extends Fragment {
         switch (medForm) {
             case "pill":
                 types = new String[]{getString(R.string.pill_s)};
+                typesForDb = new String[]{"pill(s)"};
+
                 doseTypes.setMinValue(0);
                 doseTypes.setMaxValue(typesCount);
                 doseTypes.setDisplayedValues(types);
                 break;
             case "injection":
+
                 types = new String[]{getString(R.string.ml), getString(R.string.syringe_s), getString(R.string.unit), getString(R.string.ampules_s), getString(R.string.vial_s)};
+                typesForDb = new String[]{"mL", "Syringe(s)", "Unit", "Ampules(s)", "Vial(s)"};
                 typesCount = 4;
                 doseTypes.setMinValue(0);
                 doseTypes.setMaxValue(typesCount);
@@ -196,6 +201,7 @@ public class MedTimeFragment extends Fragment {
                 break;
             case "solution":
                 types = new String[]{getString(R.string.ml), getString(R.string.cup_s), getString(R.string.drop_s), getString(R.string.ampules_s), getString(R.string.unit)};
+                typesForDb = new String[]{"mL", "Cup(s)", "Drop(s)", "Ampules(s)", "Unit"};
                 typesCount = 4;
                 doseTypes.setMinValue(0);
                 doseTypes.setMaxValue(typesCount);
@@ -203,6 +209,8 @@ public class MedTimeFragment extends Fragment {
                 break;
             case "drops":
                 types = new String[]{getString(R.string.ml), getString(R.string.drop_s), getString(R.string.unit)};
+                typesForDb = new String[]{"mL", "Drop(s)", "Unit"};
+
                 typesCount = 2;
                 doseTypes.setMinValue(0);
                 doseTypes.setMaxValue(typesCount);
@@ -210,6 +218,7 @@ public class MedTimeFragment extends Fragment {
                 break;
             case "powder":
                 types = new String[]{getString(R.string.packet_s), getString(R.string.gram_s), getString(R.string.tablespoon_s), getString(R.string.teaspoon_s), getString(R.string.unit)};
+                typesForDb = new String[]{"Packet(s)", "Gram(s)", "Tablespoon(s)", "Teaspoon(s)", "Unit"};
                 typesCount = 4;
                 doseTypes.setMinValue(0);
                 doseTypes.setMaxValue(typesCount);

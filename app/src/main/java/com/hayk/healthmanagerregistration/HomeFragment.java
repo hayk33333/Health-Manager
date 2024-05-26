@@ -38,6 +38,7 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
     private View rootView;
     private ProgressBar progressBar;
     private TextView noText;
+    private boolean isTodayMedsExist = false;
 
 
     @Override
@@ -53,7 +54,6 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
         recyclerViewVisit.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         getUserMeds();
-        getUserVisits();
     }
 
     private void getUserVisits() {
@@ -72,7 +72,10 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
                             getSoonVisits(userVisits);
                         } else {
                             progressBar.setVisibility(View.GONE);
-                            noText.setVisibility(View.VISIBLE);
+                            if (!isTodayMedsExist) {
+
+                                noText.setVisibility(View.VISIBLE);
+                            }
                         }
 
 
@@ -89,7 +92,6 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
         List<String> visitNames = new ArrayList<>();
         List<String> visitDates = new ArrayList<>();
         List<String> visitIds = new ArrayList<>();
-
 
 
         for (String id : userVisits) {
@@ -140,8 +142,11 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
     private void setRecyclerViewVisits(List<String> visitNames, List<String> visitDates, List<String> visitIds) {
         progressBar.setVisibility(View.GONE);
         if (visitNames.isEmpty()) {
+            if (!isTodayMedsExist) {
 
-            noText.setVisibility(View.VISIBLE);
+                noText.setVisibility(View.VISIBLE);
+            }
+
         } else if (getContext() != null) {
             noText.setVisibility(View.GONE);
             recyclerViewVisit.setVisibility(View.VISIBLE);
@@ -166,8 +171,8 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
 
                             getTodayMeds(userMedIds);
                         } else {
-                            progressBar.setVisibility(View.GONE);
-                            noText.setVisibility(View.VISIBLE);
+                            isTodayMedsExist = false;
+                            getUserVisits();
                         }
 
 
@@ -278,17 +283,19 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
 
     private void setRecyclerView(List<String> todayMedIds, List<String> medNames, List<Long> differenceInMillisList, List<String> doseCounts, List<String> doseTypes) {
         progressBar.setVisibility(View.GONE);
-        System.out.println(todayMedIds.size());
         if (todayMedIds.isEmpty()) {
+            isTodayMedsExist = false;
 
-            noText.setVisibility(View.VISIBLE);
         } else if (getContext() != null) {
+            isTodayMedsExist = true;
             noText.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             MedTodayRecyclerView medTodayRecyclerView = new MedTodayRecyclerView(getContext(), todayMedIds, medNames, differenceInMillisList, doseCounts, doseTypes);
             medTodayRecyclerView.setClickListener((MedTodayRecyclerView.ItemClickListener) HomeFragment.this);
             recyclerView.setAdapter(medTodayRecyclerView);
         }
+        getUserVisits();
+
     }
 
     private static boolean isSameDay(Calendar cal1, Calendar cal2) {

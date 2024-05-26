@@ -73,6 +73,7 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
         progressBar = view.findViewById(R.id.progress_circular);
         next = view.findViewById(R.id.next);
         progressBar.setVisibility(View.VISIBLE);
+        next.setVisibility(View.GONE);
         getDataFromDb();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +177,7 @@ public class MedReviewRemindersFragment extends Fragment implements CustomAdapte
         adapter.setClickListener(MedReviewRemindersFragment.this);
         recyclerView.setAdapter(adapter);
         progressBar.setVisibility(View.GONE);
+        next.setVisibility(View.VISIBLE);
     }
 
     private void addTimesAndDosesToDB(){

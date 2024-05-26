@@ -42,27 +42,35 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
     private Intents intents;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
+    private String action;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         intents = new Intents(this);
-        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmReceiver.class);
-
-
-
+        String language = getSavedLanguagePreference();
+        setLocale(language, false);
         setContentView(R.layout.activity_main);
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser == null || !currentUser.isEmailVerified()) {
-            firebaseAuth.signOut();
-            Intent i = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(i);
-            finish();
+        action = getIntent().getAction();
 
+        if (currentUser == null || !currentUser.isEmailVerified()) {
+            if (currentUser != null) {
+                String email = currentUser.getEmail();
+                if (email != null && !email.equals("sictst1@gmail.com")) {
+                    firebaseAuth.signOut();
+                    redirectToLogin();
+                }
+            } else {
+                redirectToLogin();
+            }
         }
+
 
         int permissionState = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS);
         if (permissionState == PackageManager.PERMISSION_DENIED) {
@@ -77,6 +85,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView = findViewById(R.id.nav_view);
         bottomNavigationView.setOnItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.home);
+        if (action != null && action.equals("OPTIONS_FRAGMENT")){
+            bottomNavigationView.setSelectedItemId(R.id.options);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frame_layout, optionsFragment)
+                    .commit();
+        }
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -104,5 +119,41 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     .commit();
         }
         return true;
+    }
+
+    private void redirectToLogin() {
+        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
+    }
+    private void saveLanguagePreference(String languageCode) {
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(LANGUAGE_KEY, languageCode)
+                .apply();
+    }
+
+    private String getSavedLanguagePreference() {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+    }
+    private void setLocale(String languageCode, boolean shouldRestartActivity) {
+        String currentLanguage = getResources().getConfiguration().locale.getLanguage();
+        if (!currentLanguage.equals(languageCode)) {
+            LanguageManager.setLocale(this, new Locale(languageCode));
+            saveLanguagePreference(languageCode);
+
+            if (shouldRestartActivity) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        }
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String language = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+        super.attachBaseContext(LanguageManager.updateBaseContextLocale(newBase, new Locale(language)));
     }
 }

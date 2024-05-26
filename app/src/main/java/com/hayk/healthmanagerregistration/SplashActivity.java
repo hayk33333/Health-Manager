@@ -10,10 +10,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity {
-    View image;
-    ImageView logo_text;
-    TextView text;
-    Intents intents = new Intents(this);
+    private View image;
+    private ImageView logo_text;
+    private TextView text;
+    private Intents intents = new Intents(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class SplashActivity extends AppCompatActivity {
         Animation slideRightAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_right);
         Animation slideLeftAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_left);
         logo_text.setVisibility(View.VISIBLE);
-        text.setVisibility(View.VISIBLE);
+        //text.setVisibility(View.VISIBLE);
         logo_text.setAnimation(slideRightAnimation);
         text.setAnimation(slideLeftAnimation);
         slideRightAnimation.setAnimationListener(new Animation.AnimationListener() {

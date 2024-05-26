@@ -149,7 +149,50 @@ public class NotificationHandler extends BroadcastReceiver {
                         if (documentSnapshot.exists()) {
                             String doseType = documentSnapshot.getString("doseType");
                             String medName = documentSnapshot.getString("medName");
-                            String text = "Only " + count + " " + doseType + " left of " + medName + ". It's time to stock up.";
+                            switch (doseType){
+                            case "pill(s)":
+                                doseType = context.getResources().getString(R.string.pill_s);
+                                break;
+                            case "mL":
+                                doseType = context.getResources().getString(R.string.ml);
+                                break;
+                            case "Syringe(s)":
+                                doseType = context.getResources().getString(R.string.syringe_s);
+                                break;
+
+                            case "Unit":
+                                doseType = context.getResources().getString(R.string.unit);
+                                break;
+                            case "Ampules(s)":
+                                doseType = context.getResources().getString(R.string.ampules_s);
+                                break;
+                            case "Vial(s)":
+                                doseType = context.getResources().getString(R.string.vial_s);
+                                break;
+                            case "Cup(s)":
+                                doseType = context.getResources().getString(R.string.cup_s);
+                                break;
+                            case "Drop(s)":
+                                doseType = context.getResources().getString(R.string.drop_s);
+                                break;
+                            case "Packet(s)":
+                                doseType = context.getResources().getString(R.string.packet_s);
+                                break;
+                            case "Gram(s)":
+                                doseType = context.getResources().getString(R.string.gram_s);
+                                break;
+                            case "Tablespoon(s)":
+                                doseType = context.getResources().getString(R.string.tablespoon_s);
+                                break;
+                            case "Teaspoon(s)":
+                                doseType = context.getResources().getString(R.string.teaspoon_s);
+                                break;
+
+
+
+                        }
+
+                        String text = context.getString(R.string.only) + count + " " + doseType + context.getString(R.string.left_of) + medName + context.getString(R.string.it_s_time_to_stock_up);
                             AlarmReceiverNotification alarm = new AlarmReceiverNotification();
                             alarm.setAlarm(context, 10, text, "MED_RUN_OUT", medId, count);
 

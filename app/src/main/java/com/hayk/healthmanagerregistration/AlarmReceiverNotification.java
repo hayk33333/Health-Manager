@@ -1,5 +1,7 @@
 package com.hayk.healthmanagerregistration;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -22,12 +24,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 
 public class AlarmReceiverNotification extends BroadcastReceiver {
-    FirebaseFirestore db;
+    private FirebaseFirestore db;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        String language = getSavedLanguagePreference(context);
+        setLocale(context, language, false);
         String text = intent.getStringExtra("text");
         String action = intent.getStringExtra("action");
         String medId = intent.getStringExtra("medId");
@@ -44,6 +52,9 @@ public class AlarmReceiverNotification extends BroadcastReceiver {
 
     @SuppressLint("ScheduleExactAlarm")
     public void setAlarm(Context context, int minute, String text, String action, String medId, int count) {
+        if (context == null){
+            return;
+        }
         db = FirebaseFirestore.getInstance();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -201,5 +212,26 @@ public class AlarmReceiverNotification extends BroadcastReceiver {
                         System.out.println("Ошибка при добавлении значения '' в коллекцию 'meds': " + e.getMessage());
                     }
                 });
+    }
+    private void saveLanguagePreference(Context context, String languageCode) {
+        context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(LANGUAGE_KEY, languageCode)
+                .apply();
+    }
+
+    private String getSavedLanguagePreference(Context context) {
+        return context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+    }
+    private void setLocale(Context context, String languageCode, boolean shouldRestartActivity) {
+        String currentLanguage = context.getResources().getConfiguration().locale.getLanguage();
+        if (!currentLanguage.equals(languageCode)) {
+            LanguageManager.setLocale(context, new Locale(languageCode));
+            saveLanguagePreference(context, languageCode);
+//            if (shouldRestartActivity) {
+//
+//            }
+        }
     }
 }

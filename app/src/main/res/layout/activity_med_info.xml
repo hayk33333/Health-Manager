@@ -86,7 +86,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:padding="15dp"
                 android:orientation="vertical"
                 android:visibility="visible"
@@ -126,19 +126,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     >
 
-                    <TextView
 
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:gravity="center_vertical"
-
-                        />
                     <Button
                         android:id="@+id/minus_count"
                         android:layout_width="30dp"
@@ -147,6 +138,7 @@
                         android:textSize="20sp"
                         android:layout_marginStart="10dp"
                         android:textColor="@color/black"
+                        android:text="-"
                         android:layout_gravity="center_horizontal"
                         />
                     <EditText
@@ -175,6 +167,7 @@
                         android:background="@drawable/black_corners_background"
                         android:textSize="20sp"
                         android:layout_marginStart="10dp"
+                        android:text="+"
                         android:textColor="@color/black"
                         android:layout_gravity="center_horizontal"
                         />
@@ -202,7 +195,6 @@
                     android:id="@+id/open_instruction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="instruction pdf"
                     android:textSize="20sp"
                     android:layout_marginBottom="10dp"
                     android:clickable="true"

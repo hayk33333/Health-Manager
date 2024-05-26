@@ -72,7 +72,7 @@
                     android:background="@drawable/list_button_bg"
                     android:gravity="left|center_vertical"
                     android:paddingStart="20dp"
-                    android:text="Tuesday"
+                    android:text="@string/tuesday"
 
                     android:textAllCaps="false"
                     android:textColor="@color/dark_gray"

@@ -34,7 +34,7 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:text="Visit Name"
+                android:text="@string/visit_name"
                 />
             <TextView
                 android:id="@+id/visit_date"
@@ -51,7 +51,7 @@
             android:id="@+id/done"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Done"
+            android:text="@string/done"
             android:textColor="@color/green"
             android:layout_margin="50dp"
             android:background="@drawable/fragment_background"

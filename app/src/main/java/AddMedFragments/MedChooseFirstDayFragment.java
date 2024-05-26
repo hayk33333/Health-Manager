@@ -44,7 +44,9 @@ public class MedChooseFirstDayFragment extends Fragment {
         documentId = getArguments().getString("documentId");
         month = view.findViewById(R.id.month);
         year = view.findViewById(R.id.year);
-        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
+        String[] months = {getString(R.string.jan), getString(R.string.feb), getString(R.string.mar),
+                getString(R.string.apr), getString(R.string.may), getString(R.string.jun), getString(R.string.jul),
+                getString(R.string.aug), getString(R.string.sept), getString(R.string.oct), getString(R.string.nov), getString(R.string.dec)};
         year.setMinValue(getYear());
         year.setMaxValue(2100);
         year.setWrapSelectorWheel(false);

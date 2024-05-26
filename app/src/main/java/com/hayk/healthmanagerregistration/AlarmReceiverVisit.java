@@ -1,5 +1,7 @@
 package com.hayk.healthmanagerregistration;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -24,19 +26,26 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class AlarmReceiverVisit extends BroadcastReceiver {
-    FirebaseFirestore db;
-    FirebaseUser currentUser;
+    private FirebaseFirestore db;
+    private FirebaseUser currentUser;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        String language = getSavedLanguagePreference(context);
+        setLocale(context, language, false);
         db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String visitId = intent.getStringExtra("visitId");
         String type = intent.getStringExtra("type");
         String count = intent.getStringExtra("count");
         isVisitExist(context, visitId, type, count);
+
 
     }
 
@@ -65,6 +74,9 @@ public class AlarmReceiverVisit extends BroadcastReceiver {
 
     @SuppressLint("ScheduleExactAlarm")
     public void setAlarm(Context context, String type, String count, String time, String year, String month, String day, String visitId) {
+        if (context == null) {
+            return;
+        }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Calendar calendar = Calendar.getInstance();
@@ -85,28 +97,40 @@ public class AlarmReceiverVisit extends BroadcastReceiver {
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        System.out.println(calendar.getTimeInMillis());
+
         switch (type) {
             case "minute(s)":
+            case "минута(ы)":
+                type = context.getResources().getString(R.string.minute_s);
                 calendar.add(Calendar.MINUTE, -Integer.valueOf(count));
                 break;
             case "hour(s)":
+            case "час(ов)":
+                type = context.getResources().getString(R.string.hour_s);
                 calendar.add(Calendar.HOUR, -Integer.valueOf(count));
                 break;
             case "day(s)":
+            case "день(дней)":
+                type = context.getResources().getString(R.string.day_s);
+
                 calendar.add(Calendar.DAY_OF_MONTH, -Integer.valueOf(count));
                 break;
             case "week(s)":
+            case "неделя(и)":
+                type = context.getResources().getString(R.string.week_s);
                 calendar.add(Calendar.DAY_OF_MONTH, -Integer.valueOf(count) * 7);
                 break;
             case "month(s)":
+            case "месяц(ы)":
+                type = context.getResources().getString(R.string.month_s);
                 calendar.add(Calendar.MONTH, -Integer.valueOf(count));
                 break;
             case "year(s)":
+            case "год(годы)":
+                type = context.getResources().getString(R.string.year_s);
                 calendar.add(Calendar.YEAR, -Integer.valueOf(count));
                 break;
         }
-        System.out.println(calendar.getTimeInMillis());
 
 
         Intent intent = new Intent(context, AlarmReceiverVisit.class);
@@ -143,14 +167,14 @@ public class AlarmReceiverVisit extends BroadcastReceiver {
                             } else if (!doctorName.isEmpty() && hospitalName.isEmpty()) {
                                 text = context.getString(R.string.you_should_visit) + doctorName + context.getString(R.string.at_the_hospital) + count + " " + type + ".";
                             } else {
-                                text = context.getString(R.string.you_should_visit) + doctorName + context.getString(R.string.in) + hospitalName + context.getString(R.string.hospital) +  count + " " + type + ".";
+                                text = context.getString(R.string.you_should_visit) + doctorName + context.getString(R.string.in) + hospitalName + context.getString(R.string.hospital) + count + " " + type + ".";
                             }
                             PendingIntent pendingIntent;
                             Intent intent = new Intent(context, SplashActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                pendingIntent = PendingIntent.getActivity(context,(int) System.currentTimeMillis() , intent, PendingIntent.FLAG_IMMUTABLE);
+                                pendingIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_IMMUTABLE);
                             } else {
                                 pendingIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
                             }
@@ -188,5 +212,28 @@ public class AlarmReceiverVisit extends BroadcastReceiver {
                         System.out.println("error to read from db");
                     }
                 });
+    }
+
+    private void saveLanguagePreference(Context context, String languageCode) {
+        context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(LANGUAGE_KEY, languageCode)
+                .apply();
+    }
+
+    private String getSavedLanguagePreference(Context context) {
+        return context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+    }
+
+    private void setLocale(Context context, String languageCode, boolean shouldRestartActivity) {
+        String currentLanguage = context.getResources().getConfiguration().locale.getLanguage();
+        if (!currentLanguage.equals(languageCode)) {
+            LanguageManager.setLocale(context, new Locale(languageCode));
+            saveLanguagePreference(context, languageCode);
+//            if (shouldRestartActivity) {
+//
+//            }
+        }
     }
 }

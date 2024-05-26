@@ -1,5 +1,6 @@
 package com.hayk.healthmanagerregistration;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -17,6 +18,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import AddVisitFragments.VisitAddCommentFragment;
 import AddVisitFragments.VisitAddDoctorDetailsFragment;
@@ -36,6 +38,8 @@ public class AddVisitActivity extends AppCompatActivity {
     private FirebaseUser user;
     private ProgressBar progressBar;
     private String documentId;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,5 +243,11 @@ public class AddVisitActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().remove(visitNotificationDataFragment).commit();
         }
 
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String language = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+        super.attachBaseContext(LanguageManager.updateBaseContextLocale(newBase, new Locale(language)));
     }
 }

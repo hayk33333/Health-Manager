@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -39,6 +42,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Locale;
 
 import NoNetwork.NetworkCheckThread;
 
@@ -67,20 +72,30 @@ public class RegistrationActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressBar progressBar;
     private FirebaseFirestore db;
+    private ImageView flag;
+    private TextView languageText;
+    private LinearLayout changeLanguage;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
+
 
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        intents = new Intents(this);
+        String language = getSavedLanguagePreference();
+        setLocale(language, false);
         setContentView(R.layout.activity_registration);
+        intents = new Intents(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
+        changeLanguage = findViewById(R.id.chang_language);
+        flag = findViewById(R.id.flag);
+        languageText = findViewById(R.id.language_text);
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         mGoogleSignInClient.signOut();
         networkCheckThread.startThread();
@@ -101,6 +116,28 @@ public class RegistrationActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progress_circular);
         db = FirebaseFirestore.getInstance();
+        if (getSavedLanguagePreference().equals("en")) {
+            flag.setBackground(getResources().getDrawable(R.drawable.us_flag));
+            languageText.setText("US");
+        } else {
+            flag.setBackground(getResources().getDrawable(R.drawable.ru_flag));
+            languageText.setText("Рус");
+        }
+        changeLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String currentLanguage = getSavedLanguagePreference();
+                if (currentLanguage.equals("en")) {
+
+                    setLocale("ru", true);
+                    recreate();
+                } else {
+
+                    setLocale("en", true);
+                    recreate();
+                }
+            }
+        });
 
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -480,10 +517,36 @@ public class RegistrationActivity extends AppCompatActivity {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+    private void saveLanguagePreference(String languageCode) {
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(LANGUAGE_KEY, languageCode)
+                .apply();
+    }
+
+    private String getSavedLanguagePreference() {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+    }
+    private void setLocale(String languageCode, boolean shouldRestartActivity) {
+        String currentLanguage = getResources().getConfiguration().locale.getLanguage();
+        if (!currentLanguage.equals(languageCode)) {
+            LanguageManager.setLocale(this, new Locale(languageCode));
+            saveLanguagePreference(languageCode);
+
+            if (shouldRestartActivity) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String language = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+        super.attachBaseContext(LanguageManager.updateBaseContextLocale(newBase, new Locale(language)));
+    }
+
 }
-
-
-
-
-
-

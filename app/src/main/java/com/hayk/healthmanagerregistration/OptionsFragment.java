@@ -15,6 +15,7 @@ import android.os.Bundle;
 
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -52,6 +53,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class OptionsFragment extends Fragment {
@@ -67,6 +69,12 @@ public class OptionsFragment extends Fragment {
     private LinearLayout changeUsernameDialog, changePasswordDialog;
     private TextView usernameOk, userNameCancel, passwordOk, passwordCancel;
     private EditText changeUserNameEt, changePasswordOldEt, changePasswordNewEt, changePasswordConfirmEt;
+    private ImageView flag;
+    private TextView languageText;
+    private LinearLayout changeLanguage;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
+
 
 
     @Override
@@ -92,6 +100,35 @@ public class OptionsFragment extends Fragment {
         userName.setText(firebaseAuth.getCurrentUser().getDisplayName());
         userImg = view.findViewById(R.id.userImg);
         blockFragment = view.findViewById(R.id.blockView);
+        changeLanguage = view.findViewById(R.id.chang_language);
+        flag = view.findViewById(R.id.flag);
+        languageText = view.findViewById(R.id.language_text);
+        if (getSavedLanguagePreference().equals("en")) {
+            flag.setBackground(getResources().getDrawable(R.drawable.us_flag));
+            languageText.setText("US");
+        } else {
+            flag.setBackground(getResources().getDrawable(R.drawable.ru_flag));
+            languageText.setText("Рус");
+        }
+        if (changeLanguage == null) {
+            System.out.println("null");
+        }
+        changeLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("onClick");
+                String currentLanguage = getSavedLanguagePreference();
+                if (currentLanguage.equals("en")) {
+
+                    setLocale("ru", true);
+                } else {
+
+                    setLocale("en", true);
+                }
+            }
+        });
+
+
         deleteAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -456,7 +493,7 @@ public class OptionsFragment extends Fragment {
                     Toast.makeText(getActivity(), R.string.passwords_do_not_much, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (newPassword.length() < 6){
+                if (newPassword.length() < 6) {
                     Toast.makeText(getActivity(), R.string.password_should_be_at_least_6_characters, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -501,6 +538,7 @@ public class OptionsFragment extends Fragment {
 
 
     }
+
     public void deleteUser(FirebaseUser user) {
         deleteUserFromDB(user);
         FirebaseAuth.getInstance().signOut();
@@ -516,6 +554,7 @@ public class OptionsFragment extends Fragment {
                     }
                 });
     }
+
     private void deleteUserFromDB(FirebaseUser user) {
         String userID = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -539,9 +578,41 @@ public class OptionsFragment extends Fragment {
                 });
     }
 
+    private void saveLanguagePreference(String languageCode) {
+        getContext().getSharedPreferences(PREFS_NAME, getContext().MODE_PRIVATE)
+                .edit()
+                .putString(LANGUAGE_KEY, languageCode)
+                .apply();
+    }
+
+    private String getSavedLanguagePreference() {
+        return getContext().getSharedPreferences(PREFS_NAME, getContext().MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+    }
+
+    private void setLocale(String languageCode, boolean shouldRestartActivity) {
+        String currentLanguage = getResources().getConfiguration().locale.getLanguage();
+        if (!currentLanguage.equals(languageCode)) {
+            LanguageManager.setLocale(getContext(), new Locale(languageCode));
+            saveLanguagePreference(languageCode);
+
+            if (shouldRestartActivity) {
+
+
+                Intent intent = getActivity().getIntent();
+                getActivity().finish();
+                intent.setAction("OPTIONS_FRAGMENT");
+                startActivity(intent);
+
+            }
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String language = getSavedLanguagePreference();
+        setLocale(language, false);
         return inflater.inflate(R.layout.fragment_options, container, false);
     }
 }

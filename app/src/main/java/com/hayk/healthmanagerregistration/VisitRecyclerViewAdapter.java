@@ -100,8 +100,8 @@ public class VisitRecyclerViewAdapter extends RecyclerView.Adapter<VisitRecycler
             if (doctorNameText.isEmpty()){
                 doctorName.setVisibility(View.GONE);
             }
-            hospitalName.setText("Hospital:" + hospitalNameText);
-            doctorName.setText("Doctor:" + doctorNameText);
+            hospitalName.setText(context.getString(R.string.hospital_) + hospitalNameText);
+            doctorName.setText(context.getString(R.string.doctor) + doctorNameText);
             date.setText(dateText);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

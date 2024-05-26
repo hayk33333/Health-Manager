@@ -103,9 +103,9 @@ public class MedRecyclerViewAdapter extends RecyclerView.Adapter<MedRecyclerView
                 calendarDate.setTime(date);
 
                 if (isSameDay(calendarToday, calendarDate)) {
-                    medDateText = "Today";
+                    medDateText = context.getResources().getString(R.string.today);
                 } else if (isNextDay(calendarToday, calendarDate)) {
-                    medDateText = "Tomorrow";
+                    medDateText = context.getResources().getString(R.string.tomorrow);
                 }
 
             } catch (Exception e) {

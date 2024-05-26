@@ -1,0 +1,266 @@
+<resources>
+    <string name="app_name">Health Manager</string>
+    <string name="email">Электронная почта</string>
+    <string name="password">Пароль</string>
+    <string name="login">Войти</string>
+    <string name="sign_in">Зарегистрироваться</string>
+    <string name="or_login_with">Или войдите с помощью</string>
+    <string name="or_sign_in_with">Или войдите с помощью</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="do_not_have_account">Еще нет аккаунта?</string>
+    <string name="already_have_account">Уже есть аккаунт?</string>
+    <string name="register_here">Зарегистрируйтесь здесь</string>
+    <string name="log_in">Войти</string>
+    <string name="name">Имя</string>
+    <string name="invalid_email_format_please_check_the_entered_address">Неверный формат электронной почты. Пожалуйста, проверьте введенный адрес.</string>
+    <string name="please_fill_in_all_fields">Пожалуйста, заполните все поля.</string>
+    <string name="the_email_address_is_already_in_use_by_another_account">Этот адрес электронной почты уже используется другим аккаунтом</string>
+    <string name="password_should_be_at_least_6_characters">Пароль должен содержать не менее 6 символов</string>
+    <string name="verify_email_address">Подтвердите адрес электронной почты</string>
+    <string name="we_have_sent_a_notification_to_your_email_address">Мы отправили уведомление на ваш адрес электронной почты</string>
+    <string name="hello_blank_fragment">Привет пустой фрагмент</string>
+    <string name="please_verify_your_email_address_to_complete_registration">Пожалуйста, подтвердите свой адрес электронной почты, чтобы завершить регистрацию.</string>
+    <string name="back">&lt;-Назад</string>
+    <string name="finish">Завершить-&gt;</string>
+    <string name="you_haven_t_received_a_message_yet">Вы еще не получили сообщение</string>
+    <string name="send_again">Отправить снова</string>
+    <string name="failed_to_send_confirmation_email">Не удалось отправить подтверждение на почту.</string>
+    <string name="no_user_found_with_email">Пользователь с этим адресом электронной почты не найден.</string>
+    <string name="invalid_password_please_check_the_entered_password">Неверный пароль. Пожалуйста, проверьте введенный пароль.</string>
+    <string name="incorrect_email_or_password">Неверный адрес электронной почты или пароль</string>
+    <string name="forgot_password_">Забыли пароль</string>
+    <string name="enter_your_email_and_we_ll_send_you_a_link_to_reset_your_password">Введите свой адрес электронной почты, и мы отправим вам ссылку для сброса пароля.</string>
+    <string name="back_to_login">&lt; Назад к входу</string>
+    <string name="user_not_found">Пользователь не найден.</string>
+    <string name="please_enter_your_email_address">Пожалуйста, введите ваш адрес электронной почты.</string>
+    <string name="please_verify_your_email_address_to_login">Пожалуйста, подтвердите свой адрес электронной почты, чтобы войти.</string>
+    <string name="register_again">Зарегистрироваться снова</string>
+    <string name="default_web_client_id" translatable="false">1014916142833-k361aepgn98iuq9dsbaapa6fo439vilc.apps.googleusercontent.com</string>
+    <string name="no_internet_connection">Нет интернет-соединения!</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="the_passwords_don_t_match">Пароли не совпадают.</string>
+    <string name="developed_by">Разработано Hayk Zazyan</string>
+    <string name="add_a_med">Добавить лекарство</string>
+    <string name="medication_name">Название лекарства</string>
+    <string name="what_med_would_you_like_to_add">Какое лекарство вы хотите добавить?</string>
+    <string name="pill">Таблетка</string>
+    <string name="injection">Инъекция</string>
+    <string name="solution">Раствор</string>
+    <string name="drops">Капли</string>
+    <string name="powder">Порошок</string>
+    <string name="other">Другое</string>
+    <string name="what_form_is_the_med">Какая форма у лекарства?</string>
+    <string name="every_day">Каждый день</string>
+    <string name="every_other_day">Через день</string>
+    <string name="every_x_days">Каждые X дней</string>
+    <string name="specific_days_of_the_week">Конкретные дни недели</string>
+    <string name="every_x_weeks">Каждые X недель</string>
+    <string name="every_x_months">Каждые X месяцев</string>
+    <string name="how_often_do_you_take_it">Как часто вы его принимаете?</string>
+    <string name="once_a_day">Один раз в день</string>
+    <string name="twice_a_day">Два раза в день</string>
+    <string name="more_than_2_times_a_day">Более 2 раз в день</string>
+    <string name="every_x_hours">Каждые X часов</string>
+    <string name="monday">Понедельник</string>
+    <string name="wednesday">Среда</string>
+    <string name="thursdays">Четверг</string>
+    <string name="friday">Пятница</string>
+    <string name="sunday">Воскресенье</string>
+    <string name="saturday">Суббота</string>
+    <string name="on_which_days_s_do_you_need_to_take_the_med">В какие дни вам нужно принимать лекарство?</string>
+    <string name="when_do_you_need_to_take_dose">Когда вам нужно принимать дозу?</string>
+    <string name="next">Далее</string>
+    <string name="times_a_day">Раз в день</string>
+    <string name="how_many_times_day">Сколько раз в день</string>
+    <string name="when_do_you_need_to_take_the_first_dose">Когда вам нужно принять первую дозу?</string>
+    <string name="when_do_you_need_to_take_the_second_dose">Когда вам нужно принять вторую дозу?</string>
+    <string name="set_hours_interval">Установить интервал в часах</string>
+    <string name="when_do_you_need_to_take_the_next_dose">Когда вам нужно принять следующую дозу?</string>
+    <string name="days">Дни</string>
+    <string name="week_s">Неделя(и)</string>
+    <string name="every">Каждый</string>
+    <string name="month_s">Месяц(ы)</string>
+    <string name="set_days_interval">Установить интервал в днях</string>
+    <string name="set_weeks_interval">Установить интервал в неделях</string>
+    <string name="set_months_interval">Установить интервал в месяцах</string>
+    <string name="review_your_planned_reminders">Просмотрите свои запланированные напоминания</string>
+    <string name="first_fragment_label">Первый Фрагмент</string>
+    <string name="second_fragment_label">Второй Фрагмент</string>
+    <string name="previous">Назад</string>
+    <string name="ok">Ок</string>
+    <string name="what_also_would_you_like_to_add">Что еще вы хотели бы добавить?</string>
+    <string name="before_eating">Перед едой</string>
+    <string name="after_eating">После еды</string>
+    <string name="from_eating">Во время еды</string>
+    <string name="when_should_we_remind_you_to_refill_your_prescription">Когда нам напомнить вам пополнить рецепт?</string>
+    <string name="how_many_pill_s_do_you_have_left">Сколько таблеток у вас осталось?</string>
+    <string name="should_this_be_taken_with_food">Это должно приниматься с едой?</string>
+    <string name="add_instruction">Добавить инструкцию</string>
+    <string name="specify_the_time_of_use_of_the_med_with_food">Укажите время приема лекарства с едой</string>
+    <string name="set_medications_count">Установить количество медикаментов</string>
+    <string name="save">Сохранить</string>
+    <string name="select_image_source">Выберите источник изображения</string>
+    <string name="gallery">Галерея</string>
+    <string name="camera">Камера</string>
+    <string name="add_med_instruction">Добавить инструкцию по приему медикаментов</string>
+    <string name="how_much_many_do_you_take_it">Сколько вы принимаете?</string>
+    <string name="pill_s">Таблетка(и)</string>
+    <string name="ml">мл</string>
+    <string name="syringe_s">Шприц(ы)</string>
+    <string name="unit">Единица</string>
+    <string name="ampules_s">Ампула(ы)</string>
+    <string name="vial_s">Флакон(ы)</string>
+    <string name="cup_s">Чашка(и)</string>
+    <string name="drop_s">Капля(и)</string>
+    <string name="packet_s">Пакет(ы)</string>
+    <string name="gram_s">Грамм(ы)</string>
+    <string name="tablespoon_s">Столовая ложка(и)</string>
+    <string name="teaspoon_s">Чайная ложка(и)</string>
+    <string name="how_much_many_do_you_have_left">Сколько у вас осталось?</string>
+    <string name="add_a_visit">Добавить визит</string>
+    <string name="when_should_you_go_for_your_visit">Когда вам нужно пойти на прием?</string>
+    <string name="what_time_should_you_go_for_your_visit">В какое время вам нужно пойти на прием?</string>
+
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
+        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
+        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
+        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
+        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
+        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
+        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
+        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
+        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
+        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
+        bibendum, vel congue leo egestas.\n\n
+        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
+        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
+        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
+        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
+        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
+        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
+        est.\n\n
+        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
+        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
+        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
+        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
+        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
+        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
+        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
+        convallis.\n\n
+        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
+        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
+        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
+        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
+        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
+        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
+        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+    </string>
+    <string name="visit_name">Название визита</string>
+    <string name="what_would_you_like_to_name_the_visit">Как вы хотите назвать визит?</string>
+    <string name="please_enter_the_visit_name">Пожалуйста, введите название визита</string>
+    <string name="add_doctor_details">Добавить данные врача</string>
+    <string name="add_hospital_details">Добавить данные больницы</string>
+    <string name="add_comments">Добавить комментарии</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="specialization">Специализация</string>
+    <string name="doctor_s_office_location">Местоположение кабинета врача</string>
+    <string name="additional_comments">Дополнительные комментарии</string>
+    <string name="address">Адрес</string>
+    <string name="website">Веб-сайт</string>
+    <string name="comment">Комментарий</string>
+    <string name="add_your_visit_additional_comment">Добавьте дополнительный комментарий к вашему визиту</string>
+    <string name="address_">Адрес:</string>
+    <string name="change_username">Изменить имя пользователя</string>
+    <string name="change_password">Изменить пароль</string>
+    <string name="delete_account">Удалить аккаунт</string>
+    <string name="log_out">Выйти</string>
+    <string name="cancel">Отмена</string>
+    <string name="new_username">Новое имя пользователя</string>
+    <string name="old_password">Старый пароль</string>
+    <string name="new_password">Новый пароль</string>
+    <string name="password_successfully_changed">Пароль успешно изменен</string>
+    <string name="username_successfully_changed">Имя пользователя успешно изменено</string>
+    <string name="passwords_do_not_much">Пароли не совпадают</string>
+    <string name="next_reminder">Следующее напоминание:</string>
+    <string name="here_you_will_see_your_meds">Здесь вы увидите свои лекарства</string>
+    <string name="here_you_will_see_your_visits">Здесь вы увидите свои визиты</string>
+    <string name="snooze">Отложить</string>
+    <string name="skip">Пропустить</string>
+    <string name="take">Принять</string>
+    <string name="ago">назад</string>
+    <string name="when_would_you_like_to_receive_a_notification">Когда вы хотите получить уведомление?</string>
+    <string name="you_should_visit_the_hospital_in">Вам следует посетить больницу через</string>
+    <string name="you_should_visit">Вам следует посетить</string>
+    <string name="hospital">больницу</string>
+    <string name="at_the_hospital">в больнице</string>
+    <string name="in">через </string>
+    <string name="please_press_and_hold_to_specify_the_location">Пожалуйста, нажмите и удерживайте, чтобы указать местоположение</string>
+    <string name="time">Время:</string>
+    <string name="data">Дата:</string>
+    <string name="email_">Электронная почта:</string>
+    <string name="phone">Телефон:</string>
+    <string name="specialization_">Специализация:</string>
+    <string name="office_location">Местоположение офиса:</string>
+    <string name="Address">Адрес:</string>
+    <string name="Website">Веб-сайт:</string>
+    <string name="med_form">Форма медикамента:</string>
+    <string name="reminders">Напоминания:</string>
+    <string name="you_should_take_it">Вам следует принять</string>
+    <string name="amount_of_med">количество лекарства:</string>
+    <string name="medication_list">Список медикаментов:</string>
+    <string name="times_in_day">раз в день</string>
+    <string name="months">месяцев</string>
+    <string name="Every">Каждые</string>
+    <string name="weeks">недели</string>
+    <string name="Days">дни</string>
+    <string name="you_will_never_receive_a_notification_because_the_time_you_specified_has_already_passed">Вы никогда не получите уведомление, потому что указанное вами время уже прошло.</string>
+    <string name="missed">Пропущено</string>
+    <string name="here_you_should_see_your_reminders_for_today">Здесь вы должны увидеть свои напоминания на сегодня и предстоящие визиты в больницу</string>
+    <string name="today">Сегодня</string>
+    <string name="tomorrow">Завтра</string>
+    <string name="days_ago">дней назад</string>
+    <string name="day">день</string>
+    <string name="instruction_pdf">Инструкция PDF</string>
+    <string name="tuesday">Вторник</string>
+    <string name="hours">часы</string>
+    <string name="done">Посетил</string>
+    <string name="don_t_forget_to_take_your">"Не забудьте принимать ваше "</string>
+    <string name="at">" в "</string>
+    <string name="don_t_forget_to_take">"Не забудьте принимать "</string>
+    <string name="of">" из "</string>
+    <string name="login_as_guest">Войти как гость</string>
+    <string name="jan">Янв</string>
+    <string name="feb">Фев</string>
+    <string name="mar">Мар</string>
+    <string name="apr">Апр</string>
+    <string name="may">Май</string>
+    <string name="jun">Июн</string>
+    <string name="jul">Июл</string>
+    <string name="aug">Авг</string>
+    <string name="sept">Сен</string>
+    <string name="oct">Окт</string>
+    <string name="nov">Ноя</string>
+    <string name="dec">Дек</string>
+    <string name="home">Главная</string>
+    <string name="medication">Лекарства</string>
+    <string name="visits">Посещения</string>
+    <string name="options">Настройки</string>
+    <string name="minute_s">минута(ы)</string>
+    <string name="hour_s">час(ов)</string>
+    <string name="day_s">день(дней)</string>
+    <string name="year_s">год(ы)</string>
+    <string name="hospital_">Больница:</string>
+    <string name="doctor">Врач:</string>
+    <string name="send">Отправить</string>
+    <string name="only">"Только "</string>
+    <string name="left_of">" осталось от "</string>
+    <string name="it_s_time_to_stock_up">. Пора пополнить запасы.</string>
+    <string name="on">"В "</string>
+    <string name="instruction">Инструкция:</string>
+    <string name="once_a_month">Раз в месяц</string>
+    <string name="once_a_week">Раз в неделю</string>
+
+
+</resources>

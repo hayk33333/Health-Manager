@@ -1,5 +1,6 @@
 package com.hayk.healthmanagerregistration;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -41,6 +42,9 @@ public class VisitInfoActivity extends AppCompatActivity {
     private ImageView back, delete, callHospital, smsHospital, callDoctor, smsDoctor, locationHospital;
     private ProgressBar progressBar;
     private View firestView, secondView;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -320,6 +324,12 @@ public class VisitInfoActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String language = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+        super.attachBaseContext(LanguageManager.updateBaseContextLocale(newBase, new Locale(language)));
     }
 
 }

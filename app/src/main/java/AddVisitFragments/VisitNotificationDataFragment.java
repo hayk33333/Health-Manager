@@ -54,7 +54,8 @@ public class VisitNotificationDataFragment extends Fragment {
         red_et_background = getResources().getDrawable(R.drawable.red_et_background);
         et_background = getResources().getDrawable(R.drawable.edit_text_background);
         documentId = getArguments().getString("documentId");
-        timeUnits = new String[]{"minute(s)", "hour(s)", "day(s)", "week(s)", "month(s)", "year(s)"};
+        timeUnits = new String[]{getString(R.string.minute_s), getString(R.string.hour_s),
+                getString(R.string.day_s), getString(R.string.week_s), getString(R.string.month_s), getString(R.string.year_s)};
         unitTime.setMinValue(0);
         unitTime.setMaxValue(5);
         unitTime.setDisplayedValues(timeUnits);

@@ -1,5 +1,7 @@
 package com.hayk.healthmanagerregistration;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -37,6 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -46,10 +49,14 @@ public class AlarmReceiver extends BroadcastReceiver {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
 
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        String language = getSavedLanguagePreference(context);
+        setLocale(context, language, false);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -62,7 +69,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @SuppressLint("ScheduleExactAlarm")
     public void setAlarm(Context context, AlarmDates alarmDates) {
-
+        if (context == null) {
+            return;
+        }
         db = FirebaseFirestore.getInstance();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -238,9 +247,52 @@ public class AlarmReceiver extends BroadcastReceiver {
                             String medName = documentSnapshot.getString("medName");
                             String nextTime = documentSnapshot.getString("nextTime");
                             String text;
+                            switch (doseType) {
+                                case "pill(s)":
+                                    doseType = context.getResources().getString(R.string.pill_s);
+                                    break;
+                                case "mL":
+                                    doseType = context.getResources().getString(R.string.ml);
+                                    break;
+                                case "Syringe(s)":
+                                    doseType = context.getResources().getString(R.string.syringe_s);
+                                    break;
+
+                                case "Unit":
+                                    doseType = context.getResources().getString(R.string.unit);
+                                    break;
+                                case "Ampules(s)":
+                                    doseType = context.getResources().getString(R.string.ampules_s);
+                                    break;
+                                case "Vial(s)":
+                                    doseType = context.getResources().getString(R.string.vial_s);
+                                    break;
+                                case "Cup(s)":
+                                    doseType = context.getResources().getString(R.string.cup_s);
+                                    break;
+                                case "Drop(s)":
+                                    doseType = context.getResources().getString(R.string.drop_s);
+                                    break;
+                                case "Packet(s)":
+                                    doseType = context.getResources().getString(R.string.packet_s);
+                                    break;
+                                case "Gram(s)":
+                                    doseType = context.getResources().getString(R.string.gram_s);
+                                    break;
+                                case "Tablespoon(s)":
+                                    doseType = context.getResources().getString(R.string.tablespoon_s);
+                                    break;
+                                case "Teaspoon(s)":
+                                    doseType = context.getResources().getString(R.string.teaspoon_s);
+                                    break;
+
+
+
+                            }
+
                             int count = 0;
                             if (doseType == null) {
-                                text = "Don't forget to take your " + medName + " at " + nextTime;
+                                text = context.getString(R.string.don_t_forget_to_take_your) + medName + context.getString(R.string.at) + nextTime;
                             } else {
                                 if (medFrequency.equals("twiceDay")) {
                                     String firstDoseCount = documentSnapshot.getString("firstDoseCount");
@@ -262,7 +314,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                                         doseCount = secondDoseCount;
                                     }
                                     count = Integer.parseInt(doseCount);
-                                    text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
+                                    text = context.getString(R.string.don_t_forget_to_take) + doseCount + " " + doseType + context.getString(R.string.of) + medName + context.getString(R.string.at) + nextTime;
 
 
                                 } else if (medFrequency.equals("moreTimes")) {
@@ -284,16 +336,16 @@ public class AlarmReceiver extends BroadcastReceiver {
                                     }
                                     try {
                                         count = Integer.parseInt(doseCount);
-                                    }catch (NumberFormatException e) {
+                                    } catch (NumberFormatException e) {
                                         count = 1;
                                     }
 
-                                    text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
+                                    text = context.getString(R.string.don_t_forget_to_take) + doseCount + " " + doseType + context.getString(R.string.of) + medName + context.getString(R.string.at) + nextTime;
 
                                 } else {
                                     count = Integer.parseInt(doseCount);
 
-                                    text = "Don't forget to take  " + doseCount + " " + doseType + " of " + medName + " at " + nextTime;
+                                    text = context.getString(R.string.don_t_forget_to_take) + doseCount + " " + doseType + context.getString(R.string.of) + medName + context.getString(R.string.at) + nextTime;
                                 }
                             }
 
@@ -878,5 +930,28 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         alarmReceiver.setAlarm(context, alarmDates);
+    }
+
+    private void saveLanguagePreference(Context context, String languageCode) {
+        context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(LANGUAGE_KEY, languageCode)
+                .apply();
+    }
+
+    private String getSavedLanguagePreference(Context context) {
+        return context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+    }
+
+    private void setLocale(Context context, String languageCode, boolean shouldRestartActivity) {
+        String currentLanguage = context.getResources().getConfiguration().locale.getLanguage();
+        if (!currentLanguage.equals(languageCode)) {
+            LanguageManager.setLocale(context, new Locale(languageCode));
+            saveLanguagePreference(context, languageCode);
+//            if (shouldRestartActivity) {
+//
+//            }
+        }
     }
 }

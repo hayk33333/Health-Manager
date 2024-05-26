@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import android.content.Context;
@@ -57,6 +60,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.widget.Toast;
+
 
 public class MedInfoActivity extends AppCompatActivity {
     private TextView medName, medForm, medReminders, medTimes, medFood, medInstruction, doseTypeTV;
@@ -70,6 +77,8 @@ public class MedInfoActivity extends AppCompatActivity {
     private TextView openInstruction;
     private FirebaseStorage storage;
     private List<String> imgUrls;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +107,7 @@ public class MedInfoActivity extends AppCompatActivity {
         openInstruction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("onClick");
+                progressBar.setVisibility(View.VISIBLE);
                 readFirestoreAndCreatePdf();
             }
         });
@@ -159,6 +168,11 @@ public class MedInfoActivity extends AppCompatActivity {
                             }
                         }
                     }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressBar.setVisibility(View.GONE);
+                    }
                 });
     }
 
@@ -173,10 +187,66 @@ public class MedInfoActivity extends AppCompatActivity {
                             String medNameStr = documentSnapshot.getString("medName");
                             String medFormStr = documentSnapshot.getString("medForm");
                             String medRemindersStr = documentSnapshot.getString("medFrequency");
-                            String medInstructionStr = documentSnapshot.getString("medInstruction");
+                            String medInstructionStr = documentSnapshot.getString("instructions");
                             final String[] medCount = {String.valueOf(documentSnapshot.getLong("medCount"))};
                             final String[] doseType = {documentSnapshot.getString("doseType")};
                             String medFoodStr = documentSnapshot.getString("medWithFood");
+                            switch (medFormStr) {
+                                case "pill":
+                                    medFormStr = getString(R.string.pill);
+                                    break;
+                                case "injection":
+                                    medFormStr = getString(R.string.injection);
+                                    break;
+                                case "solution":
+                                    medFormStr = getString(R.string.solution);
+                                    break;
+                                case "drops":
+                                    medFormStr = getString(R.string.drops);
+                                    break;
+                                case "powder":
+                                    medFormStr = getString(R.string.powder);
+                                    break;
+                            }
+                            switch (doseType[0]) {
+                                case "pill(s)":
+                                    doseType[0] = getString(R.string.pill_s);
+                                    break;
+                                case "mL":
+                                    doseType[0] = getString(R.string.ml);
+                                    break;
+                                case "Syringe(s)":
+                                    doseType[0] = getString(R.string.syringe_s);
+                                    break;
+
+                                case "Unit":
+                                    doseType[0] = getString(R.string.unit);
+                                    break;
+                                case "Ampules(s)":
+                                    doseType[0] = getString(R.string.ampules_s);
+                                    break;
+                                case "Vial(s)":
+                                    doseType[0] = getString(R.string.vial_s);
+                                    break;
+                                case "Cup(s)":
+                                    doseType[0] = getString(R.string.cup_s);
+                                    break;
+                                case "Drop(s)":
+                                    doseType[0] = getString(R.string.drop_s);
+                                    break;
+                                case "Packet(s)":
+                                    doseType[0] = getString(R.string.packet_s);
+                                    break;
+                                case "Gram(s)":
+                                    doseType[0] = getString(R.string.gram_s);
+                                    break;
+                                case "Tablespoon(s)":
+                                    doseType[0] = getString(R.string.tablespoon_s);
+                                    break;
+                                case "Teaspoon(s)":
+                                    doseType[0] = getString(R.string.teaspoon_s);
+                                    break;
+                            }
                             medName.setText(medNameStr);
                             medForm.setText(getString(R.string.med_form) + medFormStr);
                             String reminderText = getString(R.string.reminders);
@@ -186,8 +256,8 @@ public class MedInfoActivity extends AppCompatActivity {
                                 case "onceDay":
                                     String medTime = formatTime(documentSnapshot.getString("medTime"));
                                     String doseCount = documentSnapshot.getString("doseCount");
-                                    medListText += medTime + " " + doseCount + doseType[0];
-                                    reminderText += "Once a day";
+                                    medListText += medTime + " " + doseCount + " " + doseType[0];
+                                    reminderText += getResources().getString(R.string.once_a_day);
                                     break;
                                 case "twiceDay":
                                     String medFirstTime = formatTime(documentSnapshot.getString("medFirstTime"));
@@ -195,28 +265,51 @@ public class MedInfoActivity extends AppCompatActivity {
                                     String medSecondTime = formatTime(documentSnapshot.getString("medSecondTime"));
                                     String doseSecondCount = documentSnapshot.getString("secondDoseCount");
                                     medListText += medFirstTime + " " + doseFirstCount + doseType[0] + ", " + medSecondTime + " " + doseSecondCount + doseType[0];
-                                    reminderText += "Twice a day";
+                                    reminderText += getResources().getString(R.string.twice_a_day);
                                     break;
                                 case "everyOtherDay":
                                     medTime = formatTime(documentSnapshot.getString("medTime"));
                                     doseCount = documentSnapshot.getString("doseCount");
                                     medListText += medTime + " " + doseCount + doseType[0];
-                                    reminderText += "Every other day";
+                                    reminderText += getResources().getString(R.string.every_other_day);
                                     break;
                                 case "everyXDays":
                                     medTime = formatTime(documentSnapshot.getString("medTime"));
                                     doseCount = documentSnapshot.getString("doseCount");
                                     medListText += medTime + " " + doseCount + doseType[0];
                                     String xDays = documentSnapshot.getString("everyXDays");
-                                    reminderText += "Every " + xDays + getString(R.string.Days);
+                                    reminderText += getResources().getString(R.string.every) + " " + xDays + " " + getString(R.string.Days);
                                     break;
                                 case "specificDays":
                                     medTime = formatTime(documentSnapshot.getString("medTime"));
                                     doseCount = documentSnapshot.getString("doseCount");
                                     medListText += medTime + " " + doseCount + doseType[0];
                                     ArrayList<String> days = (ArrayList<String>) documentSnapshot.get("daysOfWeek");
-                                    reminderText += "On ";
+                                    reminderText += getString(R.string.on);
                                     for (String day : days) {
+                                        switch (day) {
+                                            case "sunday":
+                                                day = getResources().getString(R.string.sunday);
+                                                break;
+                                            case "monday":
+                                                day = getResources().getString(R.string.monday);
+                                                break;
+                                            case "tuesday":
+                                                day = getResources().getString(R.string.tuesday);
+                                                break;
+                                            case "wednesday":
+                                                day = getResources().getString(R.string.wednesday);
+                                                break;
+                                            case "friday":
+                                                day = getResources().getString(R.string.friday);
+                                                break;
+                                            case "saturday":
+                                                day = getResources().getString(R.string.saturday);
+                                                break;
+                                            case "thursday":
+                                                day = getResources().getString(R.string.thursdays);
+                                                break;
+                                        }
                                         reminderText += day + " ";
                                     }
                                     break;
@@ -225,26 +318,34 @@ public class MedInfoActivity extends AppCompatActivity {
                                     doseCount = documentSnapshot.getString("doseCount");
                                     medListText += medTime + " " + doseCount + doseType[0];
                                     String xWeeks = documentSnapshot.getString("everyXWeeks");
-                                    reminderText += getString(R.string.Every) + xWeeks + getString(R.string.weeks);
+                                    if (xWeeks.equals("1")) {
+                                        reminderText += getString(R.string.once_a_week);
+                                    } else {
+                                        reminderText += getString(R.string.Every) + " " + xWeeks + " " + getString(R.string.weeks);
+                                    }
                                     break;
                                 case "everyXMonths":
                                     medTime = formatTime(documentSnapshot.getString("medTime"));
                                     doseCount = documentSnapshot.getString("doseCount");
                                     medListText += medTime + " " + doseCount + doseType[0];
                                     String xMonths = documentSnapshot.getString("everyXMonths");
-                                    reminderText += getString(R.string.Every) + xMonths + getString(R.string.months);
+                                    if (xMonths.equals("1")) {
+                                        reminderText += getString(R.string.once_a_month);
+                                    } else {
+                                        reminderText += getString(R.string.Every) + " " + xMonths + " " + getString(R.string.months);
+                                    }
                                     break;
                                 case "moreTimes":
                                     String howTimes = documentSnapshot.getString("howTimesDay");
-                                    reminderText += howTimes + getString(R.string.times_in_day);
+                                    reminderText += howTimes + " " + getString(R.string.times_in_day);
                                     ArrayList<String> times = (ArrayList<String>) documentSnapshot.get("times");
                                     ArrayList<String> doses = (ArrayList<String>) documentSnapshot.get("doses");
                                     for (int i = 0; i < times.size(); i++) {
                                         String formattedTime = formatTime(times.get(i));
                                         if (i != times.size() - 1) {
-                                            medListText += formattedTime + " " + doses.get(i) + doseType[0] + ", ";
+                                            medListText += formattedTime + " " + doses.get(i) + " " + doseType[0] + ", ";
                                         } else {
-                                            medListText += formattedTime + " " + doses.get(i) + doseType[0];
+                                            medListText += formattedTime + " " + doses.get(i) + " " + doseType[0];
                                         }
                                     }
                                     break;
@@ -255,11 +356,12 @@ public class MedInfoActivity extends AppCompatActivity {
                             if (medInstructionStr == null) {
                                 medInstruction.setVisibility(View.GONE);
                             } else {
-                                medInstruction.setText(medInstructionStr);
+                                medInstruction.setText(getString(R.string.instruction) + medInstructionStr);
                             }
                             if (medCount[0].equals("null")) {
                                 medAmount.setVisibility(View.GONE);
                             } else {
+                                medAmount.setVisibility(View.VISIBLE);
                                 amountEt.setCursorVisible(false);
                                 amountEt.setText(medCount[0]);
                                 doseTypeTV.setText(doseType[0]);
@@ -267,8 +369,14 @@ public class MedInfoActivity extends AppCompatActivity {
                                 plusCount.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        int count = Integer.parseInt(medCount[0]);
-                                        count++;
+                                        int count;
+                                        if (medCount[0].isEmpty()) {
+                                            count = 1;
+                                        } else {
+                                            count = Integer.parseInt(medCount[0]);
+                                            count++;
+                                        }
+
                                         if (count > 99999) count = 99999;
                                         medCount[0] = String.valueOf(count);
                                         amountEt.setText(String.valueOf(count));
@@ -279,8 +387,14 @@ public class MedInfoActivity extends AppCompatActivity {
                                 minusCount.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        int count = Integer.parseInt(medCount[0]);
-                                        count--;
+                                        int count;
+                                        if (medCount[0].isEmpty()) {
+                                            count = 0;
+                                        } else {
+                                            count = Integer.parseInt(medCount[0]);
+                                            count--;
+                                        }
+
                                         if (count < 0) count = 0;
                                         medCount[0] = String.valueOf(count);
                                         amountEt.setText(String.valueOf(count));
@@ -297,7 +411,10 @@ public class MedInfoActivity extends AppCompatActivity {
                                     @Override
                                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                                         medCount[0] = amountEt.getText().toString();
-                                        setNewCount(medCount[0]);
+                                        if (!medCount[0].isEmpty()) {
+
+                                            setNewCount(medCount[0]);
+                                        }
 
                                     }
 
@@ -314,13 +431,14 @@ public class MedInfoActivity extends AppCompatActivity {
                             } else {
                                 String text;
                                 if (medFoodStr.equals("fromEating")) {
-                                    text = "from eating";
+                                    text = getResources().getString(R.string.from_eating);
                                 } else if (medFoodStr.equals("beforeEating")) {
-                                    text = "before eating";
+                                    text = getString(R.string.before_eating);
+
                                 } else {
-                                    text = "after eating";
+                                    text = getString(R.string.after_eating);
                                 }
-                                medFood.setText(getString(R.string.you_should_take_it) + text);
+                                medFood.setText(getString(R.string.you_should_take_it) + " " + text.toLowerCase());
                             }
 
                         } else {
@@ -401,6 +519,7 @@ public class MedInfoActivity extends AppCompatActivity {
                     Bitmap bitmap = BitmapFactory.decodeStream(input);
                     bitmaps.add(bitmap);
                 } catch (Exception e) {
+                    progressBar.setVisibility(View.GONE);
                     e.printStackTrace();
                 }
             }
@@ -414,11 +533,22 @@ public class MedInfoActivity extends AppCompatActivity {
         }
 
         private void createPdf(List<Bitmap> bitmaps) {
-            System.out.println("createPdf");
-            String directoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-            File file = new File(directoryPath, "images.pdf");
+            writePdfFile(MedInfoActivity.this, bitmaps);
+
+        }
+
+        private void openPdf(Context context, Uri uri) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/pdf");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(intent);
+            progressBar.setVisibility(View.GONE);
+        }
+
+        private void writePdfFile(Context context, List<Bitmap> bitmaps) {
             try {
-                PdfWriter writer = new PdfWriter(new FileOutputStream(file));
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                PdfWriter writer = new PdfWriter(byteArrayOutputStream);
                 PdfDocument pdfDocument = new PdfDocument(writer);
                 Document document = new Document(pdfDocument, PageSize.A4);
                 pdfDocument.setDefaultPageSize(PageSize.A4);
@@ -427,23 +557,34 @@ public class MedInfoActivity extends AppCompatActivity {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     Image image = new Image(com.itextpdf.io.image.ImageDataFactory.create(stream.toByteArray()));
-                    image.scaleToFit(PageSize.A4.getWidth() - 72, PageSize.A4.getHeight() - 72); // Adjust to fit within margins
+                    image.scaleToFit(PageSize.A4.getWidth() - 72, PageSize.A4.getHeight() - 72);
                     document.add(new Paragraph().add(image));
                 }
 
                 document.close();
-                openPdf(file);
+
+                File tempFile = File.createTempFile("temp_pdf", ".pdf", context.getCacheDir());
+                FileOutputStream fos = new FileOutputStream(tempFile);
+                fos.write(byteArrayOutputStream.toByteArray());
+                fos.close();
+
+                Uri uri = FileProvider.getUriForFile(context, "com.hayk.healthmanagerregistration.fileprovider", tempFile);
+                openPdf(context, uri);
+
             } catch (Exception e) {
+                progressBar.setVisibility(View.GONE);
                 e.printStackTrace();
             }
         }
 
-        private void openPdf(File file) {
-            Uri uri = FileProvider.getUriForFile(context, "com.hayk.healthmanagerregistration"+ ".fileprovider", file);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "application/pdf");
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            context.startActivity(intent);
-        }
+
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String language = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+        super.attachBaseContext(LanguageManager.updateBaseContextLocale(newBase, new Locale(language)));
     }
 }

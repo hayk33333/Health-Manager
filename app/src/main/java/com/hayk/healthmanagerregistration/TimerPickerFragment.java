@@ -17,15 +17,14 @@ import java.util.ArrayList;
 import AddMedFragments.MedReviewRemindersFragment;
 
 public class TimerPickerFragment extends Fragment {
-    NumberPicker hour, minute;
-    TextView ok;
+    private NumberPicker hour, minute;
+    private TextView ok;
 
 
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Toast.makeText(getContext(), "ayo", Toast.LENGTH_SHORT).show();
         ok = view.findViewById(R.id.ok);
         hour = view.findViewById(R.id.hour);
         hour.setMinValue(0);

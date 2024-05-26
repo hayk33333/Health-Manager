@@ -3,6 +3,7 @@ package com.hayk.healthmanagerregistration;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.Manifest;
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -46,6 +47,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int LOCATION_REQUEST_CODE = 101;
     private Button submit;
     private String documentId;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,5 +159,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         System.out.println("Ошибка при добавлении значения '" + visitData + "' в коллекцию 'meds': " + e.getMessage());
                     }
                 });
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String language = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+        super.attachBaseContext(LanguageManager.updateBaseContextLocale(newBase, new Locale(language)));
     }
 }

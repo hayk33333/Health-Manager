@@ -2,11 +2,11 @@ package com.hayk.healthmanagerregistration;
 
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,26 +53,66 @@ public class MedTodayRecyclerView extends RecyclerView.Adapter<MedTodayRecyclerV
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.medNameTV.setText(medNames.get(position));
         long timeInMills = differenceInMills.get(position);
+        String doseType = doseTypes.get(position);
+        switch (doseType) {
+            case "pill(s)":
+                doseType = context.getResources().getString(R.string.pill_s);
+                break;
+            case "mL":
+                doseType = context.getResources().getString(R.string.ml);
+                break;
+            case "Syringe(s)":
+                doseType = context.getResources().getString(R.string.syringe_s);
+                break;
+
+            case "Unit":
+                doseType = context.getResources().getString(R.string.unit);
+                break;
+            case "Ampules(s)":
+                doseType = context.getResources().getString(R.string.ampules_s);
+                break;
+            case "Vial(s)":
+                doseType = context.getResources().getString(R.string.vial_s);
+                break;
+            case "Cup(s)":
+                doseType = context.getResources().getString(R.string.cup_s);
+                break;
+            case "Drop(s)":
+                doseType = context.getResources().getString(R.string.drop_s);
+                break;
+            case "Packet(s)":
+                doseType = context.getResources().getString(R.string.packet_s);
+                break;
+            case "Gram(s)":
+                doseType = context.getResources().getString(R.string.gram_s);
+                break;
+            case "Tablespoon(s)":
+                doseType = context.getResources().getString(R.string.tablespoon_s);
+                break;
+            case "Teaspoon(s)":
+                doseType = context.getResources().getString(R.string.teaspoon_s);
+                break;
+        }
         if (timeInMills <= 0) {
-            holder.time.setText(R.string.missed);
+            holder.time.setText("00:00");
         } else {
-            long timeInMinutes = timeInMills / 60000;
-            if (timeInMinutes <= 6) {
-                holder.time.setText("In " + timeInMinutes + " minute(s)" +
-                        " " + doseCounts.get(position) + doseTypes.get(position));
-            } else {
-                long timeInHours = timeInMinutes / 60;
-                timeInMinutes = timeInMinutes % 60;
-                if (timeInHours == 0) {
-                    holder.time.setText("In " + timeInMinutes + " minute(s)" +
-                            " " + doseCounts.get(position) + doseTypes.get(position));
-                } else {
-                    holder.time.setText("In " + timeInHours + " hour(s) " + timeInMinutes + " minute(s)" +
-                            " " + doseCounts.get(position) + doseTypes.get(position));
-                }
-            }
+            startTimer(timeInMills, holder, doseType, doseCounts.get(position));
         }
 
+    }
+    private void startTimer(long timeInMillis, ViewHolder holder, String doseType, String doseCount) {
+        CountDownTimer countDownTimer = new CountDownTimer(timeInMillis, 1000) {
+            public void onTick(long millisUntilFinished) {
+                int hours = (int) (millisUntilFinished / (1000 * 60 * 60));
+                int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
+                int seconds = (int) ((millisUntilFinished / 1000) % 60);
+                holder.time.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds) + "\n" + doseCount + " " + doseType);
+            }
+
+            public void onFinish() {
+                holder.time.setText("00:00:00");
+            }
+        }.start();
     }
 
 
@@ -252,7 +292,6 @@ public class MedTodayRecyclerView extends RecyclerView.Adapter<MedTodayRecyclerV
 
     public interface ItemClickListener {
         void onTakeClick(View view, int position);
-
     }
 }
 

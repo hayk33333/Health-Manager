@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,12 +41,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import NoNetwork.NetworkCheckThread;
 
 public class LoginActivity extends AppCompatActivity {
-    TextView registerHere;
+    private TextView registerHere, loginGuest;
     private Button eyeButton;
     private boolean isEyeButtonOpen = false;
     private EditText password;
@@ -52,35 +56,47 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
-    Drawable red_et_background;
-    Drawable et_background;
-    TextView message;
-    TextView forgotPassword;
-    NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
-    Intents intents;
-    ProgressBar progressBar;
+    private Drawable red_et_background;
+    private Drawable et_background;
+    private TextView message;
+    private TextView forgotPassword;
+    private NetworkCheckThread networkCheckThread = new NetworkCheckThread(this);
+    private Intents intents;
+    private ProgressBar progressBar;
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
+    private ImageView flag;
+    private TextView languageText;
+    private LinearLayout changeLanguage;
+    private static final String PREFS_NAME = "language_prefs";
+    private static final String LANGUAGE_KEY = "language";
+
 
 
     private GoogleSignInClient mGoogleSignInClient;
-    Button googleSignInButton;
-    FirebaseFirestore db;
+    private Button googleSignInButton;
+    private FirebaseFirestore db;
 
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        intents = new Intents(this);
+        String language = getSavedLanguagePreference();
+        setLocale(language, false);
         setContentView(R.layout.activity_login);
+        intents = new Intents(this);
+
+
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
+        changeLanguage = findViewById(R.id.chang_language);
+        flag = findViewById(R.id.flag);
+        languageText = findViewById(R.id.language_text);
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         mGoogleSignInClient.signOut();
         networkCheckThread.startThread();
@@ -93,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
         forgotPassword = findViewById(R.id.forgot_password);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
+        loginGuest = findViewById(R.id.login_guest);
         databaseReference = firebaseDatabase.getReference("users");
         message = findViewById(R.id.login_message);
         red_et_background = getResources().getDrawable(R.drawable.red_et_background);
@@ -103,7 +120,35 @@ public class LoginActivity extends AppCompatActivity {
         googleSignInButton = findViewById(R.id.google_login_button);
         db = FirebaseFirestore.getInstance();
 
+        if (getSavedLanguagePreference().equals("en")) {
+            flag.setBackground(getResources().getDrawable(R.drawable.us_flag));
+            languageText.setText("US");
+        } else {
+            flag.setBackground(getResources().getDrawable(R.drawable.ru_flag));
+            languageText.setText("Рус");
+        }
+        changeLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String currentLanguage = getSavedLanguagePreference();
+                if (currentLanguage.equals("en")) {
 
+                    setLocale("ru", true);
+                    recreate();
+                } else {
+
+                    setLocale("en", true);
+                    recreate();
+                }
+            }
+        });
+
+        loginGuest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,7 +223,47 @@ public class LoginActivity extends AppCompatActivity {
                 loginUser();
             }
         });
+        loginGuest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signInOrSignUp("sictst1@gmail.com", "Samsung2023");
+            }
+        });
 
+    }
+
+    private void signInOrSignUp(String email, String password) {
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            if (user != null) {
+
+                                finish();
+                                intents.MainActivity();
+                            }
+
+                        } else {
+                            firebaseAuth.createUserWithEmailAndPassword(email, password)
+                                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            if (task.isSuccessful()) {
+                                                FirebaseUser user = firebaseAuth.getCurrentUser();
+                                                intents.MainActivity();
+                                                finish();
+
+                                            } else {
+                                                Log.w("TAG", "createUserWithEmail:failure", task.getException());
+
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
     }
 
 
@@ -406,4 +491,39 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
+    private void saveLanguagePreference(String languageCode) {
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(LANGUAGE_KEY, languageCode)
+                .apply();
+    }
+
+    private String getSavedLanguagePreference() {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+    }
+    private void setLocale(String languageCode, boolean shouldRestartActivity) {
+        String currentLanguage = getResources().getConfiguration().locale.getLanguage();
+        if (!currentLanguage.equals(languageCode)) {
+            LanguageManager.setLocale(this, new Locale(languageCode));
+            saveLanguagePreference(languageCode);
+
+            if (shouldRestartActivity) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        }
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String language = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(LANGUAGE_KEY, "en");
+        super.attachBaseContext(LanguageManager.updateBaseContextLocale(newBase, new Locale(language)));
+    }
+
 }
