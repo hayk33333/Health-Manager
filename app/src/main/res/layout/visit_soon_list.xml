@@ -18,7 +18,7 @@
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:orientation="vertical">
@@ -50,10 +50,10 @@
         <Button
             android:id="@+id/done"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/done"
             android:textColor="@color/green"
-            android:layout_margin="50dp"
+            android:layout_margin="40dp"
             android:background="@drawable/fragment_background"
             android:textSize="25sp"
             android:elevation="10dp"

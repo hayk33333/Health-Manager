@@ -226,4 +226,7 @@
     <string name="instruction">Instruction:</string>
     <string name="once_a_month">Once a month</string>
     <string name="once_a_week">Once a week</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_sure_if_you_want_to_delete_the_visit">Are you sure if you want to delete the visit?</string>
 </resources>

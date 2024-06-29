@@ -25,14 +25,16 @@ public class VisitSoonRecyclerView extends RecyclerView.Adapter<VisitSoonRecycle
     private List<String> visitNames;
     private List<String> visitDates;
     private List<String> visitIds;
+    private List<String> visitTimes;
     private FirebaseFirestore db;
 
-    public VisitSoonRecyclerView(Context context, List<String> visitNames, List<String> visitDates, List<String> visitIds) {
+    public VisitSoonRecyclerView(Context context, List<String> visitNames, List<String> visitDates, List<String> visitIds, List<String> visitTimes) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.visitDates = visitDates;
         this.visitNames = visitNames;
         this.visitIds = visitIds;
+        this.visitTimes = visitTimes;
         db = FirebaseFirestore.getInstance();
     }
 
@@ -47,13 +49,13 @@ public class VisitSoonRecyclerView extends RecyclerView.Adapter<VisitSoonRecycle
         holder.visitName.setText(visitNames.get(position));
         int day = Integer.parseInt(visitDates.get(position));
         if (day == 0) {
-            holder.visitDate.setText(R.string.today);
+            holder.visitDate.setText(context.getString(R.string.today) + "\n" + visitTimes.get(position));
         } else if (day == 1) {
-            holder.visitDate.setText(R.string.tomorrow);
+            holder.visitDate.setText(context.getString(R.string.tomorrow) + "\n" + visitTimes.get(position));
         } else if (day < 0){
-            holder.visitDate.setText(Math.abs(day) + " " + context.getString(R.string.days_ago));
+            holder.visitDate.setText(Math.abs(day) + " " + context.getString(R.string.days_ago) + "\n" + visitTimes.get(position));
         } else {
-            holder.visitDate.setText(context.getString(R.string.in) + day + context.getString(R.string.day));
+            holder.visitDate.setText(context.getString(R.string.in) + " " + day + " " + context.getString(R.string.day) + "\n" + visitTimes.get(position));
         }
     }
 
@@ -81,8 +83,7 @@ public class VisitSoonRecyclerView extends RecyclerView.Adapter<VisitSoonRecycle
         public void onClick(View view) {
             if (mClickListener != null) {
                 if (view.getId() == R.id.done) {
-                    mClickListener.onDoneClick(view, getAdapterPosition());
-                    deleteVisit(visitIds.get(getAdapterPosition()));
+                    mClickListener.onDoneClick(view, getAdapterPosition(),visitIds.get(getAdapterPosition()));
                 }
             } else {
 
@@ -90,16 +91,7 @@ public class VisitSoonRecyclerView extends RecyclerView.Adapter<VisitSoonRecycle
         }
     }
 
-    private void deleteVisit(String visitId) {
-        db.collection("visits").document(visitId)
-                .delete()
-                .addOnSuccessListener(aVoid -> System.out.println("Документ успешно удален из Firestore"))
-                .addOnFailureListener(e -> System.err.println("Ошибка при удалении документа из Firestore: " + e));
-        db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection("userVisits").document(visitId)
-                .delete()
-                .addOnSuccessListener(aVoid -> System.out.println("Документ успешно удален из Firestore"))
-                .addOnFailureListener(e -> System.err.println("Ошибка при удалении документа из Firestore: " + e));
-    }
+
 
     public void setClickListener(VisitSoonRecyclerView.ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
@@ -108,7 +100,7 @@ public class VisitSoonRecyclerView extends RecyclerView.Adapter<VisitSoonRecycle
 
 
     public interface ItemClickListener {
-        void onDoneClick(View view, int position);
+        void onDoneClick(View view, int position, String id);
 
     }
 }

@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MedAddInstructionFragment extends Fragment {
+
     private static final int PICK_IMAGE = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
     private Button addImg, next;
@@ -63,7 +64,6 @@ public class MedAddInstructionFragment extends Fragment {
 
 
     @Override
-
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         images = new ArrayList<>();
@@ -94,11 +94,10 @@ public class MedAddInstructionFragment extends Fragment {
                     blockFragment();
                     progressBar.setVisibility(View.VISIBLE);
                     addInstructionTextToDb(instruction);
-                } else {
+                } else if (!images.isEmpty()) {
                     blockFragment();
                     progressBar.setVisibility(View.VISIBLE);
                     uploadImage(images);
-                   // addMedicationActivity.hideAddMedInstructionFragment();
                 }
             }
         });
@@ -142,7 +141,6 @@ public class MedAddInstructionFragment extends Fragment {
                         if (task.isSuccessful()) {
                             if (!images.isEmpty()) {
                                 uploadImage(images);
-
                             }else {
                                 progressBar.setVisibility(View.GONE);
                                 unBlockFragment();
@@ -155,8 +153,6 @@ public class MedAddInstructionFragment extends Fragment {
                     }
                 });
     }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

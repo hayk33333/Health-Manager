@@ -191,11 +191,11 @@
     <string name="take">Принять</string>
     <string name="ago">назад</string>
     <string name="when_would_you_like_to_receive_a_notification">Когда вы хотите получить уведомление?</string>
-    <string name="you_should_visit_the_hospital_in">Вам следует посетить больницу через</string>
-    <string name="you_should_visit">Вам следует посетить</string>
-    <string name="hospital">больницу</string>
-    <string name="at_the_hospital">в больнице</string>
-    <string name="in">через </string>
+    <string name="you_should_visit_the_hospital_in">Вам следует посетить больницу через </string>
+    <string name="you_should_visit">Вам следует посетить </string>
+    <string name="hospital"> больницу </string>
+    <string name="at_the_hospital"> в больнице </string>
+    <string name="in"> через </string>
     <string name="please_press_and_hold_to_specify_the_location">Пожалуйста, нажмите и удерживайте, чтобы указать местоположение</string>
     <string name="time">Время:</string>
     <string name="data">Дата:</string>
@@ -261,6 +261,9 @@
     <string name="instruction">Инструкция:</string>
     <string name="once_a_month">Раз в месяц</string>
     <string name="once_a_week">Раз в неделю</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="are_you_sure_if_you_want_to_delete_the_visit">Вы уверены, что хотите удалить визит?</string>
 
 
 </resources>

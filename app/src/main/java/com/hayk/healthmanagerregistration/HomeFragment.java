@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,14 +38,20 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
     private RecyclerView recyclerView, recyclerViewVisit;
     private View rootView;
     private ProgressBar progressBar;
-    private TextView noText;
+    private TextView noText, no, yes;
     private boolean isTodayMedsExist = false;
+    private LinearLayout deleteVisitLayout;
+
+
 
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         db = FirebaseFirestore.getInstance();
+        deleteVisitLayout = view.findViewById(R.id.visit_delete_layout);
+        yes = view.findViewById(R.id.yes);
+        no = view.findViewById(R.id.no);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerViewVisit = rootView.findViewById(R.id.recyclerViewVisits);
@@ -92,6 +99,7 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
         List<String> visitNames = new ArrayList<>();
         List<String> visitDates = new ArrayList<>();
         List<String> visitIds = new ArrayList<>();
+        List<String> visitTimes = new ArrayList<>();
 
 
         for (String id : userVisits) {
@@ -122,7 +130,13 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
                                     visitIds.add(id);
                                     visitDates.add(String.valueOf(daysRemaining));
                                     visitNames.add(documentSnapshot.getString("visitName"));
-                                    setRecyclerViewVisits(visitNames, visitDates, visitIds);
+                                    String[] parts = documentSnapshot.getString("visitTime").split(":");
+                                    int hours = Integer.parseInt(parts[0]);
+                                    int minutes = Integer.parseInt(parts[1]);
+                                    visitTimes.add(String.format("%02d:%02d", hours, minutes));
+                                }
+                                if (id.equals(userVisits.get(userVisits.size() - 1))) {
+                                    setRecyclerViewVisits(visitNames, visitDates, visitIds, visitTimes);
                                 }
 
 
@@ -139,24 +153,26 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
         }
     }
 
-    private void setRecyclerViewVisits(List<String> visitNames, List<String> visitDates, List<String> visitIds) {
+    private void setRecyclerViewVisits(List<String> visitNames, List<String> visitDates, List<String> visitIds, List<String> visitTimes) {
         progressBar.setVisibility(View.GONE);
         if (visitNames.isEmpty()) {
             if (!isTodayMedsExist) {
-
                 noText.setVisibility(View.VISIBLE);
             }
 
         } else if (getContext() != null) {
             noText.setVisibility(View.GONE);
             recyclerViewVisit.setVisibility(View.VISIBLE);
-            VisitSoonRecyclerView visitSoonRecyclerView = new VisitSoonRecyclerView(getContext(), visitNames, visitDates, visitIds);
+            VisitSoonRecyclerView visitSoonRecyclerView = new VisitSoonRecyclerView(getContext(), visitNames, visitDates, visitIds, visitTimes);
             visitSoonRecyclerView.setClickListener((VisitSoonRecyclerView.ItemClickListener) HomeFragment.this);
             recyclerViewVisit.setAdapter(visitSoonRecyclerView);
         }
     }
 
     private void getUserMeds() {
+        recyclerView.setVisibility(View.GONE);
+        recyclerViewVisit.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         db.collection("users").document(currentUser.getUid()).collection("userMeds")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -298,6 +314,32 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
 
     }
 
+    public void deleteVisit(String visitId) {
+        deleteVisitLayout.setVisibility(View.VISIBLE);
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteVisitLayout.setVisibility(View.GONE);
+            }
+        });
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteVisitLayout.setVisibility(View.GONE);
+                db.collection("visits").document(visitId)
+                        .delete()
+                        .addOnSuccessListener(aVoid -> getUserMeds())
+                        .addOnFailureListener(e -> System.err.println("Ошибка при удалении документа из Firestore: " + e));
+                db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection("userVisits").document(visitId)
+                        .delete()
+                        .addOnSuccessListener(aVoid -> getUserMeds())
+                        .addOnFailureListener(e -> System.err.println("Ошибка при удалении документа из Firestore: " + e));
+
+            }
+        });
+
+    }
+
     private static boolean isSameDay(Calendar cal1, Calendar cal2) {
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
@@ -319,7 +361,7 @@ public class HomeFragment extends Fragment implements MedTodayRecyclerView.ItemC
 
 
     @Override
-    public void onDoneClick(View view, int position) {
-        getUserVisits();
+    public void onDoneClick(View view, int position, String id) {
+        deleteVisit(id);
     }
 }
